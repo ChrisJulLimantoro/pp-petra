@@ -11,8 +11,8 @@ class AuthController extends Controller
     public function __construct() {
         $this->googleClient = new Google_Client();
         
-        $this->googleClient->setClientId("224861351803-csdq30ndrfnjpkhdqv5tcmh1r6d7q9af.apps.googleusercontent.com");
-        $this->googleClient->setClientSecret("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");
+        $this->googleClient->setClientId(env('GOOGLE_CLIENT_ID'));
+        $this->googleClient->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
         $this->googleClient->setRedirectUri(url("/processLogin"));
         $this->googleClient->addScope("email");
         $this->googleClient->addScope("profile");
