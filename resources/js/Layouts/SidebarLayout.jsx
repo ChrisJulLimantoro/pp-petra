@@ -185,7 +185,7 @@ export default function SideBar({ children, props }) {
                     </ListItem> */}
                 </List>
             </Card>
-            <div className=" p-10 overflow-y-auto">{children}</div>
+            <div className=" p-10 overflow-y-auto w-full">{children}</div>
         </div>
     );
 }
