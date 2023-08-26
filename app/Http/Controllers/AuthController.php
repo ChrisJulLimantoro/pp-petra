@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Google_Client;
+use Illuminate\Support\Facades\Http;
+use Inertia\Inertia;
 
 class AuthController extends Controller
 {
@@ -20,13 +22,15 @@ class AuthController extends Controller
     function loginView(Request $request)
     {
         $data['link'] = $this->googleClient->createAuthUrl();
-        return view('login', $data);
+        $data['status'] = session('error');
+        // $data['error'] = session('error') == null ? false : true;
+        return Inertia::render('Auth/Login', $data);
     }
 
     function login(Request $request) {
         if ($request->getScheme() == 'http') {
             if (!isset($request->code)) {
-                return redirect()->to("/login")->with('error', "Error");
+                return redirect()->to("/login")->with('error', "Error Authentication!!");
             }
             $token = $this->googleClient->fetchAccessTokenWithAuthCode($request->code);
             $payload = $this->googleClient->verifyIdToken($token['id_token']);
@@ -42,12 +46,26 @@ class AuthController extends Controller
                     if(str_ends_with($payload['hd'], "john.petra.ac.id")){
                         $request->session()->put('nrp',substr($payload['email'],0,9));
                     }
+                    // get laravel sanctum token from API
+                    $url = env('API_URL') . "/login";
+                    $response = Http::post($url,[
+                        'email' => $payload['email'],
+                        'password' => env('API_SECRET')
+                    ]);
+                    $res = json_decode($response);
+                    // dd($res);
+                    if(!$res->success){
+                        $request->session()->flush();
+                        return redirect()->to("/login")->with('error', "Not Registered, please contact admin!!");
+                    }
+                    $request->session()->put('token', $res->data->token);
+                    $request->session()->put('user_id', $res->data->id);
                     return  redirect()->to("/");
                     // return;
 
                 }else{
-                    echo 'gagal salah email, bbkn email petra';
-                    // return redirect()->to("/login")->with('error', "Please Use Your @john.petra.ac.id email");
+                    // echo 'gagal salah email, bkn email petra';
+                    return redirect()->to("/login")->with('error', "Please Use Your @john.petra.ac.id email");
                 }
 
 
@@ -106,5 +124,9 @@ class AuthController extends Controller
         } else {
             return redirect()->to("/login")->with('error', "Error CSRF");
         }
+    }
+    function logout(Request $request) {
+        $request->session()->flush();
+        return redirect()->to("/login");
     }
 }

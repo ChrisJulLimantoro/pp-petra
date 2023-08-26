@@ -1,4 +1,5 @@
 /.phpunit.cache
+/bootstrap/ssr
 /node_modules
 /public/build
 /public/hot
@@ -31,3 +32,11 @@ vendor/laravel/framework/src/Illuminate/*
 vendor/laravel/framework/src/Illuminate/Routing/*
 !vendor/laravel/framework/src/Illuminate/Routing/RouteCollection.php
 !vendor/laravel/framework/src/Illuminate/Routing/RouteCollectionInterface.php
+
+!vendor/inertiajs/
+vendor/inertiajs/*
+!vendor/inertiajs/inertia-laravel/
+vendor/inertiajs/inertia-laravel/*
+!vendor/inertiajs/inertia-laravel/src/
+vendor/inertiajs/inertia-laravel/src/*
+!vendor/inertiajs/inertia-laravel/src/Response.php
