@@ -5,7 +5,13 @@ import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { Link, Head } from "@inertiajs/react";
-// import { Sidebar } from "./SidebarLayout";
+import {
+    Card,
+    CardHeader,
+    CardBody,
+    Typography,
+    Button,
+} from "@material-tailwind/react";
 
 export default function Authenticated({ user, header, children, title }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
@@ -24,7 +30,6 @@ export default function Authenticated({ user, header, children, title }) {
                 </style>
             </Head>
             <SidebarLayout></SidebarLayout>
-            <div className="w-screen bg-gray-100"></div>
         </div>
     );
 }
