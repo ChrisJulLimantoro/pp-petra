@@ -1,35 +1,35 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 
-/** @type {import('tailwindcss').Config} */
+// @type {import('tailwindcss').Config}
 
 const withMT = require("@material-tailwind/react/utils/withMT");
 
 module.exports = withMT({
-content: ["./src/**/*.{js,jsx,ts,tsx}"],
-theme: {
-    extend: {},
-},
-plugins: [],
+    content: ["./src/**/*.{js,jsx,ts,tsx}"],
+    theme: {
+        extend: {},
+    },
+    plugins: [],
 });
-
-export default {
+// export default {
  
 
-    content: [
-        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-        './storage/framework/views/*.php',
-        './resources/views/**/*.blade.php',
-        './resources/js/**/*.jsx',
-    ],
+//     content: [
+//         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
+//         './storage/framework/views/*.php',
+//         './resources/views/**/*.blade.php',
+//         './resources/js/**/*.jsx',
+//     ],
 
-    theme: {
-        extend: {
-            fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-            },
-        },
-    },
+//     theme: {
+//         extend: {
+//             fontFamily: {
+//                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+//             },
+//         },
+//     },
 
-    plugins: [forms],
-};
+//     plugins: [forms],
+// };
+
