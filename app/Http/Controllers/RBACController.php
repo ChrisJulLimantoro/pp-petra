@@ -21,6 +21,7 @@ class RBACController extends Controller
         $routes = array_filter($routes, function ($route) {
             return $route != null;
         });
+        return $routes;
     }
     public function getAllViews(){
         return Inertia::render('RBAC/Views');

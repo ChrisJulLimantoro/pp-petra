@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RBACController;
+use App\Http\Controllers\RBACRoleAssignmentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -44,5 +45,11 @@ Route::get("/logout",[AuthController::class,'logout']);
 Route::prefix('rbac')->group(function(){
     Route::get('/',[RBACController::class,'getAllRoutes'])->name('dashboard');
     Route::get('/addRole',[RBACController::class,'addRole'])->name('addRole');
+
+    Route::get('/assignRole', [RBACRoleAssignmentController::class, 'assignRoleView']);
+    Route::get('users/{user_id}/roles', [RBACRoleAssignmentController::class, 'getUserRoles']);
+    Route::post('/users/{user_id}/roles/{role_id}', [RBACRoleAssignmentController::class, 'assignRole']);
+    Route::delete('/users/{user_id}/roles/{role_id}', [RBACRoleAssignmentController::class, 'unassignRole']);
+
 });
 
