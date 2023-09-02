@@ -1,6 +1,6 @@
 import { Card, Typography, Select, Option, Input } from "@material-tailwind/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Component, useState, useContext } from "react";
+import { Component } from "react";
 import { Head } from "@inertiajs/react";
 import TableHeader from "./DataTable/TableHeader";
 import TableBody from "./DataTable/TableBody";
@@ -160,10 +160,26 @@ class DataTable extends Component {
     }
 
     renderBody(index, value) {
+        if (index.empty) {
+            return (
+                <tr key={'notFound'}>
+                    <TableCell isLast={true} colSpan={this.state.columns.length + 1}>
+                        <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal text-center"
+                            >
+                                No data found
+                        </Typography>
+                    </TableCell>
+                </tr>
+            );
+        }
+
         return (
             <tr key={value}>
                 {this.state.columns.map((column) => (
-                    <TableCell isLast={value === this.state.displayData.length}>
+                    <TableCell isLast={value === this.state.filteredData.length}>
                         <Typography
                                 variant="small"
                                 color="blue-gray"
@@ -238,7 +254,7 @@ class DataTable extends Component {
                         <thead className="sticky top-0">
                             <tr>
                                 {   this.props.renderHead ? 
-                                    this.state.columns?.map((e) => this.props.renderHead(e)) : 
+                                    this.state.columns?.map((e) => this.props.renderHead(e).bind(this)) : 
                                     this.state.columns?.map(this.renderHeader.bind(this))
                                 }
                             </tr>
