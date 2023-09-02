@@ -1,13 +1,15 @@
 import { Card, Typography, Select, Option, Input } from "@material-tailwind/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Component } from "react";
+import { Component, createContext } from "react";
 import { Head } from "@inertiajs/react";
-import TableHeader from "./DataTable/TableHeader";
-import TableBody from "./DataTable/TableBody";
-import TableFooter from "./DataTable/TableFooter";
-import Table from "./DataTable/Table";
-import TableRowHead from "./DataTable/TableRowHead";
-import TableCell from "./DataTable/TableCell";
+import TableHeader from "./TableHeader";
+import TableBody from "./TableBody";
+import TableFooter from "./TableFooter";
+import Table from "./TableBody";
+import TableRowHead from "./TableRowHead";
+import TableCell from "./TableCell";
+
+export const DataTableContext = createContext(null);
 
 class DataTable extends Component {
     state = {
@@ -26,36 +28,32 @@ class DataTable extends Component {
 
     constructor(props) {
         super(props);
+
+        props.columns.splice(0, 0, '#');
         this.state.rawData = props.rawData;
-        this.state.filteredData = props.paginatedData;
-        this.state.paginatedData = props.paginatedData;
-        this.state.columns = props.columns.unshift('#');
-        this.state.totalPages = Math.ceil((props.paginatedData?.length ?? 0) / this.state.perPage);
+        this.state.filteredData = props.rawData;
+        this.state.paginatedData = this.paginateData(props.rawData);
+        this.state.columns = props.columns;
+        this.state.totalPages = Math.ceil((props.rawData.length ?? 0) / this.state.perPage);
     }
 
-    static getDerivedStateFromProps(props) {
-        return {
-            rawData : props.rawData,
-            paginatedData : props.paginatedData,
-            columns : props.columns,
-        }
-    }
-
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         const displayData = this.paginateData();
 
-        if (JSON.stringify(displayData) != JSON.stringify(prevProps.paginatedData)) {
-            this.props.updateData ? 
-            this.props.updateData(displayData) : 
+        if (JSON.stringify(displayData) != JSON.stringify(prevState.paginatedData)) {
             this.setState({paginatedData: displayData});
         }
     }
 
     searchData(keyword) {
+        // clear search input
         if (keyword.trim() == '' || keyword == null) {
-            this.props.updateData ? 
-            this.props.updateData(this.paginateData(this.state.rawData)) : 
-            this.setState({paginatedData: this.paginateData(this.state.rawData)});
+            this.setState({
+                paginatedData: this.paginateData(this.state.rawData),
+                filteredData: this.state.rawData,
+                currentPage: 1, 
+                totalPages: Math.ceil(this.state.rawData.length / this.state.perPage)
+            });
         }
 
         else {
@@ -70,17 +68,19 @@ class DataTable extends Component {
                 return found;
             });
 
+            let paginateData = [];
+
             if (filtered.length > 0) {
-                let paginateData = this.paginateData();
-                this.props.updateData ? this.props.updateData(paginateData) : this.setState({paginatedData: paginateData});
+                paginateData = this.paginateData();
             }
             else {
                 filtered.push({empty: "No data found"})
-                this.props.updateData ? this.props.updateData(filtered) : this.setState({paginatedData: filtered});
+                paginateData = this.paginateData(filtered);
             }
 
             this.setState({
                 filteredData : filtered,
+                paginatedData: paginateData,
                 currentPage: 1, 
                 totalPages: Math.ceil(filtered.length / this.state.perPage)
             });
@@ -147,7 +147,7 @@ class DataTable extends Component {
         });
     }
 
-    renderHeader(name) {
+    renderHead(name) {
         return (
             <TableRowHead 
                 key={name} 
@@ -160,6 +160,7 @@ class DataTable extends Component {
     }
 
     renderBody(index, value) {
+        // if data is empty
         if (index.empty) {
             return (
                 <tr key={'notFound'}>
@@ -193,90 +194,30 @@ class DataTable extends Component {
         )
     }
 
+    // for syncing data from parent component
+    updateData(data) {
+        this.setState(data, this.setState({
+            paginatedData: this.paginateData(this.state.filteredData),
+            totalPages: Math.ceil(this.state.filteredData.length / this.state.perPage)
+        }));
+    }
+
     render() {
         return (
-            <>
-                <Head>
-                    <style>
-                    {`
-                       .tableBody::-webkit-scrollbar {
-                            width: 7px;
-                            background-color: transparent;
-                        }
-                        
-                        /* Track */
-                        .tableBody::-webkit-scrollbar-track {
-                            // background: #ddd;
-                            border-radius: .5em;
-                        }
-                        
-                        /* Handle */
-                        .tableBody::-webkit-scrollbar-thumb {
-                            background: #ddd    ;
-                            border-radius: .5em;
-                        }
-                        
-                        /* Handle on hover */
-                        .tableBody::-webkit-scrollbar-thumb:hover {
-                            background: #ccc;
-                        }
-                    `}
-                    </style>
-                </Head>
-                <Card className="w-full">
-                    <TableHeader title={this.props.title} description={this.props.description}>
-                    </TableHeader>
-
-                    <TableBody>
-                        {this.props.children}
-
-                        <div className="flex items-center justfiy-start gap-4">
-                            <Select
-                                value={this.state.perPage.toString()}
-                                onChange = {(e) => this.changePerPage(e)}
-                                className="relative z-99 numItemSelect"
-                            >
-                                <Option key="10" value="10">10</Option>
-                                <Option key="25" value="25">25</Option>
-                                <Option key="50" value="50">50</Option>
-                                <Option key="100" value="100">100</Option>
-                                <Option key="semua" value="All">All</Option>
-                            </Select>
-                            <Input
-                                label="Search"
-                                icon={<MagnifyingGlassIcon className="h-5 w-5" />}
-                                onChange={(e) => this.searchData(e.target.value)}
-                            />
-                        </div>
-                    </TableBody>
-
-                    <Table className={"relative " + this.props.className}>
-                        <thead className="sticky top-0">
-                            <tr>
-                                {   this.props.renderHead ? 
-                                    this.state.columns?.map((e) => this.props.renderHead(e).bind(this)) : 
-                                    this.state.columns?.map(this.renderHeader.bind(this))
-                                }
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {   this.props.renderBody ? 
-                                this.state.paginatedData?.map((e, value) => this.props.renderBody(e, value)) :
-                                this.state.paginatedData?.map(this.renderBody.bind(this))
-                            }
-                        </tbody>
-                    </Table>
-
-                    <TableFooter 
-                        currentPage={this.state.currentPage} 
-                        perPage={this.state.perPage} 
-                        totalPages={this.state.totalPages} 
-                        totalData={this.state.filteredData.length}
-                        prev={this.prevPage.bind(this)}
-                        next={this.nextPage.bind(this)}
-                    />
-                </Card>
-            </>
+            <DataTableContext.Provider 
+                value={{...this.state,
+                    searchData : this.searchData.bind(this),
+                    changePerPage : this.changePerPage.bind(this),
+                    nextPage : this.nextPage.bind(this),
+                    prevPage : this.prevPage.bind(this),
+                    sortData : this.sortData.bind(this),
+                    renderHead : this.renderHead.bind(this),
+                    renderBody : this.renderBody.bind(this),
+                    updateData : this.updateData.bind(this)
+                }}
+            >
+                {this.props.children}
+            </DataTableContext.Provider>
         );
     }
 }

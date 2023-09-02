@@ -1,30 +1,28 @@
 import SidebarLayout from "@/Layouts/SidebarLayout";
-import DataTable from "@/Components/DataTable";
+import TableHeader from "@/Components/DataTable/TableHeader";
+import TableBody from "@/Components/DataTable/TableBody";
+import TableFooter from "@/Components/DataTable/TableFooter";
 import TableCell from "@/Components/DataTable/TableCell";
-import { Typography, Switch, Select, Option, Breadcrumbs } from "@material-tailwind/react";
+import DataTable from "@/Components/DataTable/DataTable";
+import { DataTableContext } from "@/Components/DataTable/DataTable";
+import { Typography, Switch, Select, Option, Breadcrumbs, Card } from "@material-tailwind/react";
 import { Component } from "react";
 import { Head } from "@inertiajs/react";
 
 class AssignRoutes extends Component {
     state = {
         role : this.props.roles.data[0],
-        constantData : this.props.routes,
-        displayRoutes : [],
+        alert : null,
     }
-
     TABLE_HEAD = ["URI", "Name", "Method", "Access"];
+    static contextType = DataTableContext;
 
     constructor(props) {
         super(props);
-
-        const routes = this.findRoutes(this.props.roles.data[0].name, true);
-
         this.state.role = this.props.roles.data[0];
-        this.state.constantData = routes;
-        this.state.displayRoutes = routes
     }
 
-    findRoutes(r, first = false) {
+    findRoutes(r, context, first = false) {
         const selectedRole = this.props.roles.data.find(role => role.name === r);
         
         const roleRoutes = selectedRole.role_routes;
@@ -40,28 +38,27 @@ class AssignRoutes extends Component {
             });
         }
 
-        if (!first)
-            return this.setState({
-                role : selectedRole,
-                constantData : routeToDisplay,
-                displayRoutes : routeToDisplay,
-            });
+        // this.setState({role : selectedRole})
+        if (!first) {
+            this.setState({role : selectedRole});
+            context.updateData({rawData : routeToDisplay, filteredData: routeToDisplay});
+        }
         else
             return routeToDisplay;
     }
 
-    changeAccess(e) {
+    changeAccess(e, context) {
         // toggle switch
         let allRoutes = [...this.props.routes].map((route) => route.uri === e.value ? {...route, access: e.checked} : route);
-        let routes = [...this.state.displayRoutes].map((route) => route.uri === e.value ? {...route, access: e.checked} : route);
+        let routes = [...context.paginatedData].map((route) => route.uri === e.value ? {...route, access: e.checked} : route);
 
         // find changed route
         let routeChanged = routes.find(route => route.uri === e.value);
 
         // update state
-        this.setState({displayRoutes: routes, constantData: allRoutes});
+        context.updateData({rawData : allRoutes, filteredData : routes});
 
-        // update database
+        // grant access
         if (e.checked) {
             axios.post(route('rbac.grantAccess'), {
                 'role_id' : this.state.role.id,
@@ -70,33 +67,49 @@ class AssignRoutes extends Component {
                 'method' : routeChanged.method,
             })
             .then((response) => {
-                if (response.status === 200) {
+                if (response.data.success) {
                     this.state.role.role_routes.push(response.data.data);
+                }
+                else {
+                    allRoutes = [...this.props.routes].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
+                    routes = [...context.paginatedData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
+                    context.updateData({rawData : allRoutes, filteredData : routes});
                 }
             })
             .catch(() => {
-                allRoutes = [...this.state.displayRoutes].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
-                routes = [...this.state.displayRoutes].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
-                this.setState({displayRoutes: routes, constantData: allRoutes});
+                allRoutes = [...this.props.routes].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
+                routes = [...context.paginatedData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
+                context.updateData({rawData : allRoutes, filteredData : routes});
             })
         }
+
+        // remove access
         else {
             axios.delete(route('rbac.removeAccess', this.state.role.role_routes.find(route => route.route === e.value).id))
             .then((response) => {
-                if (response.status === 200) {
+                if (response.data.success) {
                     this.state.role.role_routes = this.state.role.role_routes.filter(route => route.route !== e.value);
+                }
+                else {
+                    allRoutes = [...this.props.routes].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
+                    routes = [...context.paginatedData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
+                    context.updateData({rawData : allRoutes, filteredData : routes});
                 }
             })
             .catch(() => {
-                allRoutes = [...this.state.displayRoutes].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
-                routes = [...this.state.displayRoutes].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
-                this.setState({displayRoutes: routes, constantData: allRoutes});
+                allRoutes = [...this.props.routes].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
+                routes = [...context.paginatedData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
+                context.updateData({rawData : allRoutes, filteredData : routes});
             })
         }
     }
 
-    renderRoutes (index, value) {
-        const isLast = value === this.state.displayRoutes.length - 1;
+    renderAlert() {
+    
+    }
+
+    renderBody (index, value, context) {
+        const isLast = value === context.paginatedData.length - 1;
 
         // if no data found
         if (index.empty) {
@@ -114,7 +127,6 @@ class AssignRoutes extends Component {
                 </tr>
             );
         }
-
         
         return (
             <tr key={index.uri ?? value}>
@@ -156,17 +168,13 @@ class AssignRoutes extends Component {
                 </TableCell>
                 <TableCell isLast={isLast}>
                     <Switch 
-                        onChange={(e) => this.changeAccess(e.target)}
-                        value={index.uri}
+                        onChange={(e) => this.changeAccess(e.target, context)}
+                        value={index.uri || ''}
                         checked ={index.access}
                     />
                 </TableCell>
             </tr>
         );
-    }
-
-    updateData(data) {
-        this.setState({displayRoutes : data})
     }
 
     render() {
@@ -176,30 +184,33 @@ class AssignRoutes extends Component {
                     <title>Assign Routes</title>
                     <style>
                     {`
-                        table::-webkit-scrollbar {
-                            width: 10px;
+                        .tableBody::-webkit-scrollbar {
+                            width: 7px;
+                            background-color: transparent;
                         }
                         
                         /* Track */
-                        table::-webkit-scrollbar-track {
-                            background: #f1f1f1;
+                        .tableBody::-webkit-scrollbar-track {
+                            // background: #ddd;
+                            border-radius: .5em;
                         }
                         
                         /* Handle */
-                        table::-webkit-scrollbar-thumb {
-                            background: #888;
+                        .tableBody::-webkit-scrollbar-thumb {
+                            background: #ddd    ;
+                            border-radius: .5em;
                         }
                         
                         /* Handle on hover */
-                        table::-webkit-scrollbar-thumb:hover {
-                            background: #555;
+                        .tableBody::-webkit-scrollbar-thumb:hover {
+                            background: #ccc;
                         }
                     `}
                     </style>
                 </Head>
 
                 <SidebarLayout>
-                    <Breadcrumbs className="mb-4">
+                    <Breadcrumbs className="mb-2">
                         <a href={route('dashboard')} className="opacity-60">
                             <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -216,30 +227,65 @@ class AssignRoutes extends Component {
                         <a href={route('rbac.assignRoutes')}>Assign Routes</a>
                     </Breadcrumbs>
                     
-                    <DataTable 
+                    <DataTable
                         className="w-full overflow-hidden" 
-                        rawData={this.state.constantData}
-                        paginatedData={this.state.displayRoutes} 
+                        rawData={this.findRoutes(this.props.roles.data[0].name, null, true)}
                         columns={this.TABLE_HEAD}
-                        title="Assign Route to Roles"
-                        renderBody={this.renderRoutes.bind(this)}
-                        updateData={this.updateData.bind(this)}
                     >
-                        <div className="flex w-20 justify-center md:justify-start z-100">
-                            <Select 
-                                variant="outlined" 
-                                label="Select Role"
-                                value={this.state.role.name ?? ''}
-                                onChange = {(r) => this.findRoutes(r)}
-                                className="relative z-99"
-                            >
-                                {this.props.roles?.data?.map((role, index) => (
-                                    <Option key={role.name ?? index} value={role.name}>
-                                        {role.name}
-                                    </Option>
-                                ))}
-                            </Select>
-                        </div>
+                        <DataTableContext.Consumer>
+                            {(context) => (
+                                <Card className="w-full">
+                                    <TableHeader 
+                                        title="Assign Routes to Role"
+                                        perPage={context.perPage.toString()}
+                                        changePerPage={(e) => context.changePerPage(e)}
+                                        searchData={(e) => context.searchData(e)}
+                                    >
+                                        <div className="flex w-20 justify-center md:justify-start z-100">
+                                            <Select 
+                                                variant="outlined" 
+                                                label="Select Role"
+                                                value={this.state.role.name ?? ''}
+                                                onChange = {(r) => this.findRoutes(r, context)}
+                                                className="relative z-99"
+                                            >
+                                                {this.props.roles?.data?.map((role, index) => (
+                                                    <Option key={role.name ?? index} value={role.name}>
+                                                        {role.name}
+                                                    </Option>
+                                                ))}
+                                            </Select>
+                                        </div>
+                                    </TableHeader>
+
+                                    <TableBody className={"relative " + this.props.className}>
+                                        <thead className="sticky top-0 z-50">
+                                            <tr>
+                                                {   this.renderHead ? 
+                                                    context.columns?.map((e) => this.renderHead(e)) : 
+                                                    context.columns?.map(context.renderHead)
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {   this.renderBody ? 
+                                                context.paginatedData?.map((e, value) => this.renderBody(e, value, context)) :
+                                                context.paginatedData?.map((e, value) => context.renderBody(e, value))
+                                            }
+                                        </tbody>
+                                    </TableBody>
+        
+                                    <TableFooter 
+                                        currentPage={context.currentPage} 
+                                        perPage={context.perPage} 
+                                        totalPages={context.totalPages} 
+                                        totalData={context.filteredData.length}
+                                        prev={context.prevPage}
+                                        next={context.nextPage}
+                                    />
+                                </Card>
+                            )}
+                        </DataTableContext.Consumer>
                     </DataTable>
                 </SidebarLayout>
             </>

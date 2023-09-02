@@ -1,25 +1,11 @@
-import { Select, Option, Input } from "@material-tailwind/react";
-import { Head } from "@inertiajs/react";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { CardBody } from "@material-tailwind/react";
 
 export default function TableBody ({ children, className = '' }) {
     return (
-        <>
-            <Head>
-                <style>
-                {`
-                    div:has(> button.numItemSelect) {
-                        min-width: 5rem !important;
-                    }
-                    .numItemSelect, .numItemSelect + label {
-                        max-width: 5rem;
-                    }
-                `}
-                </style>
-            </Head>
-            <div className={"flex flex-col items-center justify-between gap-4 md:flex-row px-4" + className}>
+        <CardBody className="flex overflow-y-auto px-0 py-0 mt-6 tableBody max-h-80">
+            <table className={"w-full min-w-max table-auto text-left " + className}>
                 {children}
-            </div>
-        </>
+            </table>
+        </CardBody>
     );
 }
