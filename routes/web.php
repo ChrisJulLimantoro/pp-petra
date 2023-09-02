@@ -25,7 +25,7 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('home');
 
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');
@@ -40,9 +40,20 @@ Route::get('/', function () {
 Route::get('/routes', [App\Http\Controllers\RBACController::class, 'getAllRoutes'])->name('routes');
 Route::get("/login", [AuthController::class, 'loginView'])->name('login');
 Route::get("/processLogin",[AuthController::class, 'login'])->name('processLogin');
-Route::get("/logout",[AuthController::class,'logout']);
+Route::get("/logout",[AuthController::class,'logout'])->name('logout');
 Route::prefix('rbac')->group(function(){
     Route::get('/',[RBACController::class,'getAllRoutes'])->name('dashboard');
     Route::get('/addRole',[RBACController::class,'addRole'])->name('addRole');
+    Route::get('/assignRoutes', [RBACController::class, 'assignRoutesView'])->name('rbac.assignRoutes');
+    Route::post('/assignRoutes/grant', [RBACController::class, 'grantAccess'])->name('rbac.grantAccess');
+    Route::delete('/assignRoutes/{id}', [RBACController::class, 'removeAccess'])->name('rbac.removeAccess');
 });
-
+Route::get('tes2', [RBACController::class, 'getAllRoutes']);
+Route::get('tes3', [RBACController::class, 'getAllRoutes']);
+Route::get('tes4', [RBACController::class, 'getAllRoutes']);
+Route::get('tes5', [RBACController::class, 'getAllRoutes']);
+Route::get('tes6', [RBACController::class, 'getAllRoutes']);
+Route::get('tes7', [RBACController::class, 'getAllRoutes']);
+Route::get('tes8', [RBACController::class, 'getAllRoutes']);
+Route::get('tes9', [RBACController::class, 'getAllRoutes']);
+Route::get('tes10', [RBACController::class, 'getAllRoutes']);
