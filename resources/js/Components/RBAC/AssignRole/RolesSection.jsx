@@ -3,8 +3,10 @@ import { ListWithIcon } from "./ListWithIcon";
 import { Alert } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useRoleSearchContext } from "./RoleSearchContext";
+import { RoleAssignmentProvider } from "./RoleAssignmentContext";
 
-export function RolesSection({ selectedUser, allRoles }) {
+export function RolesSection({ selectedUser }) {
     const [loading, setLoading] = useState(false);
     const [selectedUserRoles, setSelectedUserRoles] = useState([]);
     const [assignmentButtonDisabled, setAssignmentButtonDisabled] =
@@ -15,7 +17,13 @@ export function RolesSection({ selectedUser, allRoles }) {
         message: "Role unassigned successfully!",
     });
 
+    const { filteredRoles, handleRoleSearch } = useRoleSearchContext();
+
     useEffect(() => {
+        if (!selectedUser) {
+            setSelectedUserRoles(null);
+            return;
+        }
         if (!loading) {
             setLoading(true);
         }
@@ -32,80 +40,37 @@ export function RolesSection({ selectedUser, allRoles }) {
             });
     }, [selectedUser]);
 
-    const assignRole = (e) => {
-        setAssignmentButtonDisabled(true);
-        const roleId = e.currentTarget.dataset.roleId;
-        const userId = selectedUser;
-        axios
-            .post(`/saocp/rbac/users/${userId}/roles/${roleId}`)
-            .then((response) => {
-                const newRole = allRoles.find((role) => role.id == roleId);
-                setSelectedUserRoles((prevRoles) => [...prevRoles, newRole]);
-                showAlert(setAlert, "green", response.data.message);
-            })
-            .catch((error) => {
-                showAlert(setAlert, "red", error.response.data.message);
-            })
-            .finally(() => {
-                setAssignmentButtonDisabled(false);
-            });
-    };
-
-    const unassignRole = (e) => {
-        setAssignmentButtonDisabled(true);
-        const roleId = e.currentTarget.dataset.roleId;
-        const userId = selectedUser;
-        axios
-            .delete(`/saocp/rbac/users/${userId}/roles/${roleId}`)
-            .then((response) => {
-                setSelectedUserRoles((prevRoles) => {
-                    return prevRoles.filter((role) => role.id != roleId);
-                });
-                showAlert(setAlert, "green", response.data.message);
-            })
-            .catch((error) => {
-                showAlert(setAlert, "red", error.response.data.message);
-            })
-            .finally(() => {
-                setAssignmentButtonDisabled(false);
-            });
-    };
-
-    const assignmentFunctionMap = {
-        "+": assignRole,
-        "-": unassignRole,
-    };
-
     return (
         <>
             <div className="text-center font-semibold text-2xl mb-3">Role</div>
             <div className="mb-3">
-                <SearchInput className="mx-auto" />
+                <SearchInput className="mx-auto" onChange={handleRoleSearch} />
             </div>
             <div className="">
-                <div className="mb-3 bg-gray-100 w-96 mx-auto rounded-xl">
-                    <div className="text-center py-1">owned</div>
-                    <ListWithIcon
-                        loading={loading}
-                        selectedUserRoles={selectedUserRoles}
-                        handleClick={assignmentFunctionMap["-"]}
-                        assignmentButtonDisabled={assignmentButtonDisabled}
-                        icon="-"
-                        className="h-[13rem] overflow-y-auto"
-                    />
-                </div>
-                <div className="bg-gray-100 w-96 mx-auto rounded-xl">
-                    <div className="text-center py-1">not owned</div>
-                    <ListWithIcon
-                        loading={loading}
-                        selectedUserRoles={selectedUserRoles}
-                        handleClick={assignmentFunctionMap["+"]}
-                        assignmentButtonDisabled={assignmentButtonDisabled}
-                        icon="+"
-                        className="h-[13rem] overflow-y-auto"
-                        allRoles={allRoles}
-                    />
-                </div>
+                <RoleAssignmentProvider
+                    setAlert={setAlert}
+                    selectedUser={selectedUser}
+                    setSelectedUserRoles={setSelectedUserRoles}
+                >
+                    <div className="mb-3 bg-gray-100 w-96 mx-auto rounded-xl">
+                        <div className="text-center py-1">owned</div>
+                        <ListWithIcon
+                            loading={loading}
+                            selectedUserRoles={selectedUserRoles}
+                            icon="-"
+                            filteredRoles={filteredRoles}
+                        />
+                    </div>
+                    <div className="bg-gray-100 w-96 mx-auto rounded-xl">
+                        <div className="text-center py-1">not owned</div>
+                        <ListWithIcon
+                            loading={loading}
+                            selectedUserRoles={selectedUserRoles}
+                            icon="+"
+                            filteredRoles={filteredRoles}
+                        />
+                    </div>
+                </RoleAssignmentProvider>
             </div>
             <div>
                 <Alert
@@ -128,18 +93,4 @@ export function RolesSection({ selectedUser, allRoles }) {
             </div>
         </>
     );
-}
-
-function showAlert(setAlert, color, message) {
-    setAlert({
-        isOpen: true,
-        color: color,
-        message: message,
-    });
-
-    setTimeout(() => {
-        setAlert((prevAlert) => {
-            return { ...prevAlert, isOpen: false };
-        });
-    }, 1000);
 }

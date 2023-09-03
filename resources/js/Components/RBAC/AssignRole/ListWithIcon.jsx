@@ -7,44 +7,46 @@ import {
     Spinner,
 } from "@material-tailwind/react";
 
-import { PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/24/outline";
+import { useCallback } from "react";
+import { useRoleAssignmentContext } from "./RoleAssignmentContext";
 
 export function ListWithIcon({
     icon,
     className,
     selectedUserRoles,
-    handleClick,
-    assignmentButtonDisabled,
     loading,
-    allRoles = null,
+    filteredRoles,
 }) {
-    const iconMap = {
-        "+": <PlusCircleIcon className="w-6 h-6" />,
-        "-": <MinusCircleIcon className="w-6 h-6" />,
-    };
+    const { assignmentButtonDisabled, assignmentFunctionMap, iconMap } =
+        useRoleAssignmentContext();
 
-    const getNotOwnedRoles = () => {
-        return allRoles.filter((role) => {
-            return !selectedUserRoles.some((userRole) => {
-                return userRole.id == role.id;
+    const getRoles = useCallback(() => {
+        if (selectedUserRoles === null) {
+            return [];
+        } else if (icon == "+") {
+            return filteredRoles.filter((role) => {
+                return !selectedUserRoles.some((userRole) => {
+                    return userRole.id == role.id;
+                });
             });
-        });
-    };
-
-    let roles = selectedUserRoles;
-    if (!loading && allRoles && icon == "+") {
-        roles = getNotOwnedRoles();
-    }
+        } else {
+            return filteredRoles.filter((role) => {
+                return selectedUserRoles.some((userRole) => {
+                    return userRole.id == role.id;
+                });
+            });
+        }
+    }, [selectedUserRoles, filteredRoles])
 
     return (
-        <Card className={"w-96 " + className}>
+        <Card className={"w-96 h-[13rem] overflow-y-auto" + className}>
             <List>
                 {loading ? (
                     <div className="flex justify-center gap-8">
                         <Spinner className="h-6 w-6" />
                     </div>
                 ) : (
-                    roles.map((role) => (
+                    getRoles().map((role) => (
                         <ListItem
                             ripple={false}
                             className="py-1 pr-1 pl-4 cursor-default py-0"
@@ -58,7 +60,7 @@ export function ListWithIcon({
                                     className="rounded-full h-9 w-9 my-1"
                                     disabled={assignmentButtonDisabled}
                                     data-role-id={role.id}
-                                    onClick={handleClick}
+                                    onClick={assignmentFunctionMap[icon]}
                                 >
                                     {iconMap[icon]}
                                 </IconButton>
