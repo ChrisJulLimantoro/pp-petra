@@ -11,7 +11,7 @@ import TableCell from "./TableCell";
 
 export const DataTableContext = createContext(null);
 
-class DataTable extends Component {
+export default class DataTable extends Component {
     state = {
         rawData: [],
         filteredData: [],
@@ -28,7 +28,7 @@ class DataTable extends Component {
 
     constructor(props) {
         super(props);
-
+        
         props.columns.splice(0, 0, '#');
         this.state.rawData = props.rawData;
         this.state.filteredData = props.rawData;
@@ -37,6 +37,7 @@ class DataTable extends Component {
         this.state.totalPages = Math.ceil((props.rawData.length ?? 0) / this.state.perPage);
     }
 
+    // make sure data is diplayed correctly after update
     componentDidUpdate(prevProps, prevState) {
         const displayData = this.paginateData();
 
@@ -46,7 +47,7 @@ class DataTable extends Component {
     }
 
     searchData(keyword) {
-        // clear search input
+        // when no keyword is provided
         if (keyword.trim() == '' || keyword == null) {
             this.setState({
                 paginatedData: this.paginateData(this.state.rawData),
@@ -57,7 +58,7 @@ class DataTable extends Component {
         }
 
         else {
-            const filtered = this.props.rawData.filter((data) => {
+            const filtered = this.state.rawData.filter((data) => {
                 let found = false;
                 this.state.columns.map((column) => {
                     let columnName = (column.toString().toLowerCase());
@@ -153,7 +154,7 @@ class DataTable extends Component {
                 key={name} 
                 label={name} 
                 sort={this.sortData.bind(this)} 
-                direction={this.state.sort.column === name.toLowerCase() ? this.state.sort.direction : ''}
+                direction={this.state.sort.column === name.trim().toLowerCase() ? this.state.sort.direction : ''}
             >
             </TableRowHead>
         );
@@ -221,5 +222,3 @@ class DataTable extends Component {
         );
     }
 }
-
-export default DataTable;
