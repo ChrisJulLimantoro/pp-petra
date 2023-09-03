@@ -5,22 +5,18 @@ import TableFooter from "@/Components/DataTable/TableFooter";
 import TableCell from "@/Components/DataTable/TableCell";
 import DataTable from "@/Components/DataTable/DataTable";
 import { DataTableContext } from "@/Components/DataTable/DataTable";
-import { Typography, Switch, Select, Option, Breadcrumbs, Card } from "@material-tailwind/react";
+import { Typography, Switch, Select, Option, Breadcrumbs, Card, Alert } from "@material-tailwind/react";
 import { Component } from "react";
 import { Head } from "@inertiajs/react";
 
-class AssignRoutes extends Component {
+export default class AssignRoutes extends Component {
     state = {
         role : this.props.roles.data[0],
-        alert : null,
+        alert: {isOpen: false, color: 'gray', message: ''},
     }
+
     TABLE_HEAD = ["URI", "Name", "Method", "Access"];
     static contextType = DataTableContext;
-
-    constructor(props) {
-        super(props);
-        this.state.role = this.props.roles.data[0];
-    }
 
     findRoutes(r, context, first = false) {
         const selectedRole = this.props.roles.data.find(role => role.name === r);
@@ -50,7 +46,7 @@ class AssignRoutes extends Component {
     changeAccess(e, context) {
         // toggle switch
         let allRoutes = [...this.props.routes].map((route) => route.uri === e.value ? {...route, access: e.checked} : route);
-        let routes = [...context.paginatedData].map((route) => route.uri === e.value ? {...route, access: e.checked} : route);
+        let routes = [...context.filteredData].map((route) => route.uri === e.value ? {...route, access: e.checked} : route);
 
         // find changed route
         let routeChanged = routes.find(route => route.uri === e.value);
@@ -69,17 +65,24 @@ class AssignRoutes extends Component {
             .then((response) => {
                 if (response.data.success) {
                     this.state.role.role_routes.push(response.data.data);
+                    this.showAlert("Data successfully updated!", "gray")
                 }
                 else {
-                    allRoutes = [...this.props.routes].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
-                    routes = [...context.paginatedData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
+                    // revert changes
+                    allRoutes = [...context.rawData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
+                    routes = [...context.filteredData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
                     context.updateData({rawData : allRoutes, filteredData : routes});
+
+                    this.showAlert("Failed to update data!", "red")
                 }
             })
             .catch(() => {
-                allRoutes = [...this.props.routes].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
-                routes = [...context.paginatedData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
+                // revert changes
+                allRoutes = [...context.rawData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
+                routes = [...context.filteredData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
                 context.updateData({rawData : allRoutes, filteredData : routes});
+
+                this.showAlert("Failed to update data!", "red")
             })
         }
 
@@ -89,23 +92,36 @@ class AssignRoutes extends Component {
             .then((response) => {
                 if (response.data.success) {
                     this.state.role.role_routes = this.state.role.role_routes.filter(route => route.route !== e.value);
+                    context.updateData({rawData : allRoutes, filteredData : routes});
+                    this.showAlert("Data successfully updated!", "gray")
                 }
                 else {
-                    allRoutes = [...this.props.routes].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
-                    routes = [...context.paginatedData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
+                    // revert changes
+                    allRoutes = [...context.rawData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
+                    routes = [...context.filteredData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
                     context.updateData({rawData : allRoutes, filteredData : routes});
+
+                    this.showAlert("Failed to update data!", "red")
                 }
             })
             .catch(() => {
-                allRoutes = [...this.props.routes].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
-                routes = [...context.paginatedData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
+                // revert changes
+                allRoutes = [...context.rawData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
+                routes = [...context.filteredData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
                 context.updateData({rawData : allRoutes, filteredData : routes});
+
+                this.showAlert("Failed to update data!", "red")
             })
         }
     }
 
-    renderAlert() {
-    
+    showAlert(message, color) {
+        this.setState({alert : {isOpen: true, color: color, message: message}});
+
+        console.log(this.state.alert)
+        setTimeout(() => {
+            this.setState({alert: {...this.state.alert, isOpen: false}})
+        }, 1000);
     }
 
     renderBody (index, value, context) {
@@ -210,6 +226,21 @@ class AssignRoutes extends Component {
                 </Head>
 
                 <SidebarLayout>
+                    {this.state.alert.isOpen && (
+                        <Alert
+                            open={true}
+                            onClose={() => this.setState({alert: {...this.state.alert, isOpen: false}})}
+                            animate={{
+                                mount: { y: 0 },
+                                unmount: { y: 100 },
+                            }}
+                            color={this.state.alert.color}
+                            className="fixed top-0 right-2 m-5 px-7 w-50 z-50"
+                        >
+                            {this.state.alert.message}
+                        </Alert>
+                    )}
+
                     <Breadcrumbs className="mb-2">
                         <a href={route('dashboard')} className="opacity-60">
                             <svg
@@ -234,14 +265,14 @@ class AssignRoutes extends Component {
                     >
                         <DataTableContext.Consumer>
                             {(context) => (
-                                <Card className="w-full">
+                                <Card className="w-full z-[1]">
                                     <TableHeader 
                                         title="Assign Routes to Role"
                                         perPage={context.perPage.toString()}
                                         changePerPage={(e) => context.changePerPage(e)}
                                         searchData={(e) => context.searchData(e)}
                                     >
-                                        <div className="flex w-20 justify-center md:justify-start z-100">
+                                        <div className="flex w-20 justify-center md:justify-start z-20">
                                             <Select 
                                                 variant="outlined" 
                                                 label="Select Role"
@@ -259,7 +290,7 @@ class AssignRoutes extends Component {
                                     </TableHeader>
 
                                     <TableBody className={"relative " + this.props.className}>
-                                        <thead className="sticky top-0 z-50">
+                                        <thead className="sticky top-0 z-10">
                                             <tr>
                                                 {   this.renderHead ? 
                                                     context.columns?.map((e) => this.renderHead(e)) : 
@@ -282,7 +313,8 @@ class AssignRoutes extends Component {
                                         totalData={context.filteredData.length}
                                         prev={context.prevPage}
                                         next={context.nextPage}
-                                    />
+                                    >
+                                    </TableFooter>
                                 </Card>
                             )}
                         </DataTableContext.Consumer>
@@ -292,5 +324,3 @@ class AssignRoutes extends Component {
         );
     }
 }
-
-export default AssignRoutes;
