@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RBACController;
+use App\Http\Controllers\RBACRoleAssignmentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -48,12 +49,3 @@ Route::prefix('rbac')->group(function(){
     Route::post('/assignRoutes/grant', [RBACController::class, 'grantAccess'])->name('rbac.grantAccess');
     Route::delete('/assignRoutes/{id}', [RBACController::class, 'removeAccess'])->name('rbac.removeAccess');
 });
-Route::get('tes2', [RBACController::class, 'getAllRoutes']);
-Route::get('tes3', [RBACController::class, 'getAllRoutes']);
-Route::get('tes4', [RBACController::class, 'getAllRoutes']);
-Route::get('tes5', [RBACController::class, 'getAllRoutes']);
-Route::get('tes6', [RBACController::class, 'getAllRoutes']);
-Route::get('tes7', [RBACController::class, 'getAllRoutes']);
-Route::get('tes8', [RBACController::class, 'getAllRoutes']);
-Route::get('tes9', [RBACController::class, 'getAllRoutes']);
-Route::get('tes10', [RBACController::class, 'getAllRoutes']);
