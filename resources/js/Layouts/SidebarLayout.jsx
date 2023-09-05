@@ -27,14 +27,15 @@ export default function SideBar({ children, props }) {
             <Head>
                 <style>
                 {`
-                    body {
+                    body, html {
                         margin: 0 !important;
                         padding: 0 !important;
+                        width: 100vw !important;
                     }
                 `}
                 </style>
             </Head>
-            <div className="box-border flex flex-row h-screen gap-x-7 bg-blue-gray-50">
+            <div className="box-border flex flex-row min-h-screen gap-x-7 bg-blue-gray-50 overflow-x-hidden">
                 <Card className="h-full w-1/5 p-4 shadow-xl shadow-blue-gray-900/5 fixed">
                     <div className="mb-2 p-4">
                         <Typography variant="h5" color="blue-gray">

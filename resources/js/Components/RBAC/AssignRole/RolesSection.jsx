@@ -28,7 +28,7 @@ export function RolesSection({ selectedUser }) {
             setLoading(true);
         }
         axios
-            .get(`/saocp/rbac/users/${selectedUser}/roles`)
+            .get(route("rbac.getUserRoles", { user_id: selectedUser }))
             .then((response) => {
                 setSelectedUserRoles(response.data);
             })

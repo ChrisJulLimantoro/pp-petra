@@ -37,7 +37,7 @@ export function RoleAssignmentProvider({
         const roleId = e.currentTarget.dataset.roleId;
         const userId = selectedUser;
         axios
-            .post(`/saocp/rbac/users/${userId}/roles/${roleId}`)
+            .post(route('rbac.assignRole', {user_id: userId, role_id: roleId}))
             .then((response) => {
                 const newRole = filteredRoles.find((role) => role.id == roleId);
                 setSelectedUserRoles((prevRoles) => [...prevRoles, newRole]);
@@ -56,7 +56,7 @@ export function RoleAssignmentProvider({
         const roleId = e.currentTarget.dataset.roleId;
         const userId = selectedUser;
         axios
-            .delete(`/saocp/rbac/users/${userId}/roles/${roleId}`)
+            .delete(route('rbac.unassignRole', {user_id: userId, role_id: roleId}))
             .then((response) => {
                 setSelectedUserRoles((prevRoles) => {
                     return prevRoles.filter((role) => role.id != roleId);

@@ -40,7 +40,7 @@ export function ListWithIcon({
 
     return (
         <Card className={"w-96 h-[13rem] overflow-y-auto" + className}>
-            <List>
+            <List className="overflow-y-auto">
                 {loading ? (
                     <div className="flex justify-center gap-8">
                         <Spinner className="h-6 w-6" />
