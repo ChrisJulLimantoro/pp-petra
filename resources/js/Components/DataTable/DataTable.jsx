@@ -161,7 +161,6 @@ export default class DataTable extends Component {
     }
 
     renderBody(index, value) {
-        // if data is empty
         if (index.empty) {
             return (
                 <tr key={'notFound'}>
@@ -177,22 +176,40 @@ export default class DataTable extends Component {
                 </tr>
             );
         }
-
         return (
             <tr key={value}>
                 {this.state.columns.map((column) => (
-                    <TableCell isLast={value === this.state.filteredData.length}>
+                    <TableCell
+                        isLast={value === this.state.filteredData.length}
+                    >
                         <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal"
-                            >
-                                {column == "#" ? (value + 1) : index[column.toLowerCase()]}
+                            variant="small"
+                            color={
+                                index[column.toLowerCase()] === "Seleksi Kelas"
+                                    ? "orange"
+                                    : index[column.toLowerCase()] === "Ditolak"
+                                    ? "red"
+                                    : index[column.toLowerCase()] === "Diterima"
+                                    ? "green"
+                                    : "blue-gray"
+                            }
+                            className="font-normal"
+                        >
+                            {column == "#"
+                                ? value + 1
+                                : index[column.toLowerCase()]}
+                            {/* 
+                            {console.log("Column:", column)}
+
+                            {console.log(
+                                "Content:",
+                                index[column.toLowerCase()]
+                            )} */}
                         </Typography>
                     </TableCell>
                 ))}
             </tr>
-        )
+        );
     }
 
     // for syncing data from parent component
