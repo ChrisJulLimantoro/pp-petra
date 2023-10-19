@@ -31,11 +31,47 @@ class RBACController extends Controller
 
         return $routes;
     }
+
     public function getAllViews(){
         return Inertia::render('RBAC/Views');
     }
-    public function addRole(){
-        return Inertia::render('RBAC/AddRole');
+
+    public function manageRole(){
+        $roles = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/roles'), true);
+
+        return Inertia::render('RBAC/ManageRole', [
+            'roles' => $roles
+        ]);
+    }
+
+    public function addRole(Request $request) {
+        $response = json_decode(
+            Http::withToken(session('token'))->post(env('API_URL') . '/roles', [
+                'name' => $request->name,
+                'slug' => $request->slug,
+            ])
+        );
+
+        return $response;
+    }
+
+    public function editRole(Request $request, $id) {
+        $response = json_decode(
+            Http::withToken(session('token'))->put(env('API_URL') . '/roles/' . $id, [
+                'name' => $request->name,
+                'slug' => $request->slug,
+            ])
+        );
+
+        return $response;
+    }
+
+    public function deleteRole(string $id) {
+        $response = json_decode(
+            Http::withToken(session('token'))->delete(env('API_URL') . '/roles/' . $id)
+        );
+
+        return $response;
     }
 
     public function assignRoutesView(){
