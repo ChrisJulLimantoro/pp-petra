@@ -1,11 +1,5 @@
-import { Card, Typography, Select, Option, Input } from "@material-tailwind/react";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { Typography } from "@material-tailwind/react";
 import { Component, createContext } from "react";
-import { Head } from "@inertiajs/react";
-import TableHeader from "./TableHeader";
-import TableBody from "./TableBody";
-import TableFooter from "./TableFooter";
-import Table from "./TableBody";
 import TableRowHead from "./TableRowHead";
 import TableCell from "./TableCell";
 
@@ -41,7 +35,10 @@ export default class DataTable extends Component {
     componentDidUpdate(prevProps, prevState) {
         const displayData = this.paginateData();
 
-        if (JSON.stringify(displayData) != JSON.stringify(prevState.paginatedData)) {
+        if (JSON.stringify(prevState.sort) != JSON.stringify(this.state.sort)) {
+            this.setState({paginatedData: this.state.paginatedData});
+        }
+        else if (JSON.stringify(displayData) != JSON.stringify(prevState.paginatedData)) {
             this.setState({paginatedData: displayData});
         }
     }
@@ -60,12 +57,14 @@ export default class DataTable extends Component {
         else {
             const filtered = this.state.rawData.filter((data) => {
                 let found = false;
+
                 this.state.columns.map((column) => {
                     let columnName = (column.toString().toLowerCase());
                     if (data[columnName]?.toString().toLowerCase().includes(keyword.toLowerCase())) {
                         found = true;
                     }
                 })
+
                 return found;
             });
 
@@ -80,7 +79,7 @@ export default class DataTable extends Component {
             }
 
             this.setState({
-                filteredData : filtered,
+                filteredData: filtered,
                 paginatedData: paginateData,
                 currentPage: 1, 
                 totalPages: Math.ceil(filtered.length / this.state.perPage)
@@ -129,22 +128,20 @@ export default class DataTable extends Component {
     }
 
     sortData(column, direction) {
-        this.setState({ sort: {column: column, direction: direction} }, () => {
-            let sortedData = this.state.filteredData.sort((a, b) => {
-                if (a[column] < b[column]) {
-                    return direction === 'asc' ? -1 : 1;
-                }
-                if (a[column] > b[column]) {
-                    return direction === 'asc' ? 1 : -1;
-                }
-                return 0;
-            });
+        let sortedData = this.state.paginatedData.sort((a, b) => {
+            if (a[column] < b[column]) {
+                return direction === 'asc' ? -1 : 1;
+            }
+            if (a[column] > b[column]) {
+                return direction === 'asc' ? 1 : -1;
+            }
+            return 0;
+        });
 
-            this.setState({filteredData: sortedData}, 
-                this.props.updateData ? 
-                this.props.updateData(this.paginateData()) : 
-                this.setState({paginatedData: this.paginateData()})
-            );
+        
+        this.setState({
+            paginatedData: sortedData,
+            sort: {column: column, direction: direction}
         });
     }
 
@@ -160,9 +157,9 @@ export default class DataTable extends Component {
         );
     }
 
-    renderBody(index, value) {
+    renderBody(value, index) {
         // if data is empty
-        if (index.empty) {
+        if (value.empty) {
             return (
                 <tr key={'notFound'}>
                     <TableCell isLast={true} colSpan={this.state.columns.length + 1}>
@@ -179,15 +176,15 @@ export default class DataTable extends Component {
         }
 
         return (
-            <tr key={value}>
+            <tr key={index}>
                 {this.state.columns.map((column) => (
-                    <TableCell isLast={value === this.state.filteredData.length}>
+                    <TableCell isLast={index === this.state.filteredData.length}>
                         <Typography
                                 variant="small"
                                 color="blue-gray"
                                 className="font-normal"
                             >
-                                {column == "#" ? (value + 1) : index[column.toLowerCase()]}
+                                {column == "#" ? (index + 1) : value[column.toLowerCase().replace(' ', '_')]}
                         </Typography>
                     </TableCell>
                 ))}
@@ -196,11 +193,14 @@ export default class DataTable extends Component {
     }
 
     // for syncing data from parent component
-    updateData(data) {
-        this.setState(data, this.setState({
-            paginatedData: this.paginateData(this.state.filteredData),
+    updateData(rawData, filteredData = rawData) {
+        this.setState({
+            rawData: rawData,
+            filteredData: filteredData,
+            paginatedData: this.paginateData(this.filteredData),
             totalPages: Math.ceil(this.state.filteredData.length / this.state.perPage)
-        }));
+        });
+        
     }
 
     render() {
