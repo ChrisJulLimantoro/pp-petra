@@ -74,8 +74,4 @@ Route::prefix('assistant')->group(function () {
         return Inertia::render('Assistant/DetailKelas');
     })->name('Detail Kelas');
 
-    Route::get('/test', function () {
-        return Inertia::render('Assistant/test');
-    })->name('test');
-
 });
