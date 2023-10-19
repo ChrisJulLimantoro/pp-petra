@@ -45,7 +45,7 @@ Route::get("/processLogin", [AuthController::class, 'login'])->name('processLogi
 Route::get("/logout", [AuthController::class, 'logout'])->name('logout');
 Route::prefix('rbac')->group(function () {
     Route::get('/', [RBACController::class, 'getAllRoutes'])->name('dashboard');
-    Route::get('/addRole', [RBACController::class, 'addRole'])->name('addRole');
+    Route::get('/addRole', [RBACController::class, 'addRole'])->name('rbac.addRole');
     Route::get('/assignRoutes', [RBACController::class, 'assignRoutesView'])->name('rbac.assignRoutes');
     Route::post('/assignRoutes/grant', [RBACController::class, 'grantAccess'])->name('rbac.grantAccess');
     Route::delete('/assignRoutes/{id}', [RBACController::class, 'removeAccess'])->name('rbac.removeAccess');
@@ -64,3 +64,7 @@ Route::prefix('mahasiswa')->group(function () {
         return Inertia::render('Mahasiswa/DaftarPraktikum');
     })->name('Daftar Praktikum');
 });
+
+Route::get('/contoh-datatable', function() {
+    return Inertia::render('ContohDatatable');
+})->name('contoh.datatable');
