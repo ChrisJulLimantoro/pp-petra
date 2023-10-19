@@ -1,10 +1,20 @@
 import { Typography } from "@material-tailwind/react";
+import { Breadcrumbs } from "@material-tailwind/react";
 
 export default function DetailsTitle(props) {
     const {matkul, pararel, hari, jam_start, jam_end} = props;
 
     return (
-        <div className='judul'>
+        <div>
+            <Breadcrumbs fullWidth className="mb-5">
+                    <a href="#" className="opacity-60">
+                        Asisten
+                    </a>
+                    <a href="#" className="opacity-60">
+                        Kelas Asisten
+                    </a>
+                    <a href="#">Details</a>
+            </Breadcrumbs>
             <Typography variant="h2" color="blue-gray">
                 Detail Praktikum
             </Typography>
