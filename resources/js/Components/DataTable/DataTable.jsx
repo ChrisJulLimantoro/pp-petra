@@ -192,7 +192,7 @@ export default class DataTable extends Component {
                             }
                             className="font-normal"
                             >
-                            {column == "#" ? index + 1 : value[column.toLowerCase().replace(' ', '_')]}
+                            {column == "#" ? index + 1 : value[column.toLowerCase().replaceAll(' ', '_')]}
                         </Typography>
                     </TableCell>
                 ))}

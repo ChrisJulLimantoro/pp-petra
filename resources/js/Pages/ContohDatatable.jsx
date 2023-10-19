@@ -110,7 +110,8 @@ export default function ContohDatatable() {
                     <DataTable
                         className="w-full" 
                         rawData={roles /* data taruh sini */}     
-                        columns={['Name', 'Slug'] /* nama kolom taruh di sini */}
+                        columns={['Name', 'Slug'] 
+                        /* nama kolom taruh di sini, kalau nama kolom di data ada spasinya, ganti jadi _ */}
                     >
                         <Card className="w-full z-1 md:py-0 overflow-auto">
                             <TableHeader 
