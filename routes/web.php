@@ -64,3 +64,18 @@ Route::prefix('mahasiswa')->group(function () {
         return Inertia::render('Mahasiswa/DaftarPraktikum');
     })->name('Daftar Praktikum');
 });
+
+Route::prefix('assistant')->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('Assistant/Dashboard');
+    })->name('Dashboard');
+
+    Route::get('/detailkelas', function () {
+        return Inertia::render('Assistant/DetailKelas');
+    })->name('Detail Kelas');
+
+    Route::get('/test', function () {
+        return Inertia::render('Assistant/test');
+    })->name('test');
+
+});
