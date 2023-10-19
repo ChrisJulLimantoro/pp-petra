@@ -158,6 +158,7 @@ export default class DataTable extends Component {
     }
 
     renderBody(value, index) {
+        console.log(value['name'])
         // if data is empty
         if (value.empty) {
             return (
@@ -190,15 +191,8 @@ export default class DataTable extends Component {
                                     : "blue-gray"
                             }
                             className="font-normal"
-                        >
-                            {column == "#" ? index + 1 : index[column.toLowerCase().replace(' ', '_')]}
-                            {/* 
-                            {console.log("Column:", column)}
-
-                            {console.log(
-                                "Content:",
-                                value[column.toLowerCase().replace(' ', '_')]
-                            )} */}
+                            >
+                            {column == "#" ? index + 1 : value[column.toLowerCase()]}
                         </Typography>
                     </TableCell>
                 ))}
