@@ -37,13 +37,14 @@ export default class AssignRoutes extends Component {
         // this.setState({role : selectedRole})
         if (!first) {
             this.setState({role : selectedRole});
-            context.updateData({rawData : routeToDisplay, filteredData: routeToDisplay});
+            context.updateData(routeToDisplay);
         }
         else
             return routeToDisplay;
     }
 
     changeAccess(e, context) {
+        console.log(context)
         // toggle switch
         let allRoutes = [...this.props.routes].map((route) => route.uri === e.value ? {...route, access: e.checked} : route);
         let routes = [...context.filteredData].map((route) => route.uri === e.value ? {...route, access: e.checked} : route);
@@ -52,7 +53,7 @@ export default class AssignRoutes extends Component {
         let routeChanged = routes.find(route => route.uri === e.value);
 
         // update state
-        context.updateData({rawData : allRoutes, filteredData : routes});
+        context.updateData(allRoutes, routes);
 
         // grant access
         if (e.checked) {
@@ -71,7 +72,7 @@ export default class AssignRoutes extends Component {
                     // revert changes
                     allRoutes = [...context.rawData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
                     routes = [...context.filteredData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
-                    context.updateData({rawData : allRoutes, filteredData : routes});
+                    context.updateData(allRoutes, routes);
 
                     this.showAlert("Failed to update data!", "red")
                 }
@@ -80,7 +81,7 @@ export default class AssignRoutes extends Component {
                 // revert changes
                 allRoutes = [...context.rawData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
                 routes = [...context.filteredData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
-                context.updateData({rawData : allRoutes, filteredData : routes});
+                context.updateData(allRoutes, routes);
 
                 this.showAlert("Failed to update data!", "red")
             })
@@ -92,14 +93,14 @@ export default class AssignRoutes extends Component {
             .then((response) => {
                 if (response.data.success) {
                     this.state.role.role_routes = this.state.role.role_routes.filter(route => route.route !== e.value);
-                    context.updateData({rawData : allRoutes, filteredData : routes});
+                    context.updateData(allRoutes, routes);
                     this.showAlert("Data successfully updated!", "gray")
                 }
                 else {
                     // revert changes
                     allRoutes = [...context.rawData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
                     routes = [...context.filteredData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
-                    context.updateData({rawData : allRoutes, filteredData : routes});
+                    context.updateData(allRoutes, routes);
 
                     this.showAlert("Failed to update data!", "red")
                 }
@@ -108,7 +109,7 @@ export default class AssignRoutes extends Component {
                 // revert changes
                 allRoutes = [...context.rawData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
                 routes = [...context.filteredData].map((route) => route.uri === e.value ? {...route, access: !e.checked} : route);
-                context.updateData({rawData : allRoutes, filteredData : routes});
+                context.updateData(allRoutes, routes);
 
                 this.showAlert("Failed to update data!", "red")
             })
@@ -125,13 +126,11 @@ export default class AssignRoutes extends Component {
     }
 
     renderBody (index, value, context) {
-        const isLast = value === context.paginatedData.length - 1;
-
         // if no data found
         if (index.empty) {
             return (
                 <tr key={'notFound'}>
-                    <TableCell isLast={isLast} colSpan={this.TABLE_HEAD.length + 1}>
+                    <TableCell colSpan={this.TABLE_HEAD.length + 1}>
                         <Typography
                                 variant="small"
                                 color="blue-gray"
@@ -146,7 +145,7 @@ export default class AssignRoutes extends Component {
         
         return (
             <tr key={index.uri ?? value}>
-                <TableCell isLast={isLast}>
+                <TableCell>
                     <Typography
                         variant="small"
                         color="blue-gray"
@@ -155,7 +154,7 @@ export default class AssignRoutes extends Component {
                         {value + 1}
                     </Typography>
                 </TableCell>
-                <TableCell isLast={isLast}>
+                <TableCell>
                     <Typography
                         variant="small"
                         color="blue-gray"
@@ -164,7 +163,7 @@ export default class AssignRoutes extends Component {
                         {index.uri}
                     </Typography>
                 </TableCell>
-                <TableCell isLast={isLast}>
+                <TableCell>
                     <Typography
                         variant="small"
                         color="blue-gray"
@@ -173,7 +172,7 @@ export default class AssignRoutes extends Component {
                         {index.name}
                     </Typography>
                 </TableCell>
-                <TableCell isLast={isLast}>
+                <TableCell>
                     <Typography
                         variant="small"
                         color="blue-gray"
@@ -182,7 +181,7 @@ export default class AssignRoutes extends Component {
                         {index.method}
                     </Typography>
                 </TableCell>
-                <TableCell isLast={isLast}>
+                <TableCell>
                     <Switch 
                         onChange={(e) => this.changeAccess(e.target, context)}
                         value={index.uri || ''}
@@ -268,9 +267,6 @@ export default class AssignRoutes extends Component {
                                 <Card className="w-full z-[1]">
                                     <TableHeader 
                                         title="Assign Routes to Role"
-                                        perPage={context.perPage.toString()}
-                                        changePerPage={(e) => context.changePerPage(e)}
-                                        searchData={(e) => context.searchData(e)}
                                     >
                                         <div className="flex w-20 justify-center md:justify-start z-20">
                                             <Select 
@@ -290,31 +286,13 @@ export default class AssignRoutes extends Component {
                                     </TableHeader>
 
                                     <TableBody className={"relative " + this.props.className}>
-                                        <thead className="sticky top-0 z-10">
-                                            <tr>
-                                                {   this.renderHead ? 
-                                                    context.columns?.map((e) => this.renderHead(e)) : 
-                                                    context.columns?.map(context.renderHead)
-                                                }
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {   this.renderBody ? 
-                                                context.paginatedData?.map((e, value) => this.renderBody(e, value, context)) :
-                                                context.paginatedData?.map((e, value) => context.renderBody(e, value))
-                                            }
-                                        </tbody>
+                                        <TableBody.Head />
+                                        <TableBody.Content>
+                                            {context.paginatedData?.map((e, value) => this.renderBody(e, value, context))} 
+                                        </TableBody.Content>
                                     </TableBody>
         
-                                    <TableFooter 
-                                        currentPage={context.currentPage} 
-                                        perPage={context.perPage} 
-                                        totalPages={context.totalPages} 
-                                        totalData={context.filteredData.length}
-                                        prev={context.prevPage}
-                                        next={context.nextPage}
-                                    >
-                                    </TableFooter>
+                                    <TableFooter />
                                 </Card>
                             )}
                         </DataTableContext.Consumer>
