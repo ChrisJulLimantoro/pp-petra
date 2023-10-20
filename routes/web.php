@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RBACController;
-use App\Http\Controllers\RBACRoleAssignmentController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RBACController;
+use App\Http\Controllers\RoomController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RBACRoleAssignmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,6 +68,14 @@ Route::prefix('mahasiswa')->group(function () {
     Route::get('/daftarPraktikum', function () {
         return Inertia::render('Mahasiswa/DaftarPraktikum');
     })->name('Daftar Praktikum');
+});
+
+Route::prefix('room')->group(function() {
+    Route::get('/', [RoomController::class, 'index'])->name('room.all');
+    // Route::get('/{id}', [RoomController::class, 'show'])->name('room.show');
+    Route::post('/', [RoomController::class, 'store'])->name('room.add');
+    Route::post('/{id}', [RoomController::class, 'save'])->name('room.edit');
+    Route::delete('/{id}', [RoomController::class, 'destroy'])->name('room.delete');
 });
 
 Route::get('/contoh-datatable', function() {
