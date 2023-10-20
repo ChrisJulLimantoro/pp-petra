@@ -36,7 +36,7 @@ export default function ManageRole({ roles }) {
     const [del, setDel] = useState(0);
 
     const handleOpen = () => setOpen(!open);
-    const handleOpen2 = (index) => {console.log(index); setOpen2(!open2); setDel(index)};
+    const handleOpen2 = (index) => {setOpen2(!open2); setDel(index)};
 
     const handleAdd = (context) => roleReducer(roles, {type: 'add', context: context});
     const handleSave = (index, context) => roleReducer(roles, {type: 'save', index: index, context: context});
@@ -55,7 +55,7 @@ export default function ManageRole({ roles }) {
 
         setTimeout(() => {
             setAlert({...alert, isOpen: false})
-        }, 1000);
+        }, 2000);
     }
 
     const toggleEdit = (index) => {
@@ -74,18 +74,23 @@ export default function ManageRole({ roles }) {
             .then((response) => {
                 if (response.data.success) {
                     resetForm();
-                    setOpen(false);
     
                     roles.data.unshift(response.data.data)
                     action.context.updateData(roles.data)
                     showAlert("New role added!", 'green')
+                    setOpen(false)
                 }
                 else {
                     setError(response.data.error_message)
-                    showAlert("Something went wrong!", 'red')
+
+                    if (error == 'role already exists') {
+                        setOpen(false)
+                        showAlert("Role already exist!", 'red')
+                    }
                 }
             })
-            .catch(() => {
+            .catch((err) => {
+                console.log(err)
                 showAlert("Something went wrong!", 'red')
             })
 
@@ -109,7 +114,8 @@ export default function ManageRole({ roles }) {
                     showAlert("Something went wrong!", 'red')
                 }
             })
-            .catch(() => {
+            .catch((err) => {
+                console.log(err)
                 showAlert("Something went wrong!", 'red')
             })
 
@@ -130,10 +136,12 @@ export default function ManageRole({ roles }) {
                     showAlert("Something went wrong!", 'red')
                 }
             })
-            .catch(() => {
+            .catch((err) => {
+                console.log(err)
                 showAlert("Something went wrong!", 'red')
             })
 
+            setDel(0);
             setOpen2(false);
             return roles;
         }
@@ -173,7 +181,7 @@ export default function ManageRole({ roles }) {
                     </Typography>
                 </TableCell>
                 <TableCell>
-                    {edit === index ? (
+                    {edit === index + (context.perPage * (context.currentPage - 1)) ? (
                         <Input 
                             label='' 
                             size='md' 
@@ -191,7 +199,7 @@ export default function ManageRole({ roles }) {
                     )}
                 </TableCell>
                 <TableCell>
-                    {edit === index ? (
+                    {edit === index + (context.perPage * (context.currentPage - 1)) ? (
                         <Input 
                             label='' 
                             size='md' 
@@ -209,10 +217,10 @@ export default function ManageRole({ roles }) {
                 </TableCell>
                 <TableCell>
                     <div className="flex gap-5">
-                        {edit === index && (
+                        {edit === index + (context.perPage * (context.currentPage - 1)) && (
                             <>
                                 <Tooltip content="Save" placement="top">
-                                    <CheckIcon onClick={() => handleSave(index, context)} width={20} cursor='pointer' stroke="green" />
+                                    <CheckIcon onClick={() => handleSave(index + (context.perPage * (context.currentPage-1)), context)} width={20} cursor='pointer' stroke="green" />
                                 </Tooltip>
                                 <Tooltip content="Cancel" placement="top">
                                     <XMarkIcon width={20} cursor='pointer' stroke="red" onClick={() => toggleEdit(-1)} />
@@ -220,14 +228,14 @@ export default function ManageRole({ roles }) {
                             </>
                         )} 
 
-                        {edit !== index && (
+                        {edit !== index + (context.perPage * (context.currentPage - 1)) && (
                             <>
                                 <Tooltip content="Edit" placement="top">
                                     <PencilSquareIcon 
                                         width={20} 
                                         cursor={'pointer'} 
                                         stroke="orange" 
-                                        onClick={() => toggleEdit(index)}
+                                        onClick={() => toggleEdit(index + (context.perPage * (context.currentPage-1)))}
                                     /> 
                                 </Tooltip>
                                 <Tooltip content="Delete" placement="top">
@@ -235,7 +243,8 @@ export default function ManageRole({ roles }) {
                                         width={20} 
                                         cursor={'pointer'} 
                                         stroke="red"
-                                        onClick={() => handleOpen2(index)}  />
+                                        onClick={() => handleOpen2(index + (context.perPage * (context.currentPage-1)))}  
+                                    />
                                 </Tooltip>
                             </>
                         )}
@@ -348,8 +357,8 @@ export default function ManageRole({ roles }) {
                                         {error?.slug && <Typography color="red">{error.slug}</Typography>}
                                     </CardBody>
                                     <CardFooter className="pt-0 flex gap-3">
-                                        <Button variant="filled" color="black" className="w-1/2"onClick={() => handleAdd(context)}>Add</Button>
-                                        <Button variant="text" color="black" className="w-1/2" onClick={() => setOpen(false)}>Cancel</Button>
+                                        <Button variant="filled" className="w-1/2"onClick={() => handleAdd(context)}>Add</Button>
+                                        <Button variant="text" className="w-1/2" onClick={() => setOpen(false)}>Cancel</Button>
                                     </CardFooter>
                                 </Card>
                             </Dialog>
@@ -370,7 +379,7 @@ export default function ManageRole({ roles }) {
                                     </CardBody>
                                     <CardFooter className="pt-0 flex gap-3">
                                         <Button variant="filled" color="red" className="w-1/2" onClick={() => handleDelete(del, context)}>Delete</Button>
-                                        <Button variant="text" color="black" className="w-1/2" onClick={() => setOpen2(false)}>Cancel</Button>
+                                        <Button variant="text" className="w-1/2" onClick={() => setOpen2(false)}>Cancel</Button>
                                     </CardFooter>
                                 </Card>
                             </Dialog>
