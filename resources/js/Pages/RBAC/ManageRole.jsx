@@ -130,10 +130,15 @@ export default function ManageRole({ roles }) {
                 if (response.data.success) {
                     roles.data = roles.data.filter(role => role.id !== selectedRole.id);
                     action.context.updateData(roles.data);
-                    showAlert("Role deleted!", 'green');
+                    showAlert(selectedRole.name + " role deleted!", 'green');
                 }
                 else {
-                    showAlert("Something went wrong!", 'red')
+                    if (response.data.error_message === 'cannot delete admin role') {
+                        showAlert("Can't delete that role!", 'red')
+                    }
+                    else {
+                        showAlert("Something went wrong!", 'red')
+                    }
                 }
             })
             .catch((err) => {
@@ -177,7 +182,7 @@ export default function ManageRole({ roles }) {
                         color="blue-gray"
                         className="font-normal"
                     >
-                        {index + 1}
+                        {index + 1 + (context.perPage * (context.currentPage - 1))}
                     </Typography>
                 </TableCell>
                 <TableCell>
