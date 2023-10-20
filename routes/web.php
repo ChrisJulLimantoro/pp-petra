@@ -74,4 +74,8 @@ Route::prefix('assistant')->group(function () {
         return Inertia::render('Assistant/DetailKelas');
     })->name('Detail Kelas');
 
+    Route::get('/detailkelas/move', function () {
+        return Inertia::render('Assistant/Move');
+    })->name('Move Mahasiswa');
+
 });

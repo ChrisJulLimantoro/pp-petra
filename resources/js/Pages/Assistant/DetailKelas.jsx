@@ -1,9 +1,8 @@
 import { Head } from '@inertiajs/react';
 import SidebarUser from "@/Layouts/SidebarUser";
-import Table from '@/Components/Assistant/Table';
-import LabelTable from '@/Components/Assistant/labelTable';
-import DetailsTitle from '@/Components/Assistant/DetailsTitle';
-import { Breadcrumbs } from "@material-tailwind/react";
+import Table from '@/Components/Assistant/Table/Table';
+import LabelTable from '@/Components/Assistant/Labels/LabelTable';
+import DetailsTitle from '@/Components/Assistant/Title/DetailsTitle';
 
 
 

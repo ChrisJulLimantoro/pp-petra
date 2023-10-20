@@ -1,5 +1,7 @@
 import { Card, Typography, Tooltip, IconButton } from "@material-tailwind/react";
-import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import ConfirmationButton from "../Button/ConfirmationButton";
+import ConfirmationIconButton from "../Button/ConfirmationIconButton";
 
 export default function Table({ TABLE_HEAD, TABLE_ROWS }) {
     return (
@@ -61,11 +63,20 @@ export default function Table({ TABLE_HEAD, TABLE_ROWS }) {
                         </td>
 
                         <td className={classes}>
-                            <Tooltip content="Edit">
-                                <IconButton variant="text">
-                                <PencilIcon className="h-4 w-4" />
-                                </IconButton>
-                            </Tooltip>
+                            <div className="flex gap-3">
+                                <a href="http://pp-petra.test/assistant/detailkelas/move">
+                                    <IconButton variant="text">
+                                        <Tooltip content="Move" placement="top">
+                                                    <PencilIcon width={20} cursor={'pointer'} stroke="orange" /> 
+                                        </Tooltip>
+                                    </IconButton>
+                                </a>
+                                <ConfirmationIconButton variant="text">
+                                    <Tooltip content="Delete" placement="top">
+                                        <TrashIcon width={20} cursor={'pointer'} stroke="red"  />
+                                    </Tooltip>
+                                </ConfirmationIconButton>
+                            </div>
                         </td>
 
                     </tr>
