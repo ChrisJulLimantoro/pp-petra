@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import SidebarUser from "@/Layouts/SidebarUser";
 
 export default function Dashboard({ auth }) {
     return (

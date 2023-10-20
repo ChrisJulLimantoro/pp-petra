@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RBACController;
+use App\Http\Controllers\RBACRoleAssignmentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -25,7 +26,8 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('home');
+
 
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');
@@ -39,10 +41,34 @@ Route::get('/', function () {
 
 Route::get('/routes', [App\Http\Controllers\RBACController::class, 'getAllRoutes'])->name('routes');
 Route::get("/login", [AuthController::class, 'loginView'])->name('login');
-Route::get("/processLogin",[AuthController::class, 'login'])->name('processLogin');
-Route::get("/logout",[AuthController::class,'logout']);
-Route::prefix('rbac')->group(function(){
-    Route::get('/',[RBACController::class,'getAllRoutes'])->name('dashboard');
-    Route::get('/addRole',[RBACController::class,'addRole'])->name('addRole');
+Route::get("/processLogin", [AuthController::class, 'login'])->name('processLogin');
+Route::get("/logout", [AuthController::class, 'logout'])->name('logout');
+Route::prefix('rbac')->group(function () {
+    Route::get('/', [RBACController::class, 'getAllRoutes'])->name('dashboard');
+    Route::get('/manageRole', [RBACController::class, 'manageRole'])->name('rbac.manageRole');
+    Route::post('/manageRole', [RBACController::class, 'addRole'])->name('rbac.addRole');
+    Route::post('/manageRole/{id}', [RBACController::class, 'editRole'])->name('rbac.editRole');
+    Route::delete('/manageRole/{id}', [RBACController::class, 'deleteRole'])->name('rbac.deleteRole');
+
+    Route::get('/assignRoutes', [RBACController::class, 'assignRoutesView'])->name('rbac.assignRoutes');
+    Route::post('/assignRoutes/grant', [RBACController::class, 'grantAccess'])->name('rbac.grantAccess');
+    Route::delete('/assignRoutes/{id}', [RBACController::class, 'removeAccess'])->name('rbac.removeAccess');
+
+    Route::get('/assignRole', [RBACController::class, 'assignRoleView'])->name('rbac.assignRole');
+    Route::get('/users/{user_id}/roles', [RBACController::class, 'getUserRoles'])->name('rbac.getUserRoles');
+    Route::post('/users/{user_id}/roles/{role_id}', [RBACController::class, 'assignRole'])->name('rbac.assignRole');
+    Route::delete('/users/{user_id}/roles/{role_id}', [RBACController::class, 'unassignRole'])->name('rbac.unassignRole');
+});
+Route::prefix('mahasiswa')->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('Mahasiswa/Dashboard');
+    })->name('Dashboard');
+
+    Route::get('/daftarPraktikum', function () {
+        return Inertia::render('Mahasiswa/DaftarPraktikum');
+    })->name('Daftar Praktikum');
 });
 
+Route::get('/contoh-datatable', function() {
+    return Inertia::render('ContohDatatable');
+})->name('contoh.datatable');
