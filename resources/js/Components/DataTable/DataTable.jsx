@@ -86,10 +86,10 @@ export default class DataTable extends Component {
 
     sortData(column, direction) {
         let sortedData = this.state.filteredData.sort((a, b) => {
-            if (a[column] < b[column]) {
+            if (a[column].toLowerCase() < b[column].toLowerCase()) {
                 return direction === 'asc' ? -1 : 1;
             }
-            if (a[column] > b[column]) {
+            if (a[column].toLowerCase() > b[column].toLowerCase()) {
                 return direction === 'asc' ? 1 : -1;
             }
             return 0;
