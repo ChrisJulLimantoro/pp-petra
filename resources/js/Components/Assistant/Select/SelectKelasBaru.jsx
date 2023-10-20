@@ -11,7 +11,7 @@ export default function SelectKelasBaru(props) {
             <Select label={title} color="blue">
                 {
                     datas.map((data) => (
-                        <Option value={data.id}>{data.name}   ({data.jadwal})</Option>
+                        <Option value={`${data.id}`} key={data.id}>{data.name}   ({data.jadwal})</Option>
                     ))
                 }
             </Select>
