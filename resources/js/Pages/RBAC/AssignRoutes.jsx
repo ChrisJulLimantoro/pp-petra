@@ -151,7 +151,7 @@ export default class AssignRoutes extends Component {
                         color="blue-gray"
                         className="font-normal"
                     >
-                        {value + 1}
+                        {value + 1 + context.perPage * (context.currentPage - 1)}
                     </Typography>
                 </TableCell>
                 <TableCell>
