@@ -3,7 +3,7 @@ import {  UserPlusIcon } from "@heroicons/react/24/solid";
 
 export default function LabelTable (props) {
     // type diisi Mahasiswa / dosen aja
-    const {type, slot_used, total_slot} = props;
+    const {type, slot_used, total_slot, addHref} = props;
 
     return(
         <div className="mb-4 flex items-center justify-between gap-8">
@@ -17,9 +17,11 @@ export default function LabelTable (props) {
             </div>
 
             <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-                <Button className="flex items-center gap-3" size="sm">
-                    <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Add {type}
-                </Button>
+                <a href={addHref}>
+                    <Button className="flex items-center gap-3" size="sm">
+                        <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Add {type}
+                    </Button>
+                </a>
             </div>
         </div>
     );

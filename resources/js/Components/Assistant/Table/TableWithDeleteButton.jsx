@@ -1,7 +1,9 @@
-import { Card, Typography, Tooltip, IconButton } from "@material-tailwind/react";
-import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
+import { Card, Typography, Tooltip } from "@material-tailwind/react";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
-export default function Table({ TABLE_HEAD, TABLE_ROWS }) {
+export default function TableWithDeleteButton(props) {
+    const {TABLE_HEAD, TABLE_ROWS} = props;
+
     return (
         <Card className="h-full w-full overflow-scroll">
             <table className="w-full min-w-max table-auto text-left">
@@ -61,11 +63,11 @@ export default function Table({ TABLE_HEAD, TABLE_ROWS }) {
                         </td>
 
                         <td className={classes}>
-                            <Tooltip content="Edit">
-                                <IconButton variant="text">
-                                <PencilIcon className="h-4 w-4" />
-                                </IconButton>
-                            </Tooltip>
+                            <div className="flex gap-3">
+                                <Tooltip content="Add" placement="top">
+                                    <TrashIcon width={20} cursor={'pointer'} stroke="red"/>
+                                </Tooltip>
+                            </div>
                         </td>
 
                     </tr>
