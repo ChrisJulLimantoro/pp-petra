@@ -33,20 +33,20 @@ class RoomController extends Controller
     }
 
     public function save(Request $request, string $id) {
-        $res = Http::withHeaders(['Accept', 'application/json'])
+        $url = env('API_URL') . '/rooms/' . $id;
+        // dd($url);
+        $res = Http::withHeaders(['Accept' => 'application/json'])
         ->withToken(session('token'))
-        ->put(env('API_URL') . '/rooms/' . $id, [
+        ->put($url, [
             'name' => $request->name,
             'code' => $request->code,
             'capacity' => $request->capacity,
-        ])
-        ->getBody();
-
+        ]);
         return json_decode($res);
     }
 
     public function destroy(string $id) {
         // http::withHeaders(['Accept','application/json'])
-        return json_decode(Http::withHeaders(['Accept','application/json'])->withToken(session('token'))->delete(env('API_URL') . '/rooms/' . $id));
+        return json_decode(Http::withHeaders(['Accept => application/json'])->withToken(session('token'))->delete(env('API_URL') . '/rooms/' . $id));
     }
 }
