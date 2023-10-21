@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PracticumController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RBACController;
 use App\Http\Controllers\RBACRoleAssignmentController;
@@ -74,4 +75,11 @@ Route::prefix('assistant')->group(function () {
         return Inertia::render('Assistant/DetailKelas');
     })->name('Detail Kelas');
 
+});
+
+Route::prefix('praktikum')->group(function () {
+    Route::get('/', [PracticumController::class, 'index'])->name('practicum.index');
+    Route::post('/', [PracticumController::class, 'store'])->name('practicum.store');
+    Route::delete('/{id}', [PracticumController::class, 'destroy'])->name('practicum.destroy');
+    Route::patch('/{id}', [PracticumController::class, 'update'])->name('practicum.update');
 });
