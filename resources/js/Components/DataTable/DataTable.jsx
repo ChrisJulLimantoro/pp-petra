@@ -36,10 +36,7 @@ export default class DataTable extends Component {
     componentDidUpdate(prevProps, prevState) {
         const displayData = this.paginateData();
 
-        if (JSON.stringify(prevState.sort) != JSON.stringify(this.state.sort)) {
-            this.setState({paginatedData: this.state.paginatedData});
-        }
-        else if (JSON.stringify(displayData) != JSON.stringify(prevState.paginatedData)) {
+        if (JSON.stringify(displayData) != JSON.stringify(prevState.paginatedData)) {
             this.setState({paginatedData: displayData});
         }
     }
@@ -88,6 +85,25 @@ export default class DataTable extends Component {
         }
     }
 
+    sortData(column, direction) {
+        let sortedData = this.state.filteredData.sort((a, b) => {
+            if (a[column].toLowerCase() < b[column].toLowerCase()) {
+                return direction === 'asc' ? -1 : 1;
+            }
+            if (a[column].toLowerCase() > b[column].toLowerCase()) {
+                return direction === 'asc' ? 1 : -1;
+            }
+            return 0;
+        });
+
+        
+        this.setState({
+            filteredData: sortedData,
+            sort: {column: column, direction: direction},
+            currentPage : 1,
+        });
+    }
+
     paginateData(source = this.state.filteredData) {
         return source.slice((this.state.currentPage - 1) * this.state.perPage, this.state.perPage * this.state.currentPage);
     }
@@ -126,24 +142,6 @@ export default class DataTable extends Component {
             this.props.updateData(this.paginateData()) : 
             this.setState({paginatedData: this.paginateData()})
         );
-    }
-
-    sortData(column, direction) {
-        let sortedData = this.state.paginatedData.sort((a, b) => {
-            if (a[column] < b[column]) {
-                return direction === 'asc' ? -1 : 1;
-            }
-            if (a[column] > b[column]) {
-                return direction === 'asc' ? 1 : -1;
-            }
-            return 0;
-        });
-
-        
-        this.setState({
-            paginatedData: sortedData,
-            sort: {column: column, direction: direction}
-        });
     }
 
     renderHead(name) {

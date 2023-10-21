@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RBACController;
-use App\Http\Controllers\RBACRoleAssignmentController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RBACController;
+use App\Http\Controllers\RoomController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RBACRoleAssignmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,7 +55,7 @@ Route::prefix('rbac')->group(function () {
     Route::post('/assignRoutes/grant', [RBACController::class, 'grantAccess'])->name('rbac.grantAccess');
     Route::delete('/assignRoutes/{id}', [RBACController::class, 'removeAccess'])->name('rbac.removeAccess');
 
-    Route::get('/assignRole', [RBACController::class, 'assignRoleView'])->name('rbac.assignRole');
+    Route::get('/assignRole', [RBACController::class, 'assignRoleView'])->name('rbac.assignRoleView');
     Route::get('/users/{user_id}/roles', [RBACController::class, 'getUserRoles'])->name('rbac.getUserRoles');
     Route::post('/users/{user_id}/roles/{role_id}', [RBACController::class, 'assignRole'])->name('rbac.assignRole');
     Route::delete('/users/{user_id}/roles/{role_id}', [RBACController::class, 'unassignRole'])->name('rbac.unassignRole');
@@ -67,6 +68,14 @@ Route::prefix('mahasiswa')->group(function () {
     Route::get('/daftarPraktikum', function () {
         return Inertia::render('Mahasiswa/DaftarPraktikum');
     })->name('Daftar Praktikum');
+});
+
+Route::prefix('room')->group(function() {
+    Route::get('/', [RoomController::class, 'index'])->name('room.all');
+    // Route::get('/{id}', [RoomController::class, 'show'])->name('room.show');
+    Route::post('/', [RoomController::class, 'store'])->name('room.add');
+    Route::post('/{id}', [RoomController::class, 'save'])->name('room.edit');
+    Route::delete('/{id}', [RoomController::class, 'destroy'])->name('room.delete');
 });
 
 Route::get('/contoh-datatable', function() {

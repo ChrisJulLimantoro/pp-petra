@@ -21,31 +21,30 @@ import { Head, useForm } from "@inertiajs/react";
 import React, { useState, useReducer, useRef } from "react";
 import { CheckIcon, PencilIcon, PencilSquareIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
-export default function ManageRole({ roles }) {
-    const [role, setRole] = useReducer(roleReducer, roles)
+export default function Index({ rooms }) {
+    const [room, setRoom] = useReducer(roomReducer, rooms)
 
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
     
     const [alert, setAlert] = useState({isOpen: false, color: 'gray', message: ''});
 
-    const [data, setData] = useState({name: '', slug: ''});
-    const [data2, setData2] = useState({name: '',slug: ''});
+    const [data, setData] = useState({name: '', code: '', capacity: 0});
+    const [data2, setData2] = useState({name: '', code: '', capacity: 0});
     const [error, setError] = useState();
     const [edit, setEdit] = useState();
-    const [del, setDel] = useState(0);
 
     const handleOpen = () => setOpen(!open);
     const handleOpen2 = (index) => {setOpen2(!open2); setDel(index)};
 
-    const handleAdd = (context) => roleReducer(roles, {type: 'add', context: context});
-    const handleSave = (index, context) => roleReducer(roles, {type: 'save', index: index, context: context});
-    const handleDelete = (index, context) => roleReducer(roles, {type: 'delete', index: index, context: context});
+    const handleAdd = (context) => roomReducer(rooms, {type: 'add', context: context});
+    const handleSave = (index, context) => roomReducer(rooms, {type: 'save', index: index, context: context});
 
     const resetForm = () => {
         setData({
             name: '',
-            slug: '',
+            code: '',
+            capacity: 0,
         })
         setError(null)
     }
@@ -64,29 +63,24 @@ export default function ManageRole({ roles }) {
         }
         else {
             setEdit(index)
-            setData2({name: roles.data[index].name, slug: roles.data[index].slug})
+            setData2({name: rooms.data[index].name, code: rooms.data[index].code, capacity: rooms.data[index].capacity})
         }
     }
 
-    function roleReducer(roles, action) {
-        if (action.type == 'add') {
-            axios.post(route('rbac.addRole'), data)
+    function roomReducer(rooms, action) {
+        if (action.type == 'add') { 
+            axios.post(route('room.add'), data)
             .then((response) => {
                 if (response.data.success) {
                     resetForm();
     
-                    roles.data.unshift(response.data.data)
-                    action.context.updateData(roles.data)
-                    showAlert("New role added!", 'green')
+                    rooms.data.unshift(response.data.data)
+                    action.context.updateData(rooms.data)
+                    showAlert("New room added!", 'green')
                     setOpen(false)
                 }
                 else {
                     setError(response.data.error_message)
-
-                    if (error == 'role already exists') {
-                        setOpen(false)
-                        showAlert("Role already exist!", 'red')
-                    }
                 }
             })
             .catch((err) => {
@@ -94,20 +88,20 @@ export default function ManageRole({ roles }) {
                 showAlert("Something went wrong!", 'red')
             })
 
-            return roles;
+            return rooms;
         }
 
         else if (action.type == 'save') {
-            let selectedRole = roles.data[action.index]
+            let selectedroom = rooms.data[action.index]
 
-            axios.post(route('rbac.editRole', selectedRole.id), data2)
+            axios.post(route('room.edit', selectedroom.id), data2)
             .then((response) => {
                 if (response.data.success) {
-                    setData2({name: '', slug: ''});
+                    setData2({name: '', code: '', capacity: ''});
                     
-                    roles.data[action.index] = response.data.data;
-                    action.context.updateData(roles.data);
-                    showAlert("Role edited!", 'green');
+                    rooms.data[action.index] = response.data.data;
+                    action.context.updateData(rooms.data);
+                    showAlert("Room detail updated!", 'green');
                     setEdit(-1);
                 }
                 else {
@@ -119,36 +113,7 @@ export default function ManageRole({ roles }) {
                 showAlert("Something went wrong!", 'red')
             })
 
-            return roles;
-        }
-
-        else if (action.type == 'delete') {
-            let selectedRole = roles.data[action.index]
-
-            axios.delete(route('rbac.deleteRole', selectedRole.id))
-            .then((response) => {
-                if (response.data.success) {
-                    roles.data = roles.data.filter(role => role.id !== selectedRole.id);
-                    action.context.updateData(roles.data);
-                    showAlert(selectedRole.name + " role deleted!", 'green');
-                }
-                else {
-                    if (response.data.error_message === 'cannot delete admin role') {
-                        showAlert("Can't delete that role!", 'red')
-                    }
-                    else {
-                        showAlert("Something went wrong!", 'red')
-                    }
-                }
-            })
-            .catch((err) => {
-                console.log(err)
-                showAlert("Something went wrong!", 'red')
-            })
-
-            setDel(0);
-            setOpen2(false);
-            return roles;
+            return rooms;
         }
 
         else {
@@ -156,9 +121,9 @@ export default function ManageRole({ roles }) {
         }
     }
 
-    const renderBody = (role, index, context) => {
+    const renderBody = (room, index, context) => {
         // if no data found
-        if (role.empty) {
+        if (room.empty) {
             return (
                 <tr key={'notFound'}>
                     <TableCell colSpan={4}>
@@ -175,7 +140,7 @@ export default function ManageRole({ roles }) {
         }
         
         return (
-            <tr key={role.slug ?? index}>
+            <tr key={room.slug ?? index}>
                 <TableCell>
                     <Typography
                         variant="small"
@@ -185,6 +150,7 @@ export default function ManageRole({ roles }) {
                         {index + 1 + (context.perPage * (context.currentPage - 1))}
                     </Typography>
                 </TableCell>
+
                 <TableCell>
                     {edit === index + (context.perPage * (context.currentPage - 1)) ? (
                         <Input 
@@ -194,32 +160,53 @@ export default function ManageRole({ roles }) {
                             variant="standard" 
                             className="text-blue-gray-900"
                             autoFocus
-                            value={data2.name ?? role.name} 
+                            value={data2.name ?? room.name} 
                             onChange={(e) => {console.log(e.target.value); setData2({...data2, name: e.target.value})}} 
                         />
                     ) : (
                         <Typography variant="small" color="blue-gray" className="font-normal">
-                            {role.name}
+                            {room.name}
                         </Typography>
                     )}
                 </TableCell>
+
                 <TableCell>
                     {edit === index + (context.perPage * (context.currentPage - 1)) ? (
                         <Input 
                             label='' 
                             size='md' 
-                            name='slug'
+                            name='code'
                             variant="standard" 
                             className="text-blue-gray-900"
-                            value={data2.slug ?? role.slug} 
-                            onChange={(e) => setData2({...data2, slug: e.target.value})} 
+                            value={data2.code ?? room.code} 
+                            onChange={(e) => setData2({...data2, code: e.target.value})} 
                         />
                     ) : (
                         <Typography variant="small" color="blue-gray" className="font-normal">
-                            {role.slug}
+                            {room.code}
                         </Typography>
                     )}
                 </TableCell>
+
+                <TableCell>
+                    {edit === index + (context.perPage * (context.currentPage - 1)) ? (
+                        <Input 
+                            label=''
+                            type="number"
+                            size='md' 
+                            name='capacity'
+                            variant="standard" 
+                            className="text-blue-gray-900"
+                            value={parseInt(data2.capacity) ?? parseInt(room.capacity)} 
+                            onChange={(e) => setData2({...data2, capacity: parseInt(e.target.value)})} 
+                        />
+                    ) : (
+                        <Typography variant="small" color="blue-gray" className="font-normal">
+                            {room.capacity}
+                        </Typography>
+                    )}
+                </TableCell>
+
                 <TableCell>
                     <div className="flex gap-5">
                         {edit === index + (context.perPage * (context.currentPage - 1)) && (
@@ -243,14 +230,6 @@ export default function ManageRole({ roles }) {
                                         onClick={() => toggleEdit(index + (context.perPage * (context.currentPage-1)))}
                                     /> 
                                 </Tooltip>
-                                <Tooltip content="Delete" placement="top">
-                                    <TrashIcon 
-                                        width={20} 
-                                        cursor={'pointer'} 
-                                        stroke="red"
-                                        onClick={() => handleOpen2(index + (context.perPage * (context.currentPage-1)))}  
-                                    />
-                                </Tooltip>
                             </>
                         )}
                     </div>
@@ -262,7 +241,7 @@ export default function ManageRole({ roles }) {
     return (
         <SidebarLayout>
             <Head>
-                <title>Add Role</title>
+                <title>Add room</title>
             </Head>
 
             {alert.isOpen && (
@@ -294,33 +273,33 @@ export default function ManageRole({ roles }) {
                 <a href="#" className="opacity-60">
                     <span>RBAC</span>
                 </a>
-                <a href={route('rbac.manageRole')}>Add New Role</a>
+                <a href={route('room.all')}>Manage Room</a>
             </Breadcrumbs>
 
             <DataTable
                 className="w-full" 
-                rawData={roles.data} 
-                columns={['Name', 'Slug', 'Action']}
+                rawData={rooms.data} 
+                columns={['Name', 'Code', 'Capacity', 'Action']}
             >
                 <DataTableContext.Consumer>
                     {(context) => (
                         <>
                             <Card className="max-w-full z-1 md:py-0 overflow-auto">
-                                <TableHeader title="Roles Avaliable">
-                                    <Button onClick={handleOpen}>Add New Role</Button>
+                                <TableHeader title="Available Rooms">
+                                    <Button onClick={handleOpen}>Add New Room</Button>
                                 </TableHeader>
 
                                 <TableBody className="relative">
                                     <TableBody.Head />
                                     <TableBody.Content>
-                                        {context.paginatedData.map((role, index) => renderBody(role, index, context))}
+                                        {context.paginatedData.map((room, index) => renderBody(room, index, context))}
                                     </TableBody.Content>
                                 </TableBody>
 
                                 <TableFooter />
                             </Card>
 
-                            {/* Add role modal */}
+                            {/* Add room modal */}
                             <Dialog
                                 size="xs"
                                 open={open}
@@ -330,11 +309,11 @@ export default function ManageRole({ roles }) {
                                 <Card className="mx-auto w-full max-w-[24rem]">
                                     <CardBody className="flex flex-col gap-4">
                                         <Typography variant="h4" color="blue-gray">
-                                            Add New Role
+                                            Add New Room
                                         </Typography>
 
                                         <Typography variant="h6">
-                                            Role Name
+                                            Name
                                         </Typography>
                                         <Input 
                                             label="Name" 
@@ -348,43 +327,36 @@ export default function ManageRole({ roles }) {
                                         {error?.name && <Typography color="red">{error.name}</Typography>}
 
                                         <Typography variant="h6">
-                                            Role Slug
+                                            Code
                                         </Typography>
                                         <Input 
-                                            label="Slug" 
-                                            name="slug"
+                                            label="Code" 
+                                            name="code"
                                             size="lg" 
-                                            value={data.slug} 
-                                            onChange={(e) => setData({...data, slug: e.target.value})} 
-                                            error={error?.slug}
-                                            success={error?.slug}
+                                            value={data.code} 
+                                            onChange={(e) => setData({...data, code: e.target.value})} 
+                                            error={error?.code}
+                                            success={error?.code}
                                         />
-                                        {error?.slug && <Typography color="red">{error.slug}</Typography>}
+                                        {error?.code && <Typography color="red">{error.code}</Typography>}
+
+                                        <Typography variant="h6">
+                                            Capacity
+                                        </Typography>
+                                        <Input 
+                                            label="Capacity" 
+                                            name="capacity"
+                                            size="lg" 
+                                            value={data.capacity} 
+                                            onChange={(e) => setData({...data, capacity: e.target.value})} 
+                                            error={error?.capacity}
+                                            success={error?.capacity}
+                                        />
+                                        {error?.capacity && <Typography color="red">{error.capacity}</Typography>}
                                     </CardBody>
                                     <CardFooter className="pt-0 flex gap-3">
                                         <Button variant="filled" className="w-1/2"onClick={() => handleAdd(context)}>Add</Button>
                                         <Button variant="text" className="w-1/2" onClick={() => setOpen(false)}>Cancel</Button>
-                                    </CardFooter>
-                                </Card>
-                            </Dialog>
-
-                            {/* Delete role modal */}
-                            <Dialog
-                                size="xs"
-                                open={open2}
-                                handler={handleOpen2}
-                                className="bg-transparent shadow-none"
-                            >
-                                <Card className="mx-auto w-full max-w-[24rem]">
-                                    <CardBody className="flex flex-col gap-4">
-                                        <Typography className="mb-2" variant="h5">
-                                            {"Delete " + roles.data[del].name + " role?"}
-                                        </Typography>
-                                            
-                                    </CardBody>
-                                    <CardFooter className="pt-0 flex gap-3">
-                                        <Button variant="filled" color="red" className="w-1/2" onClick={() => handleDelete(del, context)}>Delete</Button>
-                                        <Button variant="text" className="w-1/2" onClick={() => setOpen2(false)}>Cancel</Button>
                                     </CardFooter>
                                 </Card>
                             </Dialog>
@@ -395,3 +367,4 @@ export default function ManageRole({ roles }) {
         </SidebarLayout>
     );
 }
+
