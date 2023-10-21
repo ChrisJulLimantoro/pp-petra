@@ -72,3 +72,9 @@ Route::prefix('mahasiswa')->group(function () {
 Route::get('/contoh-datatable', function() {
     return Inertia::render('ContohDatatable');
 })->name('contoh.datatable');
+
+Route::prefix('asisten')->group(function () {
+    Route::get('/viewKelas', function () {
+        return Inertia::render('Asisten/viewKelas');
+    })->name('Coba Modal');
+});

@@ -1,6 +1,7 @@
-import { Typography } from "@material-tailwind/react";
+import { Button, Typography } from "@material-tailwind/react";
 import { Component, createContext } from "react";
 import TableRowHead from "./TableRowHead";
+import DialogSuccess from "../DialogSuccess";
 import TableCell from "./TableCell";
 
 export const DataTableContext = createContext(null);
@@ -178,21 +179,38 @@ export default class DataTable extends Component {
         return (
             <tr key={index}>
                 {this.state.columns.map((column) => (
-                    <TableCell isLast={index === this.state.filteredData.length}>
+                    <TableCell
+                        isLast={index === this.state.filteredData.length}
+                    >
                         <Typography
                             variant="small"
                             color={
-                                index[column.toLowerCase()] === "Seleksi Kelas"
+                                value[column.toLowerCase()] === "Seleksi Kelas"
                                     ? "orange"
-                                    : index[column.toLowerCase()] === "Ditolak"
+                                    : value[column.toLowerCase()] ===
+                                          "Ditolak" ||
+                                      value[column.toLowerCase()] === "FULL"
                                     ? "red"
-                                    : index[column.toLowerCase()] === "Diterima"
+                                    : value[column.toLowerCase()] === "Diterima"
                                     ? "green"
                                     : "blue-gray"
                             }
                             className="font-normal"
-                            >
-                            {column == "#" ? index + 1 : value[column.toLowerCase().replaceAll(' ', '_')]}
+                        >
+                            {column == "#"
+                                ? index + 1
+                                : value[
+                                      column.toLowerCase().replaceAll(" ", "_")
+                                  ]}
+
+                            {column == "Action" ? (
+                                <DialogSuccess
+                                    title="Ajar"
+                                    dialog="PENDAFTARAN"
+                                ></DialogSuccess>
+                            ) : (
+                                <></>
+                            )}
                         </Typography>
                     </TableCell>
                 ))}
