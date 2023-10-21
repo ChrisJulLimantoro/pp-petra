@@ -1,9 +1,8 @@
 import { Head } from '@inertiajs/react';
 import SidebarUser from "@/Layouts/SidebarUser";
-import Table from '@/Components/Assistant/Table/Table';
 import LabelTable from '@/Components/Assistant/Labels/LabelTable';
 import DetailsTitle from '@/Components/Assistant/Title/DetailsTitle';
-
+import TableWithEditDeleteButton from '@/Components/Assistant/Table/TableWithEditDeleteButton';
 
 
 export default function DetailKelas({ auth }) {
@@ -92,17 +91,20 @@ export default function DetailKelas({ auth }) {
 
                 <div className="mt-10 w-full h-72 col-span-4">
                     <div className='judul'>
-                        <DetailsTitle matkul="Pemrograman Berorientasi Objek" pararel="A" hari="Senin" jam_start="08.00" jam_end="10.00"/>    
+                        <DetailsTitle matkul="Pemrograman Berorientasi Objek" pararel="A" hari="Senin" 
+                          jam_start="08.00" jam_end="10.00" ruangan="P.202"/>    
                     </div>
 
                     <div className='tabel_asisten mt-10'>
-                        <LabelTable type="Asisten" slot_used="3" total_slot="3"/>
-                        <Table TABLE_HEAD={head_asisten} TABLE_ROWS={data_asisten}/>
+                        <LabelTable type="Asisten" slot_used="3" total_slot="3" 
+                          addHref="http://pp-petra.test/assistant/detailkelas/addassistant"/>
+                        <TableWithEditDeleteButton TABLE_HEAD={head_asisten} TABLE_ROWS={data_asisten}/>
                     </div>
 
                     <div className='tabel_mahasiswa mt-10'>
-                        <LabelTable type="Mahasiswa" slot_used="10" total_slot="20"/>
-                        <Table TABLE_HEAD={head_mhs} TABLE_ROWS={data_mhs}/>
+                        <LabelTable type="Mahasiswa" slot_used="10" total_slot="20"
+                          addHref="http://pp-petra.test/assistant/detailkelas/addmahasiswa"/>
+                        <TableWithEditDeleteButton TABLE_HEAD={head_mhs} TABLE_ROWS={data_mhs}/>
                     </div>
                     <div className="mt-10">
                     </div> 

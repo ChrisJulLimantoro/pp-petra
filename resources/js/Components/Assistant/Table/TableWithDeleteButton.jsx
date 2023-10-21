@@ -1,9 +1,9 @@
-import { Card, Typography, Tooltip, IconButton } from "@material-tailwind/react";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import ConfirmationButton from "../Button/ConfirmationButton";
-import ConfirmationIconButton from "../Button/ConfirmationIconButton";
+import { Card, Typography, Tooltip } from "@material-tailwind/react";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
-export default function Table({ TABLE_HEAD, TABLE_ROWS }) {
+export default function TableWithDeleteButton(props) {
+    const {TABLE_HEAD, TABLE_ROWS} = props;
+
     return (
         <Card className="h-full w-full overflow-scroll">
             <table className="w-full min-w-max table-auto text-left">
@@ -64,18 +64,9 @@ export default function Table({ TABLE_HEAD, TABLE_ROWS }) {
 
                         <td className={classes}>
                             <div className="flex gap-3">
-                                <a href="http://pp-petra.test/assistant/detailkelas/move">
-                                    <IconButton variant="text">
-                                        <Tooltip content="Move" placement="top">
-                                                    <PencilIcon width={20} cursor={'pointer'} stroke="orange" /> 
-                                        </Tooltip>
-                                    </IconButton>
-                                </a>
-                                <ConfirmationIconButton variant="text">
-                                    <Tooltip content="Delete" placement="top">
-                                        <TrashIcon width={20} cursor={'pointer'} stroke="red"  />
-                                    </Tooltip>
-                                </ConfirmationIconButton>
+                                <Tooltip content="Add" placement="top">
+                                    <TrashIcon width={20} cursor={'pointer'} stroke="red"/>
+                                </Tooltip>
                             </div>
                         </td>
 

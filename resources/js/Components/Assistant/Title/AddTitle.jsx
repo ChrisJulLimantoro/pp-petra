@@ -1,7 +1,8 @@
 import { Typography, Breadcrumbs, } from "@material-tailwind/react";
 
 export default function DetailsTitle(props) {
-    const {matkul, pararel, hari, jam_start, jam_end, ruangan} = props;
+    // type = mahasiswa/asisten
+    const {type, matkul, pararel, hari, jam_start, jam_end, ruangan} = props;
 
     return (
         <div>
@@ -12,11 +13,14 @@ export default function DetailsTitle(props) {
                     <a href="#" className="opacity-60">
                         Kelas Asisten
                     </a>
-                    <a href="#">Detail Praktikum</a>
+                    <a href="http://pp-petra.test/assistant/detailkelas" className="opacity-60">
+                        Detail Praktikum
+                    </a>
+                    <a href="#">Add {type}</a>
             </Breadcrumbs>
 
             <Typography variant="h2" color="blue-gray">
-                Detail Praktikum
+                Add {type}
             </Typography>
                     
             <Typography variant="h4" color="gray" className="mb-2">
