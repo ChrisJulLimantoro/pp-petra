@@ -85,5 +85,5 @@ Route::get('/contoh-datatable', function() {
 Route::prefix('asisten')->group(function () {
     Route::get('/viewKelas', function () {
         return Inertia::render('Asisten/viewKelas');
-    })->name('Coba Modal');
+    })->name('View Kelas');
 });

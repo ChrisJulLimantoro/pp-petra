@@ -73,5 +73,6 @@ export default function TableHeader ({ title, description = '', children, classN
                 </div>
             </div>
         </>
+        
     );
 }
