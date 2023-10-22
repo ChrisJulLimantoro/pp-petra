@@ -35,6 +35,15 @@ export default class DataTable extends Component {
     componentDidUpdate(prevProps, prevState) {
         const displayData = this.paginateData();
 
+        if (prevProps.rawData != this.props.rawData) {
+            this.setState({
+                rawData: this.props.rawData,
+                filteredData: this.props.rawData,
+                paginatedData: this.paginateData(this.props.rawData),
+                totalPages: Math.ceil(this.props.rawData.length / this.state.perPage),
+                currentPage: 1,
+            });
+        }
         if (JSON.stringify(displayData) != JSON.stringify(prevState.paginatedData)) {
             this.setState({paginatedData: displayData});
         }
