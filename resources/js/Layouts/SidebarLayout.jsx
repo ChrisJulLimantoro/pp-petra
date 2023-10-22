@@ -13,7 +13,7 @@ import {
 import {
     PresentationChartBarIcon,
 } from "@heroicons/react/24/solid";
-import { ChevronRightIcon, ChevronDownIcon, Bars3Icon } from "@heroicons/react/24/outline";
+import { ChevronRightIcon, ChevronDownIcon, Bars3Icon, MapIcon, MapPinIcon, KeyIcon } from "@heroicons/react/24/outline";
 import { Head, Link } from "@inertiajs/react";
 
 export default function SideBar({ children, props }) {
@@ -63,7 +63,7 @@ export default function SideBar({ children, props }) {
                                     className="border-b-0 p-3"
                                 >
                                     <ListItemPrefix>
-                                        <PresentationChartBarIcon className="h-5 w-5 mr-2" />
+                                        <KeyIcon className="h-5 w-5 mr-2" />
                                     </ListItemPrefix>
                                     <Typography
                                         color="blue-gray"
@@ -111,6 +111,20 @@ export default function SideBar({ children, props }) {
                                 </List>
                             </AccordionBody>
                         </Accordion>
+
+                        <Link href={route('room.all')}>
+                            <ListItem selected={open === 1}>
+                                <ListItemPrefix>
+                                    <MapPinIcon className="h-5 w-5 mr-2" />
+                                </ListItemPrefix>
+                                <Typography 
+                                    color="blue-gray"
+                                    className="mr-auto font-normal"
+                                >
+                                    Room
+                                </Typography>
+                            </ListItem>
+                        </Link>
                         {/* <Accordion
                             open={open === 2}
                             icon={
