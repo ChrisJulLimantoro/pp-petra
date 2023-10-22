@@ -22,6 +22,8 @@ import React, { useState, useReducer, useRef } from "react";
 import { CheckIcon, PencilIcon, PencilSquareIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 export default function ManageRole({ roles }) {
+    const columns = ['Name', 'Slug', 'Action']
+
     const [role, setRole] = useReducer(roleReducer, roles)
 
     const [open, setOpen] = useState(false);
@@ -76,7 +78,6 @@ export default function ManageRole({ roles }) {
                     resetForm();
     
                     roles.data.unshift(response.data.data)
-                    action.context.updateData(roles.data)
                     showAlert("New role added!", 'green')
                     setOpen(false)
                 }
@@ -106,7 +107,6 @@ export default function ManageRole({ roles }) {
                     setData2({name: '', slug: ''});
                     
                     roles.data[action.index] = response.data.data;
-                    action.context.updateData(roles.data);
                     showAlert("Role edited!", 'green');
                     setEdit(-1);
                 }
@@ -126,10 +126,9 @@ export default function ManageRole({ roles }) {
             let selectedRole = roles.data[action.index]
 
             axios.delete(route('rbac.deleteRole', selectedRole.id))
-            .then((response) => {
+            .then((response) => {   
                 if (response.data.success) {
                     roles.data = roles.data.filter(role => role.id !== selectedRole.id);
-                    action.context.updateData(roles.data);
                     showAlert(selectedRole.name + " role deleted!", 'green');
                 }
                 else {
@@ -185,76 +184,73 @@ export default function ManageRole({ roles }) {
                         {index + 1 + (context.perPage * (context.currentPage - 1))}
                     </Typography>
                 </TableCell>
-                <TableCell>
-                    {edit === index + (context.perPage * (context.currentPage - 1)) ? (
-                        <Input 
-                            label='' 
-                            size='md' 
-                            name='name'
-                            variant="standard" 
-                            className="text-blue-gray-900"
-                            autoFocus
-                            value={data2.name ?? role.name} 
-                            onChange={(e) => {console.log(e.target.value); setData2({...data2, name: e.target.value})}} 
-                        />
-                    ) : (
-                        <Typography variant="small" color="blue-gray" className="font-normal">
-                            {role.name}
-                        </Typography>
-                    )}
-                </TableCell>
-                <TableCell>
-                    {edit === index + (context.perPage * (context.currentPage - 1)) ? (
-                        <Input 
-                            label='' 
-                            size='md' 
-                            name='slug'
-                            variant="standard" 
-                            className="text-blue-gray-900"
-                            value={data2.slug ?? role.slug} 
-                            onChange={(e) => setData2({...data2, slug: e.target.value})} 
-                        />
-                    ) : (
-                        <Typography variant="small" color="blue-gray" className="font-normal">
-                            {role.slug}
-                        </Typography>
-                    )}
-                </TableCell>
-                <TableCell>
-                    <div className="flex gap-5">
-                        {edit === index + (context.perPage * (context.currentPage - 1)) && (
-                            <>
-                                <Tooltip content="Save" placement="top">
-                                    <CheckIcon onClick={() => handleSave(index + (context.perPage * (context.currentPage-1)), context)} width={20} cursor='pointer' stroke="green" />
-                                </Tooltip>
-                                <Tooltip content="Cancel" placement="top">
-                                    <XMarkIcon width={20} cursor='pointer' stroke="red" onClick={() => toggleEdit(-1)} />
-                                </Tooltip>
-                            </>
-                        )} 
 
-                        {edit !== index + (context.perPage * (context.currentPage - 1)) && (
-                            <>
-                                <Tooltip content="Edit" placement="top">
-                                    <PencilSquareIcon 
-                                        width={20} 
-                                        cursor={'pointer'} 
-                                        stroke="orange" 
-                                        onClick={() => toggleEdit(index + (context.perPage * (context.currentPage-1)))}
-                                    /> 
-                                </Tooltip>
-                                <Tooltip content="Delete" placement="top">
-                                    <TrashIcon 
-                                        width={20} 
-                                        cursor={'pointer'} 
-                                        stroke="red"
-                                        onClick={() => handleOpen2(index + (context.perPage * (context.currentPage-1)))}  
-                                    />
-                                </Tooltip>
-                            </>
-                        )}
-                    </div>
-                </TableCell>
+                {columns.map((column) => (
+                    column !== "Action" ? (
+                        <TableCell>
+                            {edit === index + (context.perPage * (context.currentPage - 1)) ? (
+                                <Input 
+                                    label='' 
+                                    size='md' 
+                                    name={column.toLowerCase().replaceAll(' ', '_')}
+                                    variant="standard" 
+                                    className="text-blue-gray-900"
+                                    autoFocus
+                                    value={data2[column.toLowerCase().replaceAll(" ", "_")] ?? role[column.toLowerCase().replaceAll(" ", "_")]} 
+                                    onChange={(e) => {console.log(e.target.value); setData2({...data2, [column.toLowerCase().replaceAll(" ", "_")]: e.target.value})}} 
+                                />
+                            ) : (
+                                <Typography variant="small" color="blue-gray" className="font-normal">
+                                    {role[column.toLowerCase().replaceAll(" ", "_")]}
+                                </Typography>
+                            )}
+                        </TableCell>
+                    ) : (
+                        <TableCell>
+                            <div className="flex gap-5">
+                                {edit === index + (context.perPage * (context.currentPage - 1)) && (
+                                    <>
+                                        <Tooltip content="Save" placement="top">
+                                            <CheckIcon 
+                                            width={20} 
+                                            cursor='pointer' 
+                                            stroke="green"
+                                            onClick={() => handleSave(index + (context.perPage * (context.currentPage-1)), context)} />
+                                        </Tooltip>
+                                        <Tooltip content="Cancel" placement="top">
+                                            <XMarkIcon 
+                                            width={20} 
+                                            cursor='pointer' 
+                                            stroke="red" 
+                                            onClick={() => toggleEdit(-1)} />
+                                        </Tooltip>
+                                    </>
+                                )} 
+
+                                {edit !== index + (context.perPage * (context.currentPage - 1)) && (
+                                    <>
+                                        <Tooltip content="Edit" placement="top">
+                                            <PencilSquareIcon 
+                                                width={20} 
+                                                cursor={'pointer'} 
+                                                stroke="orange" 
+                                                onClick={() => toggleEdit(index + (context.perPage * (context.currentPage-1)))}
+                                            /> 
+                                        </Tooltip>
+                                        <Tooltip content="Delete" placement="top">
+                                            <TrashIcon 
+                                                width={20} 
+                                                cursor={'pointer'} 
+                                                stroke="red"
+                                                onClick={() => handleOpen2(index + (context.perPage * (context.currentPage-1)))}  
+                                            />
+                                        </Tooltip>
+                                    </>
+                                )}
+                            </div>
+                        </TableCell>
+                    )
+                ))}
             </tr>
         );
     }
@@ -300,7 +296,7 @@ export default function ManageRole({ roles }) {
             <DataTable
                 className="w-full" 
                 rawData={roles.data} 
-                columns={['Name', 'Slug', 'Action']}
+                columns={columns}
             >
                 <DataTableContext.Consumer>
                     {(context) => (

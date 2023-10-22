@@ -22,6 +22,8 @@ import React, { useState, useReducer, useRef } from "react";
 import { CheckIcon, PencilIcon, PencilSquareIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 export default function Index({ rooms }) {
+    const columns = ['Name', 'Code', 'Capacity', 'Action']
+
     const [room, setRoom] = useReducer(roomReducer, rooms)
 
     const [open, setOpen] = useState(false);
@@ -75,7 +77,6 @@ export default function Index({ rooms }) {
                     resetForm();
     
                     rooms.data.unshift(response.data.data)
-                    action.context.updateData(rooms.data)
                     showAlert("New room added!", 'green')
                     setOpen(false)
                 }
@@ -100,7 +101,6 @@ export default function Index({ rooms }) {
                     setData2({name: '', code: '', capacity: ''});
                     
                     rooms.data[action.index] = response.data.data;
-                    action.context.updateData(rooms.data);
                     showAlert("Room detail updated!", 'green');
                     setEdit(-1);
                 }
@@ -151,89 +151,64 @@ export default function Index({ rooms }) {
                     </Typography>
                 </TableCell>
 
-                <TableCell>
-                    {edit === index + (context.perPage * (context.currentPage - 1)) ? (
-                        <Input 
-                            label='' 
-                            size='md' 
-                            name='name'
-                            variant="standard" 
-                            className="text-blue-gray-900"
-                            autoFocus
-                            value={data2.name ?? room.name} 
-                            onChange={(e) => {console.log(e.target.value); setData2({...data2, name: e.target.value})}} 
-                        />
+                {columns.map((column) => (
+                    column !== "Action" ? (
+                        <TableCell>
+                            {edit === index + (context.perPage * (context.currentPage - 1)) ? (
+                                <Input 
+                                    label='' 
+                                    size='md' 
+                                    name={column.toLowerCase().replaceAll(' ', '_')}
+                                    variant="standard" 
+                                    className="text-blue-gray-900"
+                                    autoFocus
+                                    value={data2[column.toLowerCase().replaceAll(" ", "_")] ?? room[column.toLowerCase().replaceAll(" ", "_")]} 
+                                    onChange={(e) => {console.log(e.target.value); setData2({...data2, [column.toLowerCase().replaceAll(" ", "_")]: e.target.value})}} 
+                                />
+                            ) : (
+                                <Typography variant="small" color="blue-gray" className="font-normal">
+                                    {room[column.toLowerCase().replaceAll(" ", "_")]}
+                                </Typography>
+                            )}
+                        </TableCell>
                     ) : (
-                        <Typography variant="small" color="blue-gray" className="font-normal">
-                            {room.name}
-                        </Typography>
-                    )}
-                </TableCell>
+                        <TableCell>
+                            <div className="flex gap-5">
+                                {edit === index + (context.perPage * (context.currentPage - 1)) && (
+                                    <>
+                                        <Tooltip content="Save" placement="top">
+                                            <CheckIcon 
+                                            width={20} 
+                                            cursor='pointer' 
+                                            stroke="green"
+                                            onClick={() => handleSave(index + (context.perPage * (context.currentPage-1)), context)} />
+                                        </Tooltip>
+                                        <Tooltip content="Cancel" placement="top">
+                                            <XMarkIcon 
+                                            width={20} 
+                                            cursor='pointer' 
+                                            stroke="red" 
+                                            onClick={() => toggleEdit(-1)} />
+                                        </Tooltip>
+                                    </>
+                                )} 
 
-                <TableCell>
-                    {edit === index + (context.perPage * (context.currentPage - 1)) ? (
-                        <Input 
-                            label='' 
-                            size='md' 
-                            name='code'
-                            variant="standard" 
-                            className="text-blue-gray-900"
-                            value={data2.code ?? room.code} 
-                            onChange={(e) => setData2({...data2, code: e.target.value})} 
-                        />
-                    ) : (
-                        <Typography variant="small" color="blue-gray" className="font-normal">
-                            {room.code}
-                        </Typography>
-                    )}
-                </TableCell>
-
-                <TableCell>
-                    {edit === index + (context.perPage * (context.currentPage - 1)) ? (
-                        <Input 
-                            label=''
-                            type="number"
-                            size='md' 
-                            name='capacity'
-                            variant="standard" 
-                            className="text-blue-gray-900"
-                            value={parseInt(data2.capacity) ?? parseInt(room.capacity)} 
-                            onChange={(e) => setData2({...data2, capacity: parseInt(e.target.value)})} 
-                        />
-                    ) : (
-                        <Typography variant="small" color="blue-gray" className="font-normal">
-                            {room.capacity}
-                        </Typography>
-                    )}
-                </TableCell>
-
-                <TableCell>
-                    <div className="flex gap-5">
-                        {edit === index + (context.perPage * (context.currentPage - 1)) && (
-                            <>
-                                <Tooltip content="Save" placement="top">
-                                    <CheckIcon onClick={() => handleSave(index + (context.perPage * (context.currentPage-1)), context)} width={20} cursor='pointer' stroke="green" />
-                                </Tooltip>
-                                <Tooltip content="Cancel" placement="top">
-                                    <XMarkIcon width={20} cursor='pointer' stroke="red" onClick={() => toggleEdit(-1)} />
-                                </Tooltip>
-                            </>
-                        )} 
-
-                        {edit !== index + (context.perPage * (context.currentPage - 1)) && (
-                            <>
-                                <Tooltip content="Edit" placement="top">
-                                    <PencilSquareIcon 
-                                        width={20} 
-                                        cursor={'pointer'} 
-                                        stroke="orange" 
-                                        onClick={() => toggleEdit(index + (context.perPage * (context.currentPage-1)))}
-                                    /> 
-                                </Tooltip>
-                            </>
-                        )}
-                    </div>
-                </TableCell>
+                                {edit !== index + (context.perPage * (context.currentPage - 1)) && (
+                                    <>
+                                        <Tooltip content="Edit" placement="top">
+                                            <PencilSquareIcon 
+                                                width={20} 
+                                                cursor={'pointer'} 
+                                                stroke="orange" 
+                                                onClick={() => toggleEdit(index + (context.perPage * (context.currentPage-1)))}
+                                            /> 
+                                        </Tooltip>
+                                    </>
+                                )}
+                            </div>
+                        </TableCell>
+                    )
+                ))}
             </tr>
         );
     }
