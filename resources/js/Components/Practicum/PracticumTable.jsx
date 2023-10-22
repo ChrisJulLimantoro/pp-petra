@@ -23,16 +23,14 @@ export function PracticumTable(props) {
             if (practicum === null) {
                 return (
                     <td
-                        className="px-2 text-center border-2"
-                        style={{ width: "200px", wordWrap: "break-word" }}
+                        className="px-2 text-center border-2 w-[200px] min-w-[150px] break-words"
                         key={index}
                     ></td>
                 );
             } else if (typeof practicum === "object") {
                 return (
                     <td
-                        className="p-0 text-center border-2 relative"
-                        style={{ width: "200px", wordWrap: "break-word" }}
+                        className="p-0 text-center border-2 relative w-[200px] min-w-[150px] break-words"
                         rowSpan={practicum.duration}
                         key={index}
                     >
@@ -62,8 +60,8 @@ export function PracticumTable(props) {
             return (
                 <tr key={`${day},${time}`}>
                     <td
-                        className="px-2 border-2"
-                        style={{ width: "140px", wordWrap: "break-word", fontFamily: "ui-monospace", fontSize: "1.1rem" }}
+                        className="px-2 border-2 min-w-[112px] w-[120px] break-words"
+                        style={{ fontFamily: "ui-monospace", fontSize: "1.1rem" }}
                         key={time}
                     >
                         {time.padStart(4, '0').substring(0,2)}.{time.padStart(4, '0').substring(2,4)} - {(parseInt(time) + 100).toString().padStart(4, '0').substring(0,2)}.{(parseInt(time) + 100).toString().padStart(4, '0').substring(2,4)}
@@ -87,23 +85,25 @@ export function PracticumTable(props) {
                     Tambah Kelas
                 </Button>
             </div>
-            <table>
-                <tbody>
-                    {Object.entries(props.data).map(([day, times]) => {
-                        return (
-                            <Fragment key={day}>
-                                <tr key={day}>
-                                    <td className="text-center border-2 font-bold">
-                                        {day}
-                                    </td>
-                                    {getSubjects(times)}
-                                </tr>
-                                {getBodyRows(day, times)}
-                            </Fragment>
-                        );
-                    })}
-                </tbody>
-            </table>
+            <div className="overflow-x-auto pb-2">
+                <table >
+                    <tbody>
+                        {Object.entries(props.data).map(([day, times]) => {
+                            return (
+                                <Fragment key={day}>
+                                    <tr key={day}>
+                                        <td className="text-center border-2 font-bold">
+                                            {day}
+                                        </td>
+                                        {getSubjects(times)}
+                                    </tr>
+                                    {getBodyRows(day, times)}
+                                </Fragment>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
             <PracticumFormDialog
                 ref={dialogRef}
                 rooms={props.rooms}

@@ -10,15 +10,6 @@ class PracticumController extends Controller
 {
     public function index()
     {
-        // $client = new \GuzzleHttp\Client();
-        // $res = $client->get(env('API_URL') . '/subjects', [
-        //     'headers' => [
-        //         'Accept' => 'application/json',
-        //         'Authorization' => 'Bearer ' . session('token'),
-        //     ],
-        // ]);
-        // $data = json_decode($res->getBody()->getContents(), true)['data'];
-
         $res = Http::withHeader('Accept', 'application/json')
             ->withToken(session('token'))
             ->get(config('app')['API_URL'] . '/subjects');
@@ -79,7 +70,7 @@ class PracticumController extends Controller
         }
         $props['rooms'] = $rooms;
 
-        return Inertia::render('Practicum', $props);
+        return Inertia::render('Assistant/Practicum', $props);
     }
 
     public function store(Request $request)
@@ -132,16 +123,6 @@ class PracticumController extends Controller
             ]); 
 
         return response()->json($res->json(), $res->status());
-        // return response()->json([
-        //     'id' => $id,
-        //     'name' => $request->name,
-        //     'code' => $request->code,
-        //     'quota' => $request->quota,
-        //     'room_id' => $request->room,
-        //     'day' => $request->day,
-        //     'time' => $request->time,
-        //     'subject_id' => $request->subject_id,
-        // ], 400);
     }
 
     public function destroy($id) {

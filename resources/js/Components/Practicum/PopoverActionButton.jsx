@@ -37,6 +37,10 @@ export function PopoverActionButton(props) {
         }
     };
 
+    const openPracticumDetail = () => {
+        window.location.href = route("practicum.detail", props.practicumId);
+    }
+
     return (
         <Popover open={openPopover} handler={setOpenPopover}>
             <PopoverHandler {...triggers}>{props.children}</PopoverHandler>
@@ -45,7 +49,7 @@ export function PopoverActionButton(props) {
                 className="z-50 max-w-[26rem] shadow-xl"
             >
                 <ButtonGroup variant="outlined">
-                    <Button className="py-2 focus-visible:outline-none hover:bg-gray-200 focus:ring-0 px-6">
+                    <Button className="py-2 focus-visible:outline-none hover:bg-gray-200 focus:ring-0 px-6" onClick={openPracticumDetail} >
                         <DocumentMagnifyingGlassIcon className="w-[24px]" />
                     </Button>
                     <Button

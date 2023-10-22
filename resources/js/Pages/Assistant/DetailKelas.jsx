@@ -5,7 +5,7 @@ import DetailsTitle from '@/Components/Assistant/Title/DetailsTitle';
 import TableWithEditDeleteButton from '@/Components/Assistant/Table/TableWithEditDeleteButton';
 
 
-export default function DetailKelas({ auth }) {
+export default function DetailKelas({ auth, id }) {
     const head_asisten = ["Nama", "NRP", "Jurusan", "Action"];
     const data_asisten = [
         {
@@ -97,13 +97,13 @@ export default function DetailKelas({ auth }) {
 
                     <div className='tabel_asisten mt-10'>
                         <LabelTable type="Asisten" slot_used="3" total_slot="3" 
-                          addHref="http://pp-petra.test/assistant/detailkelas/addassistant"/>
+                          addHref={route('practicum.addAssistant', id)} />
                         <TableWithEditDeleteButton TABLE_HEAD={head_asisten} TABLE_ROWS={data_asisten}/>
                     </div>
 
                     <div className='tabel_mahasiswa mt-10'>
                         <LabelTable type="Mahasiswa" slot_used="10" total_slot="20"
-                          addHref="http://pp-petra.test/assistant/detailkelas/addmahasiswa"/>
+                          addHref={route('practicum.addStudent', id)}/>
                         <TableWithEditDeleteButton TABLE_HEAD={head_mhs} TABLE_ROWS={data_mhs}/>
                     </div>
                     <div className="mt-10">

@@ -71,27 +71,28 @@ Route::prefix('assistant')->group(function () {
         return Inertia::render('Assistant/Dashboard');
     })->name('Dashboard');
 
-    Route::get('/detailkelas', function () {
-        return Inertia::render('Assistant/DetailKelas');
-    })->name('Detail Kelas');
+    
+    Route::prefix('praktikum')->group(function () {
+        Route::get('/', [PracticumController::class, 'index'])->name('practicum.index');
+        Route::post('/', [PracticumController::class, 'store'])->name('practicum.store');
+        Route::delete('/{id}', [PracticumController::class, 'destroy'])->name('practicum.destroy');
+        Route::patch('/{id}', [PracticumController::class, 'update'])->name('practicum.update');
 
-    Route::get('/detailkelas/move', function () {
-        return Inertia::render('Assistant/Move');
-    })->name('Move Mahasiswa');
+        Route::get('/{id}', function ($id) {
+            return Inertia::render('Assistant/DetailKelas', ['id' => $id]);
+        })->name('practicum.detail');
+    
+        Route::get('/{id}/move', function ($id) {
+            return Inertia::render('Assistant/Move', ['id' => $id]);
+        })->name('Move Mahasiswa');
+    
+        Route::get('/{id}/addassistant', function ($id) {
+            return Inertia::render('Assistant/AddAssistant', ['id' => $id]);
+        })->name('practicum.addAssistant');
+    
+        Route::get('/{id}/addmahasiswa', function ($id) {
+            return Inertia::render('Assistant/AddMahasiswa', ['id' => $id]);
+        })->name('practicum.addStudent');
 
-    Route::get('/detailkelas/addassistant', function () {
-        return Inertia::render('Assistant/AddAssistant');
-    })->name('Add Asisten');
-
-    Route::get('/detailkelas/addmahasiswa', function () {
-        return Inertia::render('Assistant/AddMahasiswa');
-    })->name('Add Mahasiswa');
-
-});
-
-Route::prefix('praktikum')->group(function () {
-    Route::get('/', [PracticumController::class, 'index'])->name('practicum.index');
-    Route::post('/', [PracticumController::class, 'store'])->name('practicum.store');
-    Route::delete('/{id}', [PracticumController::class, 'destroy'])->name('practicum.destroy');
-    Route::patch('/{id}', [PracticumController::class, 'update'])->name('practicum.update');
+    });
 });
