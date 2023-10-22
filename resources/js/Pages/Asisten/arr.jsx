@@ -44,7 +44,7 @@ export let dataAjar = [
             jam: "16.30 - 19.30",
             mata_kuliah_praktikum: "Struktur Data",
             kelas: "A",
-            jumlah_asisten: "2",
+            jumlah_asisten: 2,
             daftar_pengajar: ["Leo ", "CJ"],
         },
         {
@@ -53,27 +53,30 @@ export let dataAjar = [
             jam: "16.30 - 19.30",
             mata_kuliah_praktikum: "Basis Data",
             kelas: "A",
-            jumlah_asisten: "2",
+            jumlah_asisten: 2,
             daftar_pengajar: ["Leo ", "CJ"],
         },
-    ];
-   export const updateDataLowongan = (updatedData) => {
-       console.log("Updating dataLowongan:", updatedData);
-       dataLowongan.length = 0;
-       Array.prototype.push.apply(dataLowongan, updatedData);
-       dataLowongan = [...updatedData];
-   };
+];
 
-   export const updateDataAjar = (updatedData) => {
-       console.log("Updating dataAjar:", updatedData);
-       dataAjar.length = 0;
-       Array.prototype.push.apply(dataAjar, updatedData);
-       dataAjar = [...updatedData];
-   };
+// export const updateDataLowongan = (updatedData, context) => {
+//     console.log("Updating dataLowongan:", dataLowongan);
+//     dataLowongan.length = 0;
+//     Array.prototype.push.apply(dataLowongan, updatedData);
+//     dataLowongan = [...updatedData];
+//     context.updateData(updatedData)
+// };
+
+// export const updateDataAjar = (updatedData, context) => {
+//     console.log("Updating dataAjar:", dataAjar);
+//     dataAjar.length = 0;
+//     Array.prototype.push.apply(dataAjar, updatedData);
+//     dataAjar = [...updatedData];
+//     context.updateData(updatedData)
+// };
 
 export default {
     dataLowongan,
     dataAjar,
-    updateDataLowongan,
-    updateDataAjar,
+    // updateDataLowongan,
+    // updateDataAjar,
 };

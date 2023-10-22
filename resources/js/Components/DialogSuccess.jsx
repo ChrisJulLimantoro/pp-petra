@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
     Button,
     Dialog,
@@ -6,15 +6,18 @@ import {
     DialogBody,
     DialogFooter,
 } from "@material-tailwind/react";
-import {
-    dataLowongan,
-    dataAjar,
-    updateDataAjar,
-    updateDataLowongan,
-} from "@/Pages/Asisten/arr";
+// import {
+//     dataLowongan,
+//     dataAjar,
+//     updateDataAjar,
+//     updateDataLowongan,
+// } from "@/Pages/Asisten/arr";
+import { DataTableContext } from "./DataTable/DataTable";
+import { viewKelasContext } from "@/Pages/Asisten/viewKelas";
 
 export default function DialogSuccess(props) {
     const [open, setOpen] = useState(false);
+    const pageData = useContext(viewKelasContext);
 
     const handleOpen = () => {
         setOpen(!open);
@@ -22,26 +25,22 @@ export default function DialogSuccess(props) {
 
     const handleOpen2 = () => {
         setOpen(!open);
-        const taken = dataLowongan[props.id];
+        const taken = pageData.lowongan[props.id];
 
-        const updatedLowongan = dataLowongan.filter(
+        const updatedLowongan = pageData.lowongan.filter(
             (item, index) => index !== props.id
         );
 
-        const updatedAjar = [...dataAjar, taken];
+        const updatedAjar = [...pageData.ajar, taken];
 
-        updateDataLowongan(updatedLowongan);
-        updateDataAjar(updatedAjar);
-
-        console.log(updatedLowongan);
-        console.log(updatedAjar);
+        props.updateDataAjar(updatedAjar);
+        props.updateDataLowongan(updatedLowongan);
     };
 
     return (
         <>
             <Button color="green" onClick={handleOpen2} variant="gradient">
                 {props.title}
-                {props.id}
             </Button>
             <Dialog
                 open={open}
