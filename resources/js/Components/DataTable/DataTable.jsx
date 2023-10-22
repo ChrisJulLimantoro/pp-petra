@@ -33,13 +33,23 @@ export default class DataTable extends Component {
         this.state.totalPages = Math.ceil(
             (props.rawData.length ?? 0) / this.state.perPage
         );
-        this.state.title = props.title;
+        // this.state.title = props.title;
     }
 
     // make sure data is diplayed correctly after update
     componentDidUpdate(prevProps, prevState) {
         const displayData = this.paginateData();
 
+        if (this.props.rawData != prevProps.rawData) {
+            this.setState({
+                rawData: this.props.rawData,
+                filteredData: this.props.rawData,
+                paginatedData: this.paginateData(this.props.rawData),
+                totalPages: Math.ceil(
+                    this.props.rawData.length / this.state.perPage
+                ),
+            });
+        }
         if (
             JSON.stringify(displayData) !=
             JSON.stringify(prevState.paginatedData)
@@ -49,7 +59,7 @@ export default class DataTable extends Component {
     }
 
     searchData(keyword) {
-        // when no keyword is provided
+        // when no keyword is provided  
         if (keyword.trim() == "" || keyword == null) {
             this.setState({
                 paginatedData: this.paginateData(this.state.rawData),
@@ -98,10 +108,10 @@ export default class DataTable extends Component {
 
     sortData(column, direction) {
         let sortedData = this.state.filteredData.sort((a, b) => {
-            if (a[column].toLowerCase() < b[column].toLowerCase()) {
+            if (a[column] < b[column]) {
                 return direction === "asc" ? -1 : 1;
             }
-            if (a[column].toLowerCase() > b[column].toLowerCase()) {
+            if (a[column] > b[column]) {
                 return direction === "asc" ? 1 : -1;
             }
             return 0;
@@ -233,7 +243,7 @@ export default class DataTable extends Component {
                                       column.toLowerCase().replaceAll(" ", "_")
                                   ]}
 
-                            {column === "Action" ? (
+                            {/* {column === "Action" ? (
                                 this.props.title ===
                                 "Daftar Lowongan Praktikum" ? (
                                     <DialogSuccess
@@ -247,7 +257,7 @@ export default class DataTable extends Component {
                                         dialog=" MENGAJAR KELAS INI"
                                     ></DialogAsk>
                                 ) : null
-                            ) : null}
+                            ) : null} */}
                         </Typography>
                     </TableCell>
                 ))}
