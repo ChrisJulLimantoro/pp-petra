@@ -31,8 +31,8 @@ export default function viewKelas({ auth }) {
         "Jam",
         "Mata Kuliah Praktikum",
         "Kelas",
-        "Jumlah_Asisten",
-        "Daftar_Pengajar",
+        "Jumlah Asisten",
+        "Daftar Pengajar",
         "Status",
         "Action",
     ];
@@ -40,10 +40,10 @@ export default function viewKelas({ auth }) {
     const kolomLowongan = [
         "Hari",
         "Jam",
-        "Mata_Kuliah_Praktikum",
+        "Mata Kuliah Praktikum",
         "Kelas",
-        "Jumlah_Asisten",
-        "Daftar_Pengajar",
+        "Jumlah Asisten",
+        "Daftar Pengajar",
         "Status",
         "Action",
     ];
