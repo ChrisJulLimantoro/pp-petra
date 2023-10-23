@@ -20,7 +20,8 @@ import {
   EyeIcon,
   Square2StackIcon,
   KeyIcon,
-  MapPinIcon
+  MapPinIcon,
+  UserPlusIcon
 } from "@heroicons/react/24/solid";
 import { ChevronRightIcon, ChevronDownIcon, Bars3BottomLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import prodiImg from "../../../public/assets/prodi.jpeg";
@@ -40,6 +41,15 @@ export default function MultiLevelSidebar({children, className = ''}) {
   const desktopMinimizedStyle = 'pl-[80px] w-screen p-3'
   const desktopFullStyle = 'w-4/5 p-7'
 
+  const handleOpen = (value) => {
+    setOpen(open === value ? 0 : value);
+  };
+
+  const minimize = () => {
+    setSidebarState(1)
+    setOpen(0)
+  }
+
   const openedSidebar = () => {
     return (
       <Card 
@@ -47,7 +57,7 @@ export default function MultiLevelSidebar({children, className = ''}) {
       >
         <div className="flex px-4 h-fit justify-between items-center">
           <img src={prodiImg} alt="Logo Prodi" className="w-20" />
-          <IconButton variant="text" onClick={() => setSidebarState(1)}>
+          <IconButton variant="text" onClick={minimize}>
             <Bars3BottomLeftIcon className="w-5"/>
           </IconButton>
         </div>
@@ -104,17 +114,18 @@ export default function MultiLevelSidebar({children, className = ''}) {
                     Lihat Kelas Praktikum
                   </ListItem>
                 </Link>
+
+                <Link href={route('practicum.index')}>
+                  <ListItem className="mx-5">
+                    <ListItemPrefix>
+                      <UserPlusIcon className="h-5 w-5" />
+                    </ListItemPrefix>
+                      Asisten
+                  </ListItem>
+                </Link>
               </List>
             </AccordionBody>
           </Accordion>
-          
-          {/* Laporan */}
-          {/* <ListItem>
-            <ListItemPrefix>
-              <BookOpenIcon className="h-5 w-5" />
-            </ListItemPrefix>
-            Laporan
-          </ListItem> */}
   
           {/* Room */}
           <Link href={route('room.all')}>
@@ -122,7 +133,7 @@ export default function MultiLevelSidebar({children, className = ''}) {
                   <ListItemPrefix>
                       <MapPinIcon className="h-5 w-5" />
                   </ListItemPrefix>
-                  Room
+                  Ruangan
               </ListItem>
           </Link>
   
@@ -203,6 +214,13 @@ export default function MultiLevelSidebar({children, className = ''}) {
             </ListItem>
           </Link>
   
+          {/* Laporan */}
+          {/* <ListItem>
+            <ListItemPrefix>
+              <BookOpenIcon className="h-5 w-5" />
+            </ListItemPrefix>
+            Laporan
+          </ListItem> */}
         </List>
       </Card>
     )
@@ -233,6 +251,7 @@ export default function MultiLevelSidebar({children, className = ''}) {
           <Accordion
             open={open === 2}
             className="max-w-[60px]"
+            onClick={() => setSidebarState(2)}
           >
             <ListItem selected={open === 2} className="p-0 w-fit">
               <AccordionHeader onClick={() => handleOpen(2)} className="border-b-0 p-3 pr-0">
@@ -254,6 +273,14 @@ export default function MultiLevelSidebar({children, className = ''}) {
                     </ListItemPrefix>
                   </ListItem>
                 </Link>
+
+                <Link href={route('practicum.index')}>
+                  <ListItem className="mx-5">
+                    <ListItemPrefix>
+                      <UserPlusIcon strokeWidth={3} className="h-3 w-5" />
+                    </ListItemPrefix>
+                  </ListItem>
+                </Link>
               </List>
             </AccordionBody>
           </Accordion>
@@ -269,6 +296,7 @@ export default function MultiLevelSidebar({children, className = ''}) {
           <Accordion
               open={open === 1}
               className="max-w-[5vw]"
+              onClick={() => setSidebarState(2)}
           >
               <ListItem className="p-0 w-fit" selected={open === 1}>
                   <AccordionHeader
@@ -341,10 +369,6 @@ export default function MultiLevelSidebar({children, className = ''}) {
       </IconButton>
     )
   }
- 
-  const handleOpen = (value) => {
-    setOpen(open === value ? 0 : value);
-  };
 
   return (
     <>
@@ -359,7 +383,8 @@ export default function MultiLevelSidebar({children, className = ''}) {
         `}
         </style>
       </Head>
-      <div className={"box-border flex flex-row min-h-screen gap-x-7 bg-blue-gray-50"}>
+
+      <div className="box-border flex flex-row min-h-screen gap-x-7 bg-blue-gray-50 overflow-x-hidden">
           {sidebarState === 1 ? minimizedSidebar() : sidebarState === 2  ? openedSidebar() : null}
           
           <div className={sidebarState === 2 && isMobile ? 'w-1/2' : sidebarState === 2 ? 'w-1/5' : 'hidden'}></div>       

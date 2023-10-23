@@ -1,4 +1,4 @@
-import SidebarLayout from "@/Layouts/SidebarLayout";
+import SidebarUser from "@/Layouts/SidebarUser";
 import TableHeader from "@/Components/DataTable/TableHeader";
 import TableBody from "@/Components/DataTable/TableBody";
 import TableFooter from "@/Components/DataTable/TableFooter";
@@ -224,7 +224,7 @@ export default class AssignRoutes extends Component {
                     </style>
                 </Head>
 
-                <SidebarLayout>
+                <SidebarUser>
                     {this.state.alert.isOpen && (
                         <Alert
                             open={true}
@@ -297,7 +297,7 @@ export default class AssignRoutes extends Component {
                             )}
                         </DataTableContext.Consumer>
                     </DataTable>
-                </SidebarLayout>
+                </SidebarUser>
             </>
         );
     }

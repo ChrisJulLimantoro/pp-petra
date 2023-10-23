@@ -1,4 +1,4 @@
-import SidebarLayout from "@/Layouts/SidebarLayout";
+import SidebarUser from "@/Layouts/SidebarUser";
 import TableHeader from "@/Components/DataTable/TableHeader";
 import TableBody from "@/Components/DataTable/TableBody";
 import TableFooter from "@/Components/DataTable/TableFooter";
@@ -214,7 +214,7 @@ export default function Index({ rooms }) {
     }
 
     return (
-        <SidebarLayout>
+        <SidebarUser>
             <Head>
                 <title>Add room</title>
             </Head>
@@ -339,7 +339,7 @@ export default function Index({ rooms }) {
                     )}
                 </DataTableContext.Consumer>
             </DataTable>
-        </SidebarLayout>
+        </SidebarUser>
     );
 }
 
