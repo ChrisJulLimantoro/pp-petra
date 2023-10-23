@@ -89,9 +89,7 @@ export default function AddAssistant({ auth }) {
             </Head>
             <div className="grid grid-cols-7 gap-1">
                 <div className='col-span-2'>
-                    <SidebarUser>
-
-                    </SidebarUser>
+                    <SidebarUser/>
                 </div>
                 <div className="mt-10 w-full h-72 col-span-4">
                     <div className='judul'>
@@ -106,6 +104,7 @@ export default function AddAssistant({ auth }) {
 
                     <div className='tabel-add mt-10'>
                         <LabelTableAdd type="Asisten" total_available="10"/>
+                        <TableWithAddButton TABLE_HEAD={head_asisten_avail} TABLE_ROWS={data_asisten_avail}/>
                     </div>
                     
                 </div>

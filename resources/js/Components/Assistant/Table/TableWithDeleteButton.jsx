@@ -1,4 +1,4 @@
-import { Card, Typography, Tooltip } from "@material-tailwind/react";
+import { Card, Typography, Tooltip, Button} from "@material-tailwind/react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 
 export default function TableWithDeleteButton(props) {
@@ -64,8 +64,8 @@ export default function TableWithDeleteButton(props) {
 
                         <td className={classes}>
                             <div className="flex gap-3">
-                                <Tooltip content="Add" placement="top">
-                                    <TrashIcon width={20} cursor={'pointer'} stroke="red"/>
+                                <Tooltip content="Delete" placement="top">
+                                    <TrashIcon width={20} cursor={'pointer'} stroke="red"  />
                                 </Tooltip>
                             </div>
                         </td>

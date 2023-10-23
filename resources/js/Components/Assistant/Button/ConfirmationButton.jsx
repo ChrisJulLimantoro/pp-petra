@@ -8,13 +8,13 @@ import {
 } from "@material-tailwind/react";
  
 export default function ConfirmationButton(props) {
-  const {children, variant="gradient", type="text"} = props;
+  const {children, variant="gradient", type="text", classname="", size="md"} = props;
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);
  
   return (
     <>
-      <Button onClick={handleOpen} variant={variant}>
+      <Button onClick={handleOpen} variant={variant} className={classname} size={size}>
         {children}
       </Button>
       <Dialog open={open} handler={handleOpen}>

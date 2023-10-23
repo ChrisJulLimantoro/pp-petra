@@ -96,7 +96,7 @@ export default function DetailKelas({ auth }) {
                     </div>
 
                     <div className='tabel_asisten mt-10'>
-                        <LabelTable type="Asisten" slot_used="3" total_slot="3" 
+                        <LabelTable type="Asisten" slot_used="3" total_slot="4" 
                           addHref="http://pp-petra.test/assistant/detailkelas/addassistant"/>
                         <TableWithEditDeleteButton TABLE_HEAD={head_asisten} TABLE_ROWS={data_asisten}/>
                     </div>
