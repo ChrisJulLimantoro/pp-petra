@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RBACController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\PracticumController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RBACRoleAssignmentController;
 
@@ -70,6 +71,39 @@ Route::prefix('mahasiswa')->group(function () {
     })->name('Daftar Praktikum');
 });
 
+Route::prefix('asisten')->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('Assistant/Dashboard');
+    })->name('Dashboard');
+
+    Route::get('/viewKelas', function () {
+        return Inertia::render('Asisten/viewKelas');
+    })->name('View Kelas');
+    
+    Route::prefix('praktikum')->group(function () {
+        Route::get('/', [PracticumController::class, 'index'])->name('practicum.index');
+        Route::post('/', [PracticumController::class, 'store'])->name('practicum.store');
+        Route::delete('/{id}', [PracticumController::class, 'destroy'])->name('practicum.destroy');
+        Route::patch('/{id}', [PracticumController::class, 'update'])->name('practicum.update');
+
+        Route::get('/{id}', function ($id) {
+            return Inertia::render('Assistant/DetailKelas', ['id' => $id]);
+        })->name('practicum.detail');
+    
+        Route::get('/{id}/move', function ($id) {
+            return Inertia::render('Assistant/Move', ['id' => $id]);
+        })->name('Move Mahasiswa');
+    
+        Route::get('/{id}/addassistant', function ($id) {
+            return Inertia::render('Assistant/AddAssistant', ['id' => $id]);
+        })->name('practicum.addAssistant');
+    
+        Route::get('/{id}/addmahasiswa', function ($id) {
+            return Inertia::render('Assistant/AddMahasiswa', ['id' => $id]);
+        })->name('practicum.addStudent');
+
+    });
+});
 Route::prefix('room')->group(function() {
     Route::get('/', [RoomController::class, 'index'])->name('room.all');
     // Route::get('/{id}', [RoomController::class, 'show'])->name('room.show');
