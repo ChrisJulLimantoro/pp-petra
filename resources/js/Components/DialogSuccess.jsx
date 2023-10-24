@@ -6,13 +6,6 @@ import {
     DialogBody,
     DialogFooter,
 } from "@material-tailwind/react";
-// import {
-//     dataLowongan,
-//     dataAjar,
-//     updateDataAjar,
-//     updateDataLowongan,
-// } from "@/Pages/Asisten/arr";
-import { DataTableContext } from "./DataTable/DataTable";
 import { viewKelasContext } from "@/Pages/Asisten/viewKelas";
 
 export default function DialogSuccess(props) {

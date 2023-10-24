@@ -54,16 +54,12 @@ export default function viewKelas({ auth }) {
     
     const updateDataLowongan = (updatedData) => {
         const processedUpdatedData = processData(updatedData)
-        // dataLowongan.length = 0;
-        // Array.prototype.push.apply(dataLowongan, updatedData);
         setLowongan(processedUpdatedData)
         console.log("Updating dataLowongan:", dataLowongan);
     };
 
     const updateDataAjar = (updatedData) => {
         const processedUpdatedData = processData(updatedData)
-        // dataAjar.length = 0;
-        // Array.prototype.push.apply(dataAjar, updatedData);
         setAjar(processedUpdatedData)
         console.log("Updating dataAjar:", dataAjar);
     };
@@ -89,44 +85,62 @@ export default function viewKelas({ auth }) {
         }
 
         return (
-            <tr key={index + 1 + (context.perPage * (context.currentPage - 1))}>
+            <tr key={index + 1 + context.perPage * (context.currentPage - 1)}>
                 <TableCell>
                     <Typography variant="small" color="blue-gray">
-                        {index + 1 + (context.perPage * (context.currentPage - 1))}
+                        {index +
+                            1 +
+                            context.perPage * (context.currentPage - 1)}
                     </Typography>
                 </TableCell>
 
-                {kolomAjar.map((kolom) => (
+                {kolomAjar.map((kolom) =>
                     kolom !== "Action" ? (
                         <TableCell>
-                            <Typography variant="small"
-                            color={
-                                item[kolom.toLowerCase().replaceAll(' ', '_')] === "Seleksi Kelas"
-                                    ? "orange"  
-                                    : item[kolom.toLowerCase().replaceAll(' ', '_')] ===
-                                            "Ditolak" ||
-                                        item[kolom.toLowerCase().replaceAll(' ', '_')] === "FULL"
-                                    ? "red"
-                                    : item[kolom.toLowerCase().replaceAll(' ', '_')] === "Diterima"
-                                    ? "green"
-                                    : "blue-gray"
-                            }>
-                                {item[kolom.toLowerCase().replaceAll(' ', '_')]}
+                            <Typography
+                                variant="small"
+                                color={
+                                    item[
+                                        kolom.toLowerCase().replaceAll(" ", "_")
+                                    ] === "Seleksi Kelas"
+                                        ? "orange"
+                                        : item[
+                                              kolom
+                                                  .toLowerCase()
+                                                  .replaceAll(" ", "_")
+                                          ] === "Ditolak" ||
+                                          item[
+                                              kolom
+                                                  .toLowerCase()
+                                                  .replaceAll(" ", "_")
+                                          ] === "FULL"
+                                        ? "red"
+                                        : item[
+                                              kolom
+                                                  .toLowerCase()
+                                                  .replaceAll(" ", "_")
+                                          ] === "Diterima"
+                                        ? "green"
+                                        : "blue-gray"
+                                }
+                            >
+                                {item[kolom.toLowerCase().replaceAll(" ", "_")]}
                             </Typography>
                         </TableCell>
                     ) : (
-                    <TableCell>
-                        <DialogAsk 
-                            title="Delete" 
-                            dialog="MENGAJAR KELAS INI"
-                            updater1={updateDataAjar} 
-                            updater2={updateDataLowongan} 
-                        />
-                    </TableCell>
+                        <TableCell>
+                            <DialogAsk
+                                title="Delete"
+                                id={index}
+                                dialog="MENGAJAR KELAS INI"
+                                updateDataAjar={updateDataAjar}
+                                updateDataLowongan={updateDataLowongan}
+                            />
+                        </TableCell>
                     )
-                ))}
+                )}
             </tr>
-        )
+        );
     }
 
     const renderDataLowongan = (item, index, context) => {

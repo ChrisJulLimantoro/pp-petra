@@ -4,6 +4,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PracticumController;
 use App\Http\Controllers\RBACController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ProfileController;
@@ -83,7 +84,5 @@ Route::get('/contoh-datatable', function() {
 })->name('contoh.datatable');
 
 Route::prefix('asisten')->group(function () {
-    Route::get('/viewKelas', function () {
-        return Inertia::render('Asisten/viewKelas');
-    })->name('View Kelas');
+    Route::get('/viewKelas', [PracticumController::class, 'viewPracticum'])->name('View Kelas');
 });

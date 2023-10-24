@@ -58,7 +58,7 @@
 //         </>
 //     );
 // }
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
     Button,
     Dialog,
@@ -67,10 +67,12 @@ import {
     DialogFooter,
 } from "@material-tailwind/react";
 import DialogDelete from "./DialogDelete";
+import { viewKelasContext } from "@/Pages/Asisten/viewKelas";
 
 export default function DialogAsk(props) {
     const [askDialogOpen, setAskDialogOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const pageData = useContext(viewKelasContext);
 
     const handleAskDialogOpen = () => {
         setAskDialogOpen(true);
@@ -83,6 +85,16 @@ export default function DialogAsk(props) {
     const handleDeleteDialogOpen = () => {
         setDeleteDialogOpen(true);
         setAskDialogOpen(false);
+        const taken = pageData.ajar[props.id];
+
+        const updatedAjar = pageData.ajar.filter(
+            (item, index) => index !== props.id
+        );
+
+        const updatedLowongan = [...pageData.lowongan, taken];
+
+        props.updateDataAjar(updatedAjar);
+        props.updateDataLowongan(updatedLowongan);
     };
 
     const handleDeleteDialogClose = () => {
