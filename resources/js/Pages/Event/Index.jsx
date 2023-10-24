@@ -1,4 +1,4 @@
-import SidebarLayout from "@/Layouts/SidebarLayout";
+import SidebarUser from "@/Layouts/SidebarUser";
 import TableHeader from "@/Components/DataTable/TableHeader";
 import TableBody from "@/Components/DataTable/TableBody";
 import TableFooter from "@/Components/DataTable/TableFooter";
@@ -409,7 +409,7 @@ export default function Index({ events }) {
     };
 
     return (
-        <SidebarLayout>
+        <SidebarUser>
             <Head>
                 <title>Add Event</title>
             </Head>
@@ -588,6 +588,6 @@ export default function Index({ events }) {
                     )}
                 </DataTableContext.Consumer>
             </DataTable>
-        </SidebarLayout>
+        </SidebarUser>
     );
 }
