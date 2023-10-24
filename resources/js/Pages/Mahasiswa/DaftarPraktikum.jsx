@@ -15,7 +15,7 @@ export default function Dashboard({ auth }) {
     const kolom = [
         "Hari",
         "Jam",
-        "Mata Kuliah Praktikum",
+        "Mata_Kuliah_Praktikum",
         "Kelas",
         "Pilihan",
         "Status",
@@ -24,7 +24,7 @@ export default function Dashboard({ auth }) {
         {
             hari: "Selasa",
             jam: "16.30 - 19.30",
-            "mata kuliah praktikum": "Struktur Data",
+            mata_kuliah_praktikum: "Struktur Data",
             kelas: "A",
             pilihan: "Pilihan 1",
             status: "Seleksi Kelas",
@@ -32,7 +32,7 @@ export default function Dashboard({ auth }) {
         {
             hari: "Kamis",
             jam: "16.30 - 19.30",
-            "mata kuliah praktikum": "Struktur Data",
+            mata_kuliah_praktikum: "Struktur Data",
             kelas: "B",
             pilihan: "Pilihan 2",
             status: "Ditolak",
@@ -40,12 +40,13 @@ export default function Dashboard({ auth }) {
         {
             hari: "Kamis",
             jam: "16.30 - 19.30",
-            "mata kuliah praktikum": "Struktur Data",
+            mata_kuliah_praktikum: "Struktur Data",
             kelas: "B",
             pilihan: "Pilihan 2",
             status: "Diterima",
         },
     ];
+    
     const handleUpdateData = (updatedData) => {
         // Handle updated data here
         console.log(updatedData);
