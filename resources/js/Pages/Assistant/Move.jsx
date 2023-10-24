@@ -4,8 +4,9 @@ import MoveTitle from '@/Components/Assistant/Title/MoveTitle';
 import SelectKelasBaru from '@/Components/Assistant/Select/SelectKelasBaru';
 import ConfirmationButton from '@/Components/Assistant/Button/ConfirmationButton';
 
-export default function Move({ auth }) {
-     
+export default function Move( props ) {
+     const {id, type} = props;
+
     //data kelas parallel
      const datas = [ 
         {
@@ -33,8 +34,9 @@ export default function Move({ auth }) {
     return(
         <>
         <Head>
-            <title>SAOCP-Move Mahasiswa</title>
+            <title>{'SAOCP - Move '+ type}</title>
         </Head>
+        
         <div className="grid grid-cols-7 gap-1">
             <div className='col-span-2'>
                 <SidebarUser>
@@ -44,7 +46,7 @@ export default function Move({ auth }) {
             <div className="mt-10 w-full h-72 col-span-4">
 
                 <div className='judul'>
-                    <MoveTitle type="Mahasiswa" nama="Budi Arianto" nrp="C1420001" />
+                    <MoveTitle type={type} nama="Budi Arianto" nrp="C1420001" id={id} />
                 </div>
 
                 <form action="">

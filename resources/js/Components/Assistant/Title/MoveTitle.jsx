@@ -2,7 +2,7 @@ import { Typography, Breadcrumbs,Select } from "@material-tailwind/react";
 
 export default function MoveTitle(props) {
     // Type = Mahasiswa & Asisten
-    const {type, nama, nrp} = props;
+    const {type, nama, nrp, id} = props;
 
     return (
         <div>
@@ -10,10 +10,10 @@ export default function MoveTitle(props) {
                     <a href="#" className="opacity-60">
                         Asisten
                     </a>
-                    <a href="#" className="opacity-60">
+                    <a href={route('practicum.index')} className="opacity-60">
                         Kelas Asisten
                     </a>
-                    <a href="http://pp-petra.test/assistant/detailkelas" className="opacity-60">
+                    <a href={route('practicum.detail', id)} className="opacity-60">
                         Detail Praktikum
                     </a>
                     <a href="#">Move {type}</a>

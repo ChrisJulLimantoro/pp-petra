@@ -1,10 +1,9 @@
 import { Card, Typography, Tooltip, IconButton } from "@material-tailwind/react";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import ConfirmationButton from "../Button/ConfirmationButton";
 import ConfirmationIconButton from "../Button/ConfirmationIconButton";
 
 export default function TableWithEditDeleteButton(props) {
-    const {TABLE_HEAD, TABLE_ROWS} = props;
+    const {TABLE_HEAD, TABLE_ROWS, type} = props;
 
     return (
         <Card className="h-full w-full overflow-scroll">
@@ -28,12 +27,12 @@ export default function TableWithEditDeleteButton(props) {
                 </tr>
                 </thead>
                 <tbody >
-                {TABLE_ROWS.map(({ nama, jurusan, nrp }, index) => {
+                {TABLE_ROWS.map(({ nama, jurusan, nrp, id}, index) => {
                     const isLast = index === TABLE_ROWS.length - 1;
                     const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
         
                     return (
-                    <tr key={nama} className="hover:bg-gray-100">
+                    <tr key={id} className="hover:bg-gray-100">
                         <td className={classes}>
                             <Typography
                                 variant="small"
@@ -66,7 +65,7 @@ export default function TableWithEditDeleteButton(props) {
 
                         <td className={classes}>
                             <div className="flex gap-3">
-                                <a href="http://pp-petra.test/assistant/detailkelas/move">
+                                <a href={route('practicum.move', {id, type})}>
                                     <IconButton variant="text">
                                         <Tooltip content="Move" placement="top">
                                             <PencilIcon width={20} cursor={'pointer'} stroke="orange" /> 

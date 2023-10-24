@@ -71,7 +71,7 @@ Route::prefix('assistant')->group(function () {
         return Inertia::render('Assistant/Dashboard');
     })->name('Dashboard');
 
-    
+
     Route::prefix('praktikum')->group(function () {
         Route::get('/', [PracticumController::class, 'index'])->name('practicum.index');
         Route::post('/', [PracticumController::class, 'store'])->name('practicum.store');
@@ -81,18 +81,21 @@ Route::prefix('assistant')->group(function () {
         Route::get('/{id}', function ($id) {
             return Inertia::render('Assistant/DetailKelas', ['id' => $id]);
         })->name('practicum.detail');
-    
-        Route::get('/{id}/move', function ($id) {
-            return Inertia::render('Assistant/Move', ['id' => $id]);
-        })->name('Move Mahasiswa');
-    
+
+        Route::get('/{id}/move/{type}', function ($id, $type) {
+            return Inertia::render('Assistant/Move', ['id' => $id, 'type' => $type]);
+        })->name('practicum.move');
+
         Route::get('/{id}/addassistant', function ($id) {
             return Inertia::render('Assistant/AddAssistant', ['id' => $id]);
         })->name('practicum.addAssistant');
-    
+
         Route::get('/{id}/addmahasiswa', function ($id) {
             return Inertia::render('Assistant/AddMahasiswa', ['id' => $id]);
         })->name('practicum.addStudent');
-
     });
 });
+
+Route::get('/test', function () {
+    return Inertia::render('Assistant/test');
+})->name('oiedjhowiej');

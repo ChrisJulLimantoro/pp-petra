@@ -23,6 +23,7 @@ export default function InputNRP(props) {
                         containerProps={{
                         className: "min-w-0",
                         }}
+                        autoFocus
                     />
                     <Button
                         size="sm"
