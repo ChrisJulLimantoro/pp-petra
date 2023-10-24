@@ -5,11 +5,11 @@ import TableFooter from "@/Components/DataTable/TableFooter";
 import TableCell from "@/Components/DataTable/TableCell";
 import DataTable from "@/Components/DataTable/DataTable";
 import { DataTableContext } from "@/Components/DataTable/DataTable";
-import { 
-    Breadcrumbs, 
-    Card, 
-    Tooltip, 
-    Typography, 
+import {
+    Breadcrumbs,
+    Card,
+    Tooltip,
+    Typography,
     Button,
     Dialog,
     CardBody,
@@ -19,105 +19,119 @@ import {
 } from "@material-tailwind/react";
 import { Head, useForm } from "@inertiajs/react";
 import React, { useState, useReducer, useRef } from "react";
-import { CheckIcon, PencilIcon, PencilSquareIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+    CheckIcon,
+    PencilIcon,
+    PencilSquareIcon,
+    TrashIcon,
+    XMarkIcon,
+} from "@heroicons/react/24/outline";
 
 export default function Index({ rooms }) {
-    const columns = ['Name', 'Code', 'Capacity', 'Action']
+    const columns = ["Name", "Code", "Capacity", "Action"];
 
-    const [room, setRoom] = useReducer(roomReducer, rooms)
+    const [room, setRoom] = useReducer(roomReducer, rooms);
 
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
-    
-    const [alert, setAlert] = useState({isOpen: false, color: 'gray', message: ''});
 
-    const [data, setData] = useState({name: '', code: '', capacity: 0});
-    const [data2, setData2] = useState({name: '', code: '', capacity: 0});
+    const [alert, setAlert] = useState({
+        isOpen: false,
+        color: "gray",
+        message: "",
+    });
+
+    const [data, setData] = useState({ name: "", code: "", capacity: 0 });
+    const [data2, setData2] = useState({ name: "", code: "", capacity: 0 });
     const [error, setError] = useState();
     const [edit, setEdit] = useState();
 
     const handleOpen = () => setOpen(!open);
-    const handleOpen2 = (index) => {setOpen2(!open2); setDel(index)};
+    const handleOpen2 = (index) => {
+        setOpen2(!open2);
+        setDel(index);
+    };
 
-    const handleAdd = (context) => roomReducer(rooms, {type: 'add', context: context});
-    const handleSave = (index, context) => roomReducer(rooms, {type: 'save', index: index, context: context});
+    const handleAdd = (context) =>
+        roomReducer(rooms, { type: "add", context: context });
+    const handleSave = (index, context) =>
+        roomReducer(rooms, { type: "save", index: index, context: context });
 
     const resetForm = () => {
         setData({
-            name: '',
-            code: '',
+            name: "",
+            code: "",
             capacity: 0,
-        })
-        setError(null)
-    }
+        });
+        setError(null);
+    };
 
     const showAlert = (message, color) => {
-        setAlert({isOpen: true, color: color, message: message});
+        setAlert({ isOpen: true, color: color, message: message });
 
         setTimeout(() => {
-            setAlert({...alert, isOpen: false})
+            setAlert({ ...alert, isOpen: false });
         }, 2000);
-    }
+    };
 
     const toggleEdit = (index) => {
         if (edit === index) {
-            setEdit(-1)
+            setEdit(-1);
+        } else {
+            setEdit(index);
+            setData2({
+                name: rooms.data[index].name,
+                code: rooms.data[index].code,
+                capacity: rooms.data[index].capacity,
+            });
         }
-        else {
-            setEdit(index)
-            setData2({name: rooms.data[index].name, code: rooms.data[index].code, capacity: rooms.data[index].capacity})
-        }
-    }
+    };
 
     function roomReducer(rooms, action) {
-        if (action.type == 'add') { 
-            axios.post(route('room.add'), data)
-            .then((response) => {
-                if (response.data.success) {
-                    resetForm();
-    
-                    rooms.data.unshift(response.data.data)
-                    showAlert("New room added!", 'green')
-                    setOpen(false)
-                }
-                else {
-                    setError(response.data.error_message)
-                }
-            })
-            .catch((err) => {
-                console.log(err)
-                showAlert("Something went wrong!", 'red')
-            })
+        if (action.type == "add") {
+            axios
+                .post(route("room.add"), data)
+                .then((response) => {
+                    if (response.data.success) {
+                        resetForm();
+
+                        rooms.data.unshift(response.data.data);
+                        showAlert("New room added!", "green");
+                        setOpen(false);
+                    } else {
+                        setError(response.data.error_message);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    showAlert("Something went wrong!", "red");
+                });
 
             return rooms;
-        }
+        } else if (action.type == "save") {
+            let selectedroom = rooms.data[action.index];
 
-        else if (action.type == 'save') {
-            let selectedroom = rooms.data[action.index]
+            axios
+                .post(route("room.edit", selectedroom.id), data2)
+                .then((response) => {
+                    if (response.data.success) {
+                        setData2({ name: "", code: "", capacity: "" });
 
-            axios.post(route('room.edit', selectedroom.id), data2)
-            .then((response) => {
-                if (response.data.success) {
-                    setData2({name: '', code: '', capacity: ''});
-                    
-                    rooms.data[action.index] = response.data.data;
-                    showAlert("Room detail updated!", 'green');
-                    setEdit(-1);
-                }
-                else {
-                    showAlert("Something went wrong!", 'red')
-                }
-            })
-            .catch((err) => {
-                console.log(err)
-                showAlert("Something went wrong!", 'red')
-            })
+                        rooms.data[action.index] = response.data.data;
+                        showAlert("Room detail updated!", "green");
+                        setEdit(-1);
+                    } else {
+                        showAlert("Something went wrong!", "red");
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    showAlert("Something went wrong!", "red");
+                });
 
             return rooms;
-        }
-
-        else {
-            throw Error('Unknown action type')
+        } else {
+            throw Error("Unknown action type");
         }
     }
 
@@ -125,20 +139,20 @@ export default function Index({ rooms }) {
         // if no data found
         if (room.empty) {
             return (
-                <tr key={'notFound'}>
+                <tr key={"notFound"}>
                     <TableCell colSpan={4}>
                         <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal text-center"
-                            >
-                                No data found
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal text-center"
+                        >
+                            No data found
                         </Typography>
                     </TableCell>
                 </tr>
             );
         }
-        
+
         return (
             <tr key={room.slug ?? index}>
                 <TableCell>
@@ -147,71 +161,133 @@ export default function Index({ rooms }) {
                         color="blue-gray"
                         className="font-normal"
                     >
-                        {index + 1 + (context.perPage * (context.currentPage - 1))}
+                        {index +
+                            1 +
+                            context.perPage * (context.currentPage - 1)}
                     </Typography>
                 </TableCell>
 
-                {columns.map((column) => (
+                {columns.map((column) =>
                     column !== "Action" ? (
                         <TableCell>
-                            {edit === index + (context.perPage * (context.currentPage - 1)) ? (
-                                <Input 
-                                    label='' 
-                                    size='md' 
-                                    name={column.toLowerCase().replaceAll(' ', '_')}
-                                    variant="standard" 
+                            {edit ===
+                            index +
+                                context.perPage * (context.currentPage - 1) ? (
+                                <Input
+                                    label=""
+                                    size="md"
+                                    name={column
+                                        .toLowerCase()
+                                        .replaceAll(" ", "_")}
+                                    variant="standard"
                                     className="text-blue-gray-900"
                                     autoFocus
-                                    value={data2[column.toLowerCase().replaceAll(" ", "_")] ?? room[column.toLowerCase().replaceAll(" ", "_")]} 
-                                    onChange={(e) => {console.log(e.target.value); setData2({...data2, [column.toLowerCase().replaceAll(" ", "_")]: e.target.value})}} 
+                                    value={
+                                        data2[
+                                            column
+                                                .toLowerCase()
+                                                .replaceAll(" ", "_")
+                                        ] ??
+                                        room[
+                                            column
+                                                .toLowerCase()
+                                                .replaceAll(" ", "_")
+                                        ]
+                                    }
+                                    onChange={(e) => {
+                                        console.log(e.target.value);
+                                        setData2({
+                                            ...data2,
+                                            [column
+                                                .toLowerCase()
+                                                .replaceAll(" ", "_")]:
+                                                e.target.value,
+                                        });
+                                    }}
                                 />
                             ) : (
-                                <Typography variant="small" color="blue-gray" className="font-normal">
-                                    {room[column.toLowerCase().replaceAll(" ", "_")]}
+                                <Typography
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal"
+                                >
+                                    {
+                                        room[
+                                            column
+                                                .toLowerCase()
+                                                .replaceAll(" ", "_")
+                                        ]
+                                    }
                                 </Typography>
                             )}
                         </TableCell>
                     ) : (
                         <TableCell>
                             <div className="flex gap-5">
-                                {edit === index + (context.perPage * (context.currentPage - 1)) && (
+                                {edit ===
+                                    index +
+                                        context.perPage *
+                                            (context.currentPage - 1) && (
                                     <>
                                         <Tooltip content="Save" placement="top">
-                                            <CheckIcon 
-                                            width={20} 
-                                            cursor='pointer' 
-                                            stroke="green"
-                                            onClick={() => handleSave(index + (context.perPage * (context.currentPage-1)), context)} />
+                                            <CheckIcon
+                                                width={20}
+                                                cursor="pointer"
+                                                stroke="green"
+                                                onClick={() =>
+                                                    handleSave(
+                                                        index +
+                                                            context.perPage *
+                                                                (context.currentPage -
+                                                                    1),
+                                                        context
+                                                    )
+                                                }
+                                            />
                                         </Tooltip>
-                                        <Tooltip content="Cancel" placement="top">
-                                            <XMarkIcon 
-                                            width={20} 
-                                            cursor='pointer' 
-                                            stroke="red" 
-                                            onClick={() => toggleEdit(-1)} />
+                                        <Tooltip
+                                            content="Cancel"
+                                            placement="top"
+                                        >
+                                            <XMarkIcon
+                                                width={20}
+                                                cursor="pointer"
+                                                stroke="red"
+                                                onClick={() => toggleEdit(-1)}
+                                            />
                                         </Tooltip>
                                     </>
-                                )} 
+                                )}
 
-                                {edit !== index + (context.perPage * (context.currentPage - 1)) && (
+                                {edit !==
+                                    index +
+                                        context.perPage *
+                                            (context.currentPage - 1) && (
                                     <>
                                         <Tooltip content="Edit" placement="top">
-                                            <PencilSquareIcon 
-                                                width={20} 
-                                                cursor={'pointer'} 
-                                                stroke="orange" 
-                                                onClick={() => toggleEdit(index + (context.perPage * (context.currentPage-1)))}
-                                            /> 
+                                            <PencilSquareIcon
+                                                width={20}
+                                                cursor={"pointer"}
+                                                stroke="orange"
+                                                onClick={() =>
+                                                    toggleEdit(
+                                                        index +
+                                                            context.perPage *
+                                                                (context.currentPage -
+                                                                    1)
+                                                    )
+                                                }
+                                            />
                                         </Tooltip>
                                     </>
                                 )}
                             </div>
                         </TableCell>
                     )
-                ))}
+                )}
             </tr>
         );
-    }
+    };
 
     return (
         <SidebarUser>
@@ -222,7 +298,7 @@ export default function Index({ rooms }) {
             {alert.isOpen && (
                 <Alert
                     open={true}
-                    onClose={() => setAlert({...alert, isOpen: false})}
+                    onClose={() => setAlert({ ...alert, isOpen: false })}
                     animate={{
                         mount: { y: 0 },
                         unmount: { y: 100 },
@@ -235,39 +311,41 @@ export default function Index({ rooms }) {
             )}
 
             <Breadcrumbs className="mb-2">
-                <a href={route('dashboard')} className="opacity-60">
+                <a href={route("dashboard")} className="opacity-60">
                     <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
                     >
-                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
                     </svg>
                 </a>
-                <a href="#" className="opacity-60">
-                    <span>RBAC</span>
-                </a>
-                <a href={route('room.all')}>Manage Room</a>
+                <a href={route("room.all")}>Manage Room</a>
             </Breadcrumbs>
 
             <DataTable
-                className="w-full" 
-                rawData={rooms.data} 
-                columns={['Name', 'Code', 'Capacity', 'Action']}
+                className="w-full"
+                rawData={rooms.data}
+                columns={["Name", "Code", "Capacity", "Action"]}
             >
                 <DataTableContext.Consumer>
                     {(context) => (
                         <>
                             <Card className="max-w-full z-1 md:py-0 overflow-auto">
                                 <TableHeader title="Available Rooms">
-                                    <Button onClick={handleOpen}>Add New Room</Button>
+                                    <Button onClick={handleOpen}>
+                                        Add New Room
+                                    </Button>
                                 </TableHeader>
 
                                 <TableBody className="relative">
                                     <TableBody.Head />
                                     <TableBody.Content>
-                                        {context.paginatedData.map((room, index) => renderBody(room, index, context))}
+                                        {context.paginatedData.map(
+                                            (room, index) =>
+                                                renderBody(room, index, context)
+                                        )}
                                     </TableBody.Content>
                                 </TableBody>
 
@@ -283,55 +361,97 @@ export default function Index({ rooms }) {
                             >
                                 <Card className="mx-auto w-full max-w-[24rem]">
                                     <CardBody className="flex flex-col gap-4">
-                                        <Typography variant="h4" color="blue-gray">
+                                        <Typography
+                                            variant="h4"
+                                            color="blue-gray"
+                                        >
                                             Add New Room
                                         </Typography>
 
                                         <Typography variant="h6">
                                             Name
                                         </Typography>
-                                        <Input 
-                                            label="Name" 
+                                        <Input
+                                            label="Name"
                                             name="name"
-                                            size="lg" 
-                                            value={data.name} 
-                                            onChange={(e) => setData({...data, name: e.target.value})} 
+                                            size="lg"
+                                            value={data.name}
+                                            onChange={(e) =>
+                                                setData({
+                                                    ...data,
+                                                    name: e.target.value,
+                                                })
+                                            }
                                             error={error?.name}
                                             success={error?.name}
                                         />
-                                        {error?.name && <Typography color="red">{error.name}</Typography>}
+                                        {error?.name && (
+                                            <Typography color="red">
+                                                {error.name}
+                                            </Typography>
+                                        )}
 
                                         <Typography variant="h6">
                                             Code
                                         </Typography>
-                                        <Input 
-                                            label="Code" 
+                                        <Input
+                                            label="Code"
                                             name="code"
-                                            size="lg" 
-                                            value={data.code} 
-                                            onChange={(e) => setData({...data, code: e.target.value})} 
+                                            size="lg"
+                                            value={data.code}
+                                            onChange={(e) =>
+                                                setData({
+                                                    ...data,
+                                                    code: e.target.value,
+                                                })
+                                            }
                                             error={error?.code}
                                             success={error?.code}
                                         />
-                                        {error?.code && <Typography color="red">{error.code}</Typography>}
+                                        {error?.code && (
+                                            <Typography color="red">
+                                                {error.code}
+                                            </Typography>
+                                        )}
 
                                         <Typography variant="h6">
                                             Capacity
                                         </Typography>
-                                        <Input 
-                                            label="Capacity" 
+                                        <Input
+                                            label="Capacity"
                                             name="capacity"
-                                            size="lg" 
-                                            value={data.capacity} 
-                                            onChange={(e) => setData({...data, capacity: e.target.value})} 
+                                            size="lg"
+                                            value={data.capacity}
+                                            onChange={(e) =>
+                                                setData({
+                                                    ...data,
+                                                    capacity: e.target.value,
+                                                })
+                                            }
                                             error={error?.capacity}
                                             success={error?.capacity}
                                         />
-                                        {error?.capacity && <Typography color="red">{error.capacity}</Typography>}
+                                        {error?.capacity && (
+                                            <Typography color="red">
+                                                {error.capacity}
+                                            </Typography>
+                                        )}
                                     </CardBody>
                                     <CardFooter className="pt-0 flex gap-3">
-                                        <Button variant="filled" className="w-1/2"onClick={() => handleAdd(context)}>Add</Button>
-                                        <Button variant="text" className="w-1/2" onClick={() => setOpen(false)}>Cancel</Button>
+                                        <Button
+                                            variant="filled"
+                                            className="w-1/2"
+                                            onClick={() => handleAdd(context)}
+                                        >
+                                            Add
+                                        </Button>
+                                        <Button
+                                            variant="text"
+                                            className="w-1/2"
+                                            onClick={() => setOpen(false)}
+                                        >
+                                            Cancel
+                                        </Button>
                                     </CardFooter>
                                 </Card>
                             </Dialog>
@@ -342,4 +462,3 @@ export default function Index({ rooms }) {
         </SidebarUser>
     );
 }
-
