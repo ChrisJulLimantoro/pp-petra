@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EventController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
@@ -20,14 +21,14 @@ use App\Http\Controllers\RBACRoleAssignmentController;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('login'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-})->name('home');
+// Route::get('/', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('login'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// })->name('home');
 
 
 // Route::get('/dashboard', function () {
@@ -41,7 +42,7 @@ Route::get('/', function () {
 // });
 
 Route::get('/routes', [App\Http\Controllers\RBACController::class, 'getAllRoutes'])->name('routes');
-Route::get("/login", [AuthController::class, 'loginView'])->name('login');
+Route::get("/", [AuthController::class, 'loginView'])->name('login');
 Route::get("/processLogin", [AuthController::class, 'login'])->name('processLogin');
 Route::get("/logout", [AuthController::class, 'logout'])->name('logout');
 Route::prefix('rbac')->group(function () {
@@ -77,6 +78,15 @@ Route::prefix('room')->group(function() {
     Route::post('/{id}', [RoomController::class, 'save'])->name('room.edit');
     Route::delete('/{id}', [RoomController::class, 'destroy'])->name('room.delete');
 });
+
+Route::prefix('event')->group(function() {
+    Route::get('/', [EventController::class, 'index'])->name('event.all');
+    Route::post('/', [EventController::class, 'store'])->name('event.add');
+    Route::post('/{id}', [EventController::class, 'save'])->name('event.edit');
+    Route::post('/{id}/status', [EventController::class, 'changeStatus'])->name('event.changeStatus');
+    Route::post('/delete/{id}', [EventController::class, 'destroy'])->name('event.delete');
+});
+
 
 Route::get('/contoh-datatable', function() {
     return Inertia::render('ContohDatatable');
