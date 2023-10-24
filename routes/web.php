@@ -122,6 +122,12 @@ Route::prefix('event')->group(function() {
 });
 
 
-Route::get('/contoh-datatable', function() {
-    return Inertia::render('ContohDatatable');
-})->name('contoh.datatable');
+Route::prefix('tutorial')->group(function () {
+    Route::get('/contoh-datatable', function() {
+        return Inertia::render('Tutorial/ContohDatatable');
+    })->name('contoh.datatable');
+
+    Route::get('/contoh-alert', function () {
+        return Inertia::render('Tutorial/ContohAlert');
+    })->name('tutorial.alert');
+});
