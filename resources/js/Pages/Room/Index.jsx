@@ -30,10 +30,9 @@ import {
 export default function Index({ rooms }) {
     const columns = ["Name", "Code", "Capacity", "Action"];
 
-    const [room, setRoom] = useReducer(roomReducer, rooms);
+    const room = useRef(rooms.data);
 
     const [open, setOpen] = useState(false);
-    const [open2, setOpen2] = useState(false);
 
     const [alert, setAlert] = useState({
         isOpen: false,
@@ -47,15 +46,9 @@ export default function Index({ rooms }) {
     const [edit, setEdit] = useState();
 
     const handleOpen = () => setOpen(!open);
-    const handleOpen2 = (index) => {
-        setOpen2(!open2);
-        setDel(index);
-    };
 
-    const handleAdd = (context) =>
-        roomReducer(rooms, { type: "add", context: context });
-    const handleSave = (index, context) =>
-        roomReducer(rooms, { type: "save", index: index, context: context });
+    const handleAdd = (context) => roomHandler(room.current, { type: "add", context: context });
+    const handleSave = (index, context) => roomHandler(room.current, { type: "save", index: index, context: context });
 
     const resetForm = () => {
         setData({
@@ -80,14 +73,14 @@ export default function Index({ rooms }) {
         } else {
             setEdit(index);
             setData2({
-                name: rooms.data[index].name,
-                code: rooms.data[index].code,
-                capacity: rooms.data[index].capacity,
+                name: room.current[index].name,
+                code: room.current[index].code,
+                capacity: room.current[index].capacity,
             });
         }
     };
 
-    function roomReducer(rooms, action) {
+    function roomHandler(room, action) {
         if (action.type == "add") {
             axios
                 .post(route("room.add"), data)
@@ -95,7 +88,7 @@ export default function Index({ rooms }) {
                     if (response.data.success) {
                         resetForm();
 
-                        rooms.data.unshift(response.data.data);
+                        room.unshift(response.data.data);
                         showAlert("New room added!", "green");
                         setOpen(false);
                     } else {
@@ -109,7 +102,7 @@ export default function Index({ rooms }) {
 
             return rooms;
         } else if (action.type == "save") {
-            let selectedroom = rooms.data[action.index];
+            let selectedroom = room[action.index];
 
             axios
                 .post(route("room.edit", selectedroom.id), data2)
@@ -117,7 +110,7 @@ export default function Index({ rooms }) {
                     if (response.data.success) {
                         setData2({ name: "", code: "", capacity: "" });
 
-                        rooms.data[action.index] = response.data.data;
+                        room[action.index] = response.data.data;
                         showAlert("Room detail updated!", "green");
                         setEdit(-1);
                     } else {
