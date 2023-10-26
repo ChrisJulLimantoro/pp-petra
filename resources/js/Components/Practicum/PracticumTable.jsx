@@ -37,7 +37,7 @@ export function PracticumTable(props) {
                         <PopoverActionButton practicumId={practicum.id} openEditForm={openEditFormFactory(practicum)} >
                             <div className="w-full h-full px-2 absolute inset-0 flex">
                                 <div className="my-auto">
-                                    {practicum.name}
+                                    {`${practicum.name} (${practicum.code})`}
                                 </div>
                             </div>
                         </PopoverActionButton>
@@ -88,7 +88,7 @@ export function PracticumTable(props) {
             <div className="overflow-x-auto pb-2">
                 <table >
                     <tbody>
-                        {Object.entries(props.data).map(([day, times]) => {
+                        {Object.entries(props.practicums).map(([day, times]) => {
                             return (
                                 <Fragment key={day}>
                                     <tr key={day}>
