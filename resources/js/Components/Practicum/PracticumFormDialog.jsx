@@ -32,8 +32,6 @@ function PracticumFormDialog(props, ref) {
         feedbackRefs[input] = useRef(null);
     });
 
-    console.log(props.formData);
-
     const handleRoomChange = function (roomId) {
         const room = props.rooms[roomId];
         setRoomCapacity(room.capacity);
@@ -48,6 +46,7 @@ function PracticumFormDialog(props, ref) {
     };
 
     const handleOpen = () => {
+        console.log(`${props.formData.subject_id}|${props.formData.subject_name}`);
         resetInputsError();
         setRoomCapacity(0);
         setOpen((prev) => !prev);
@@ -151,12 +150,13 @@ function PracticumFormDialog(props, ref) {
                                     value={`${props.formData.subject_id}|${props.formData.subject_name}`}
                                     onChange={() => {}}
                                 >
-                                    {Object.entries(props.subjects).map(
-                                        ([subject_id, subject]) => {
+                                    {props.subjects.map(
+                                        (subject) => {
+                                            console.log(subject)
                                             return (
                                                 <Option
-                                                    value={`${subject_id}|${subject.name}`}
-                                                    key={`${subject_id}|${subject.name}`}
+                                                    value={`${subject.id}|${subject.name}`}
+                                                    key={`${subject.id}|${subject.name}`}
                                                 >
                                                     {subject.name}
                                                 </Option>

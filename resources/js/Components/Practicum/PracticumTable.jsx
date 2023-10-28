@@ -18,8 +18,8 @@ export function PracticumTable(props) {
         }
     }
 
-    const getPracticums = (subjects) => {
-        return Object.values(subjects).map((practicum, index) => {
+    const getPracticums = (rooms) => {
+        return Object.values(rooms).map((practicum, index) => {
             if (practicum === null) {
                 return (
                     <td
@@ -46,17 +46,17 @@ export function PracticumTable(props) {
             }
         });
     };
-    const getSubjects = (times) => {
-        return Object.keys(times[730]).map((subject) => {
+    const getRooms = (times) => {
+        return Object.keys(times[730]).map((room) => {
             return (
-                <td className="text-center border-2" key={subject}>
-                    {subject}
+                <td className="text-center border-2" key={room}>
+                    {room}
                 </td>
             );
         });
     };
-    const getBodyRows = (day, times) => {
-        return Object.entries(times).map(([time, subjects]) => {
+    const getRows = (day, times) => {
+        return Object.entries(times).map(([time, rooms]) => {
             return (
                 <tr key={`${day},${time}`}>
                     <td
@@ -66,7 +66,7 @@ export function PracticumTable(props) {
                     >
                         {time.padStart(4, '0').substring(0,2)}.{time.padStart(4, '0').substring(2,4)} - {(parseInt(time) + 100).toString().padStart(4, '0').substring(0,2)}.{(parseInt(time) + 100).toString().padStart(4, '0').substring(2,4)}
                     </td>
-                    {getPracticums(subjects)}
+                    {getPracticums(rooms)}
                 </tr>
             );
         });
@@ -95,9 +95,9 @@ export function PracticumTable(props) {
                                         <td className="text-center border-2 font-bold">
                                             {day}
                                         </td>
-                                        {getSubjects(times)}
+                                        {getRooms(times)}
                                     </tr>
-                                    {getBodyRows(day, times)}
+                                    {getRows(day, times)}
                                 </Fragment>
                             );
                         })}

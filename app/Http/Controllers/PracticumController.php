@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
+use Ramsey\Collection\Set;
 
 class PracticumController extends Controller
 {
@@ -12,20 +13,8 @@ class PracticumController extends Controller
     {
         $res = Http::withHeader('Accept', 'application/json')
             ->withToken(session('token'))
-            ->get(config('app')['API_URL'] . '/rooms');
-        $rooms = $res->json('data');
-
-        $res = Http::withHeader('Accept', 'application/json')
-            ->withToken(session('token'))
-            ->get(config('app')['API_URL'] . '/subjects');
-        
-        $subjects = [];
-        foreach ($res->json('data') as $subject) {
-            $subjects[$subject['id']] = [
-                'duration' => $subject['duration'],
-                'name' => $subject['name'],
-            ];
-        }
+            ->get(config('app')['API_URL'] . '/rooms-practicums');
+        $data = $res->json('data');
 
         $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
         $times = [730, 830, 930, 1030, 1130, 1230, 1330, 1430, 1530, 1630, 1730, 1830];
@@ -35,32 +24,50 @@ class PracticumController extends Controller
             $practicums[$day] = [];
             foreach ($times as $time) {
                 $practicums[$day][$time] = [];
-                foreach ($rooms as $room) {
+                foreach ($data as $room) {
                     $practicums[$day][$time][$room['name']] = null;
                 }
             }
         }
 
-        $roomsSimplified = [];
-        foreach ($rooms as $room) {
-            $roomsSimplified[$room['id']] = [
+        $subjects = new Set('array');
+        $rooms = [];
+        foreach ($data as $room) {
+            $rooms[$room['id']] = [
                 'name' => $room['name'],
                 'capacity' => $room['capacity'],
             ];
             foreach ($room['practicums'] as $practicum) {
                 $day = $days[$practicum['day'] - 1];
-                $practicum['duration'] = $subjects[$practicum['subject_id']]['duration'];
-                $practicum['subject_name'] = $subjects[$practicum['subject_id']]['name'];
-                $practicums[$day][$practicum['time']][$room['name']] = $practicum;
-                for ($i = 1; $i < $practicum['duration']; $i++) {
+                $duration = $practicum['subject']['duration'];
+                $time = $practicum['time'];
+                $roomName = $room['name'];
+                $practicums[$day][$time][$roomName] = [
+                    'id' => $practicum['id'],
+                    'name' => $practicum['name'],
+                    'code' => $practicum['code'],
+                    'quota' => $practicum['quota'],
+                    'subject_id' => $practicum['subject_id'],
+                    'subject_name' => $practicum['subject']['name'],
+                    'duration' => $duration,
+                    'room_id' => $room['id'],
+                    'time' => $time,
+                    'day' => $practicum['day'],
+                ];
+                for ($i = 1; $i < $duration; $i++) {
                     $time = $practicum['time'] + $i * 100;
                     $practicums[$day][$time][$room['name']] = 'merged';
                 }
+
+                $subjects->add([
+                    'id' => $practicum['subject_id'],
+                    'name' => $practicum['subject']['name'],
+                ]);
             }
         }
 
-        $props['subjects'] = $subjects;
-        $props['rooms'] = $roomsSimplified;
+        $props['subjects'] = $subjects->toArray();
+        $props['rooms'] = $rooms;
         $props['practicums'] = $practicums;
 
         return Inertia::render('Assistant/Practicum', $props);
