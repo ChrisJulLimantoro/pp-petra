@@ -2,7 +2,7 @@ import { Typography, Breadcrumbs, } from "@material-tailwind/react";
 
 export default function DetailsTitle(props) {
     // type = mahasiswa/asisten
-    const {type, matkul, pararel, hari, jam_start, jam_end, ruangan, id} = props;
+    const {type, matkul, pararel, hari, jam_start, jam_end, ruangan, practicum_id} = props;
 
     return (
         <div>
@@ -13,7 +13,7 @@ export default function DetailsTitle(props) {
                     <a href={route('practicum.index')} className="opacity-60">
                         Kelas Asisten
                     </a>
-                    <a href={route('practicum.detail', id)} className="opacity-60">
+                    <a href={route('practicum.detail', practicum_id)} className="opacity-60">
                         Detail Praktikum
                     </a>
                     <a href="#">Add {type}</a>

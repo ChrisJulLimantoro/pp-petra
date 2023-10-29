@@ -87,7 +87,7 @@ export default function AddMahasiswa(props) {
                                 jam_start="08.00"
                                 jam_end="10.00"
                                 ruangan="P.202"
-                                id={id}
+                                practicum_id={id}
                             />
                         </div>
                         <div className="input-nrp">

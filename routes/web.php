@@ -87,13 +87,11 @@ Route::prefix('asisten')->group(function () {
         Route::delete('/{id}', [PracticumController::class, 'destroy'])->name('practicum.destroy');
         Route::patch('/{id}', [PracticumController::class, 'update'])->name('practicum.update');
 
-        Route::get('/{id}', function ($id) {
-            return Inertia::render('Assistant/DetailKelas', ['id' => $id]);
-        })->name('practicum.detail');
 
-        Route::get('/{id}/move/{type}', function ($id, $type) {
-            return Inertia::render('Assistant/Move', ['id' => $id, 'type' => $type]);
-        })->name('practicum.move');
+
+        Route::get('/{id}', [PracticumController::class, 'getClassDetails'])->name('practicum.detail');
+
+        Route::get('/{id}/move/{type}/{student_assistant_practicum_id}', [PracticumController::class, 'getMovePraktikumDetails'])->name('practicum.move');
 
         Route::get('/{id}/addassistant', function ($id) {
             return Inertia::render('Assistant/AddAssistant', ['id' => $id]);
@@ -108,6 +106,7 @@ Route::prefix('asisten')->group(function () {
 Route::get('/test', function () {
     return Inertia::render('Assistant/test');
 })->name('oiedjhowiej');
+
 Route::prefix('room')->group(function() {
     Route::get('/', [RoomController::class, 'index'])->name('room.all');
     // Route::get('/{id}', [RoomController::class, 'show'])->name('room.show');

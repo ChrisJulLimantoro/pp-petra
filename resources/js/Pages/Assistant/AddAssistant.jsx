@@ -95,7 +95,7 @@ export default function AddAssistant(props) {
                 <div className="mt-10 w-full h-72 col-span-4">
                     <div className='judul'>
                         <AddTitle type="Asisten" matkul="Pemrograman Berorientasi Objek" 
-                            pararel="A" hari="Senin" jam_start="08.00" jam_end="10.00" ruangan="P.202" id={id} />    
+                            pararel="A" hari="Senin" jam_start="08.00" jam_end="10.00" ruangan="P.202" practicum_id={id} />    
                     </div>
 
                     <div className="tabel-asisten">

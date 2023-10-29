@@ -1,9 +1,9 @@
-import { Typography, Breadcrumbs,Select } from "@material-tailwind/react";
+import { Typography, Breadcrumbs } from "@material-tailwind/react";
 
 export default function MoveTitle(props) {
     // Type = Mahasiswa & Asisten
-    const {type, nama, nrp, id} = props;
-
+    const {type, nama, nrp, practicum_id, mata_kuliah, kelas_paralel, hari, jam_start, jam_end} = props;
+    
     return (
         <div>
             <Breadcrumbs fullWidth className="mb-5">
@@ -13,7 +13,7 @@ export default function MoveTitle(props) {
                     <a href={route('practicum.index')} className="opacity-60">
                         Kelas Asisten
                     </a>
-                    <a href={route('practicum.detail', id)} className="opacity-60">
+                    <a href={route('practicum.detail', practicum_id)} className="opacity-60">
                         Detail Praktikum
                     </a>
                     <a href="#">Move {type}</a>
@@ -25,8 +25,8 @@ export default function MoveTitle(props) {
             <Typography variant="h4" color="gray" className="mb-2">
                 {nama} - {nrp}
             </Typography>
-            <p className="mb-2">Kelas Awal : BDL Kelas C</p>
-            <p className="mb-4">Jadwal : Selasa 07.30 - 09.30</p>
+            <p className="mb-2">Kelas Awal : {mata_kuliah} Kelas {kelas_paralel}</p>
+            <p className="mb-4">Jadwal : {hari}, {jam_start} - {jam_end}</p>
 
         </div>
 

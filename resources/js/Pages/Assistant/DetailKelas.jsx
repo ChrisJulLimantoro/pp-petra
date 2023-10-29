@@ -5,86 +5,60 @@ import DetailsTitle from "@/Components/Assistant/Title/DetailsTitle";
 import TableWithEditDeleteButton from "@/Components/Assistant/Table/TableWithEditDeleteButton";
 
 export default function DetailKelas(props) {
-    const { id } = props;
-    const head_asisten = ["Nama", "NRP", "Jurusan", "Action"];
-    const data_asisten = [
-        {
-            id : 5,
-            nama: "John Michael",
-            nrp: "123456789",
-            jurusan: "Informatika",
-        },
-        {
-            id : 6,
-            nama: "Alexa Liras",
-            nrp: "987654321",
-            jurusan: "Teknik Mesin",
-        },
-        {
-            id : 7,
-            nama: "Laurent Perrier",
-            nrp: "0987654321",
-            jurusan: "Akuntansi",
-        },
-    ];
+    const { data } = props;
+    console.log(data);
+    const hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
-    const head_mhs = ["Nama", "NRP", "Jurusan", "Action"];
-    const data_mhs = [
-        {
-            id : 1,
-            nama: "Mia Amalia",
-            nrp: "234567890",
-            jurusan: "Informatika",
-        },
-        {
-            id : 2,
-            nama: "Reza Irawan",
-            nrp: "345678901",
-            jurusan: "Data Science",
-        },
-        {
-            id : 3,
-            nama: "Amelia Putri",
-            nrp: "456789012",
-            jurusan: "Sistem Informasi Bisnis",
-        },
-        {
-            id : 4,
-            nama: "Dimas Pratama",
-            nrp: "567890123",
-            jurusan: "Informatika",
-        },
-        {
-            id : 5,
-            nama: "Rini Wulandari",
-            nrp: "678901234",
-            jurusan: "Data Science",
-        },
-        {
-            id : 6,
-            nama: "Fajar Ramadhan",
-            nrp: "789012345",
-            jurusan: "Sistem Informasi Bisnis",
-        },
-        {
-            id : 7,
-            nama: "Aditya Pratama",
-            nrp: "890123456",
-            jurusan: "Informatika",
-        },
-        {
-            id : 8,
-            nama: "Dewi Lestari",
-            nrp: "901234567",
-            jurusan: "Data Science",
-        },
-        {
-            id : 9,
-            nama: "Rangga Permadi",
-            nrp: "012345678",
-            jurusan: "Sistem Informasi Bisnis",
-        },
-    ];
+    function formatTime(time) {
+        time = String(time);
+        if (
+            typeof time === "string" &&
+            (time.length === 3 || time.length === 4)
+        ) {
+            let hours, minutes;
+
+            if (time.length === 3) {
+                // For "730" format
+                hours = time.slice(0, 1);
+                minutes = time.slice(1);
+            } else if (time.length === 4) {
+                // For "1630" format
+                hours = time.slice(0, 2);
+                minutes = time.slice(2);
+            }
+
+            return `${hours.padStart(2, "0")}:${minutes}`;
+        } else {
+            return "Invalid time format";
+        }
+    }
+
+    const head = ["Nama", "NRP", "Jurusan", "Action"];
+
+    const assistants_data = [];
+    const students_data = [];
+
+    data.assistant_practicum.map((item) => {
+        const assistant = {
+            id: data.id,
+            nama: item.assistant_id,
+            nrp: item.practicum_id,
+            jurusan: item.assistant_id,
+            student_assistant_practicum_id: item.id,
+        };
+        assistants_data.push(assistant);
+    });
+
+    data.student_practicum.map((item) => {
+        const student = {
+            id: data.id,
+            nama: item.student_id,
+            nrp: item.practicum_id,
+            jurusan: item.student_id,
+            student_assistant_practicum_id: item.id,
+        };
+        students_data.push(student);
+    });
 
     return (
         <>
@@ -99,26 +73,28 @@ export default function DetailKelas(props) {
                 <div className="mt-10 w-full h-72 col-span-4">
                     <div className="judul">
                         <DetailsTitle
-                            matkul="Pemrograman Berorientasi Objek"
-                            pararel="A"
-                            hari="Senin"
-                            jam_start="08.00"
-                            jam_end="10.00"
-                            ruangan="P.202"
-                            id={id}
+                            matkul={data.name}
+                            pararel={data.code}
+                            hari={hari[data.day - 1]}
+                            jam_start={formatTime(data.time)}
+                            jam_end={formatTime(
+                                data.time + data.subject.duration * 100
+                            )}
+                            ruangan={data.room.name}
+                            id={data.id}
                         />
                     </div>
 
                     <div className="tabel_asisten mt-10">
                         <LabelTable
                             type="Asisten"
-                            slot_used="3"
-                            total_slot="3"
-                            addHref={route("practicum.addAssistant", id)}
+                            slot_used={data.assistant_practicum.length}
+                            total_slot={Math.floor(data.quota / 8)}
+                            addHref={route("practicum.addAssistant", data.id)}
                         />
                         <TableWithEditDeleteButton
-                            TABLE_HEAD={head_asisten}
-                            TABLE_ROWS={data_asisten}
+                            TABLE_HEAD={head}
+                            TABLE_ROWS={assistants_data}
                             type="Asisten"
                         />
                     </div>
@@ -126,13 +102,13 @@ export default function DetailKelas(props) {
                     <div className="tabel_mahasiswa mt-10">
                         <LabelTable
                             type="Mahasiswa"
-                            slot_used="10"
-                            total_slot="20"
-                            addHref={route("practicum.addStudent", id)}
+                            slot_used={data.student_practicum.length}
+                            total_slot={data.quota}
+                            addHref={route("practicum.addStudent", data.id)}
                         />
                         <TableWithEditDeleteButton
-                            TABLE_HEAD={head_mhs}
-                            TABLE_ROWS={data_mhs}
+                            TABLE_HEAD={head}
+                            TABLE_ROWS={students_data}
                             type="Mahasiswa"
                         />
                     </div>

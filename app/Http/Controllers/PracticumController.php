@@ -13,7 +13,7 @@ class PracticumController extends Controller
         $res = Http::withHeader('Accept', 'application/json')
             ->withToken(session('token'))
             ->get(config('app')['API_URL'] . '/subjects');
-        
+
         $data = $res->json('data');
 
 
@@ -85,7 +85,7 @@ class PracticumController extends Controller
 
         $res = Http::withHeaders([
             'Accept' => 'application/json',
-            'Content-Type' => 'application/json'        
+            'Content-Type' => 'application/json'
         ])->withToken(session('token'))
             ->post(env('API_URL') . '/practicums', [
                 'name' => $name,
@@ -99,7 +99,8 @@ class PracticumController extends Controller
         return response()->json($res->json(), $res->status());
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         $name = null;
         $subject_id = null;
         if ($request->subject != null && $request->subject != '') {
@@ -120,18 +121,83 @@ class PracticumController extends Controller
                 'day' => $request->day,
                 'time' => $request->time,
                 'subject_id' => $request->subject_id,
-            ]); 
+            ]);
 
         return response()->json($res->json(), $res->status());
     }
 
-    public function destroy($id) {
+    public function destroy($id)
+    {
         $res = Http::withHeaders([
             'Accept' => 'application/json',
-            'Content-Type' => 'application/json'        
+            'Content-Type' => 'application/json'
         ])->withToken(session('token'))
             ->delete(env('API_URL') . '/practicums/' . $id);
 
         return redirect()->back()->with('message', $res->json());
     }
+
+    public function getClassDetails($id)
+    {
+        $res = Http::withHeader('Accept', 'application/json')
+            ->withToken(session('token'))
+            ->get(config('app')['API_URL'] . '/practicums' . '/' . $id);
+
+        $data = $res->json('data');
+
+        return Inertia::render('Assistant/DetailKelas', ['data' => $data]);
+    }
+
+    public function getMovePraktikumDetails($id, $type, $student_assistant_practicum_id)
+    {
+        if ($type == 'Asisten') {
+            $res = Http::withHeader('Accept', 'application/json')
+                ->withToken(session('token'))
+                ->get(config('app')['API_URL'] . '/assistant-practicums' . '/' . $student_assistant_practicum_id);
+
+            $data = $res->json('data');
+
+            $res2 = Http::withHeader('Accept', 'application/json')
+                ->withToken(session('token'))
+                ->get(config('app')['API_URL'] . '/subjects' . '/' . $data['practicum']['subject_id']);
+
+            $data2 = $res2->json('data');
+
+            $res3 = Http::withHeader('Accept', 'application/json')
+                ->withToken(session('token'))
+                ->get(config('app')['API_URL'] . '/assistants' . '/' . $data['assistant_id']);
+
+            $data3 = $res3->json('data');
+        } else if ($type == 'Mahasiswa') {
+            $res = Http::withHeader('Accept', 'application/json')
+                ->withToken(session('token'))
+                ->get(config('app')['API_URL'] . '/student-practicums' . '/' . $student_assistant_practicum_id);
+
+            $data = $res->json('data');
+
+            $res2 = Http::withHeader('Accept', 'application/json')
+                ->withToken(session('token'))
+                ->get(config('app')['API_URL'] . '/subjects' . '/' . $data['practicum']['subject_id']);
+
+            $data2 = $res2->json('data');
+
+            $res3 = Http::withHeader('Accept', 'application/json')
+                ->withToken(session('token'))
+                ->get(config('app')['API_URL'] . '/students' . '/' . $data['student_id']);
+
+            $data3 = $res3->json('data');
+        }
+
+        return Inertia::render('Assistant/Move', ['id' => $id, 'type' => $type, 'data' => $data, 'data2' => $data2, 'data3' => $data3]);
+    }
+
+    // on progress
+    // public function getMoveAsisten($id)
+    // {
+    //     $res = Http::withHeader('Accept', 'application/json')
+    //             ->withToken(session('token'))
+    //             ->get(config('app')['API_URL'] . '/assistant-practicums' . '/' . $id);
+
+    //     return;
+    // }
 }

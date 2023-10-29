@@ -27,12 +27,12 @@ export default function TableWithEditDeleteButton(props) {
                 </tr>
                 </thead>
                 <tbody >
-                {TABLE_ROWS.map(({ nama, jurusan, nrp, id}, index) => {
+                {TABLE_ROWS.map(({ nama, jurusan, nrp, id, student_assistant_practicum_id}, index) => {
                     const isLast = index === TABLE_ROWS.length - 1;
                     const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
         
                     return (
-                    <tr key={id} className="hover:bg-gray-100">
+                    <tr key={index} className="hover:bg-gray-100">
                         <td className={classes}>
                             <Typography
                                 variant="small"
@@ -65,7 +65,7 @@ export default function TableWithEditDeleteButton(props) {
 
                         <td className={classes}>
                             <div className="flex gap-3">
-                                <a href={route('practicum.move', {id, type})}>
+                                <a href={route('practicum.move', {id, type, student_assistant_practicum_id})}>
                                     <IconButton variant="text">
                                         <Tooltip content="Move" placement="top">
                                             <PencilIcon width={20} cursor={'pointer'} stroke="orange" /> 
