@@ -13,16 +13,16 @@ import DialogSuccess from "@/Components/DialogSuccess";
 import DialogAsk from "@/Components/DialogAsk";
 
 export const viewKelasContext = createContext();
-
+export const username = "Leo" + " ";
 export default function viewKelas({ auth }) {
     function processData(dataLowongan, context) {
         return dataLowongan.map((item) => ({
             ...item,
             status:
-                item.jumlah_asisten - item.daftar_pengajar.length === 0
+                item.jumlah_asisten - item.daftar_asisten.length === 0
                     ? "FULL"
                     : `-${
-                          item.jumlah_asisten - item.daftar_pengajar.length
+                          item.jumlah_asisten - item.daftar_asisten.length
                       } Asisten`,
         }));
     }
@@ -36,7 +36,7 @@ export default function viewKelas({ auth }) {
         "Mata Kuliah Praktikum",
         "Kelas",
         "Jumlah Asisten",
-        "Daftar Pengajar",
+        "Daftar Asisten",
         "Status",
         "Action",
     ];
@@ -47,20 +47,20 @@ export default function viewKelas({ auth }) {
         "Mata Kuliah Praktikum",
         "Kelas",
         "Jumlah Asisten",
-        "Daftar Pengajar",
+        "Daftar Asisten",
         "Status",
         "Action",
     ];
-    
+
     const updateDataLowongan = (updatedData) => {
-        const processedUpdatedData = processData(updatedData)
-        setLowongan(processedUpdatedData)
+        const processedUpdatedData = processData(updatedData);
+        setLowongan(processedUpdatedData);
         console.log("Updating dataLowongan:", dataLowongan);
     };
 
     const updateDataAjar = (updatedData) => {
-        const processedUpdatedData = processData(updatedData)
-        setAjar(processedUpdatedData)
+        const processedUpdatedData = processData(updatedData);
+        setAjar(processedUpdatedData);
         console.log("Updating dataAjar:", dataAjar);
     };
 
@@ -70,14 +70,14 @@ export default function viewKelas({ auth }) {
     const renderDataAjar = (item, index, context) => {
         if (item.empty) {
             return (
-                <tr key={'notFound'}>
+                <tr key={"notFound"}>
                     <TableCell colSpan={kolomAjar.length}>
                         <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal text-center"
-                            >
-                                No data found
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal text-center"
+                        >
+                            No data found
                         </Typography>
                     </TableCell>
                 </tr>
@@ -141,19 +141,19 @@ export default function viewKelas({ auth }) {
                 )}
             </tr>
         );
-    }
+    };
 
     const renderDataLowongan = (item, index, context) => {
         if (item.empty) {
             return (
-                <tr key={'notFound'}>
+                <tr key={"notFound"}>
                     <TableCell colSpan={kolomLowongan.length}>
                         <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal text-center"
-                            >
-                                No data found
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal text-center"
+                        >
+                            No data found
                         </Typography>
                     </TableCell>
                 </tr>
@@ -161,48 +161,72 @@ export default function viewKelas({ auth }) {
         }
 
         return (
-            <tr key={index + 1 + (context.perPage * (context.currentPage - 1)) + '_2'}>
+            <tr
+                key={
+                    index +
+                    1 +
+                    context.perPage * (context.currentPage - 1) +
+                    "_2"
+                }
+            >
                 <TableCell>
                     <Typography variant="small" color="blue-gray">
-                        {index + 1 + (context.perPage * (context.currentPage - 1))}
+                        {index +
+                            1 +
+                            context.perPage * (context.currentPage - 1)}
                     </Typography>
                 </TableCell>
 
-                {kolomLowongan.map((kolom) => (
+                {kolomLowongan.map((kolom) =>
                     kolom !== "Action" ? (
                         <TableCell>
-                            <Typography variant="small"
-                            color={
-                                item[kolom.toLowerCase().replaceAll(' ', '_')] === "Seleksi Kelas"
-                                    ? "orange"  
-                                    : item[kolom.toLowerCase().replaceAll(' ', '_')] ===
-                                            "Ditolak" ||
-                                        item[kolom.toLowerCase().replaceAll(' ', '_')] === "FULL"
-                                    ? "red"
-                                    : item[kolom.toLowerCase().replaceAll(' ', '_')] === "Diterima"
-                                    ? "green"
-                                    : "blue-gray"
-                            }>
-                                {item[kolom.toLowerCase().replaceAll(' ', '_')]}
+                            <Typography
+                                variant="small"
+                                color={
+                                    item[
+                                        kolom.toLowerCase().replaceAll(" ", "_")
+                                    ] === "Seleksi Kelas"
+                                        ? "orange"
+                                        : item[
+                                              kolom
+                                                  .toLowerCase()
+                                                  .replaceAll(" ", "_")
+                                          ] === "Ditolak" ||
+                                          item[
+                                              kolom
+                                                  .toLowerCase()
+                                                  .replaceAll(" ", "_")
+                                          ] === "FULL"
+                                        ? "red"
+                                        : item[
+                                              kolom
+                                                  .toLowerCase()
+                                                  .replaceAll(" ", "_")
+                                          ] === "Diterima"
+                                        ? "green"
+                                        : "blue-gray"
+                                }
+                            >
+                                {item[kolom.toLowerCase().replaceAll(" ", "_")]}
                             </Typography>
                         </TableCell>
                     ) : (
-                    <TableCell>
-                        <DialogSuccess 
-                        title="Ajar" 
-                        dialog="PENDAFTARAN" 
-                        id={index} 
-                        updateDataAjar={updateDataAjar} 
-                        updateDataLowongan={updateDataLowongan}
-                        data1={ajar}
-                        data2={lowongan}
-                    />
-                    </TableCell>
+                        <TableCell>
+                            <DialogSuccess
+                                title="Ajar"
+                                dialog="PENDAFTARAN"
+                                id={index}
+                                updateDataAjar={updateDataAjar}
+                                updateDataLowongan={updateDataLowongan}
+                                data1={ajar}
+                                data2={lowongan}
+                            />
+                        </TableCell>
                     )
-                ))}
+                )}
             </tr>
-        )
-    }
+        );
+    };
 
     return (
         <viewKelasContext.Provider value={{ lowongan: lowongan, ajar: ajar }}>
@@ -230,11 +254,16 @@ export default function viewKelas({ auth }) {
                                         <TableHeader title={titleAjar} />
 
                                         <TableBody className={"relative "}>
-                                            <TableBody.Head />  
+                                            <TableBody.Head />
                                             <TableBody.Content>
-                                                {
-                                                    context.paginatedData.map((item, index) => renderDataAjar(item, index, context))
-                                                }
+                                                {context.paginatedData.map(
+                                                    (item, index) =>
+                                                        renderDataAjar(
+                                                            item,
+                                                            index,
+                                                            context
+                                                        )
+                                                )}
                                             </TableBody.Content>
                                         </TableBody>
 
@@ -263,9 +292,14 @@ export default function viewKelas({ auth }) {
                                         <TableBody className={"relative "}>
                                             <TableBody.Head />
                                             <TableBody.Content>
-                                                {
-                                                    context.paginatedData.map((item, index) => renderDataLowongan(item, index, context))
-                                                }
+                                                {context.paginatedData.map(
+                                                    (item, index) =>
+                                                        renderDataLowongan(
+                                                            item,
+                                                            index,
+                                                            context
+                                                        )
+                                                )}
                                             </TableBody.Content>
                                         </TableBody>
 

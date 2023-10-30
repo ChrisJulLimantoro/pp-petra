@@ -7,7 +7,7 @@ import {
     DialogFooter,
 } from "@material-tailwind/react";
 import DialogDelete from "./DialogDelete";
-import { viewKelasContext } from "@/Pages/Asisten/viewKelas";
+import { viewKelasContext, username } from "@/Pages/Asisten/viewKelas";
 
 export default function DialogAsk(props) {
     const [askDialogOpen, setAskDialogOpen] = useState(false);
@@ -26,7 +26,9 @@ export default function DialogAsk(props) {
         setDeleteDialogOpen(true);
         setAskDialogOpen(false);
         const taken = pageData.ajar[props.id];
-        taken.jumlah_asisten += 1;
+        taken.daftar_asisten = taken.daftar_asisten.filter(
+            (item) => item !== username
+        );
         const updatedAjar = pageData.ajar.filter(
             (item, index) => index !== props.id
         );
