@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DaftarPraktikum;
+use App\Http\Controllers\DaftarPraktikumController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RBACController;
 use App\Http\Controllers\RBACRoleAssignmentController;
@@ -64,11 +66,13 @@ Route::prefix('mahasiswa')->group(function () {
         return Inertia::render('Mahasiswa/Dashboard');
     })->name('Dashboard');
 
-    Route::get('/daftarPraktikum', function () {
-        return Inertia::render('Mahasiswa/DaftarPraktikum');
-    })->name('Daftar Praktikum');
+    Route::get('/daftarPraktikum', [DaftarPraktikumController::class, 'getSubject'])->name('Daftar Praktikum');
+
+    Route::get('/getClass/{course}', [DaftarPraktikumController::class, 'getClass'])->name('mahasiswa.getClass');
+
+    Route::post('/addStudentPracticum', [DaftarPraktikumController::class, 'addClass'])->name('mahasiswa.addPracticum');
 });
 
-Route::get('/contoh-datatable', function() {
+Route::get('/contoh-datatable', function () {
     return Inertia::render('ContohDatatable');
 })->name('contoh.datatable');

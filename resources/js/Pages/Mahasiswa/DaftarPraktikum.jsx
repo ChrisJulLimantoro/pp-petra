@@ -8,9 +8,41 @@ import TableBody from "@/Components/DataTable/TableBody";
 import TableFooter from "@/Components/DataTable/TableFooter";
 import TableCell from "@/Components/DataTable/TableCell";
 import { DataTableContext } from "@/Components/DataTable/DataTable";
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { Select, Option } from "@material-tailwind/react";
 
-export default function Dashboard({ auth }) {
-    const dataMatkul = ["Basis Data Lanjutan", "Basis Data", "Struktur Data"];
+
+export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) {
+    let [course, setCourse] = useState('');
+    let [selected1Options, setSelected1Options ]= useState([]);
+    let [selected2Options, setSelected2Options ]= useState([]);
+    const [class1Options, setClass1Options] = useState([]);
+    const [class2Options, setClass2Options] = useState([]);
+    let [pracID, setPracID]= useState(null);
+    // const [alert, setAlert] = useState({
+    //     isOpen: false,
+    //     color: "red",
+    //     message: "Role unassigned successfully!",
+    // });
+    useEffect(() => {
+        if(course){
+            axios.get(route('mahasiswa.getClass', course))
+            .then(response => {
+                const { class1, class2, practicumID } = response.data;
+                setClass1Options(class1);
+                setClass2Options(class2);
+                setPracID(practicumID);
+            })
+            .catch(error => {
+                console.log(error);
+
+            });
+        }
+    },[course]);
+
+    const dataMatkul = matkul;
+    const idMatkul= id;
     const Pilihan = ["A", "B", "C", "D", "E"];
     const kolom = [
         "Hari",
@@ -64,6 +96,51 @@ export default function Dashboard({ auth }) {
     }
     
   `;
+
+  const handleCourseChange = (selectedOption) => {
+    setCourse(selectedOption);
+  };
+
+  const handle1Change = (selectedOption) => {
+    setSelected1Options(selectedOption);
+  }
+
+  const handle2Change = (selectedOption) => {
+    setSelected2Options(selectedOption);
+  }
+//   const showAlert = (message, color) => {
+//     setAlert({isOpen: true, color: color, message: message});
+
+//     setTimeout(() => {
+//         setAlert({...alert, isOpen: false})
+//     }, 1000);
+// }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const data= {
+        matkul: course,
+        pilihan1: selected1Options,
+        pilihan2: selected2Options,
+    };
+
+    axios.post(route('mahasiswa.addPracticum'), data)
+    .then((response) => {
+        if (response.data.success) {
+            alert("OK");
+            // showAlert("green", "Anda Berhasil Mendaftar");
+        }
+        else {
+            alert("NO");
+            // showAlert("red", "Anda Berhasil Mendaftar");
+        }
+    })
+    .catch((error) => {
+        alert("Y");
+    //    showAlert("red", "SOMETHING WENT WRONG!");
+    })
+  }
+
     return (
         <>
             <Head>
@@ -76,7 +153,7 @@ export default function Dashboard({ auth }) {
                 </div>
                 <div className="mt-16 w-full h-72 mx-8">
                     <div>
-                        <form action="">
+                        <form onSubmit={handleSubmit}>
                             <div className="grid grid-cols-2 mb-8">
                                 <div className="mt-2 divLabel">
                                     <h1 className="w-full">
@@ -84,10 +161,13 @@ export default function Dashboard({ auth }) {
                                     </h1>
                                 </div>
                                 <div>
-                                    <SelectMatkul
-                                        data={dataMatkul}
-                                        title="Pilih Mata Kuliah"
-                                    ></SelectMatkul>
+                                    <div className="w-72">
+                                        <Select label="Pilih Mata Kuliah" size="md" variant="outlined" id= 'course' onChange={handleCourseChange}>
+                                            {dataMatkul.map((item,index) => (
+                                            <Option key={idMatkul[index]} value={idMatkul[index]}>{item}</Option>
+                                            ))}
+                                        </Select>
+                                    </div>
                                 </div>
                             </div>
 
@@ -96,10 +176,17 @@ export default function Dashboard({ auth }) {
                                     <h1 className="w-full">Pilihan 1</h1>
                                 </div>
                                 <div>
-                                    <SelectMatkul
-                                        data={Pilihan}
+                                    <div className="w-72">
+                                        <Select label="Pilihan 1" size="md" variant="outlined" id= 'class1' onChange={handle1Change}>
+                                            {class1Options.map((item,index) => (
+                                            <Option key={index} value={pracID[index]}>{item}</Option>
+                                            ))}
+                                        </Select>
+                                    </div>
+                                    {/* <SelectMatkul
+                                        data={class1Options}
                                         title="Pilihan Pertama"
-                                    ></SelectMatkul>
+                                    ></SelectMatkul> */}
                                 </div>
                             </div>
 
@@ -108,10 +195,13 @@ export default function Dashboard({ auth }) {
                                     <h1 className="w-full">Pilihan 2</h1>
                                 </div>
                                 <div>
-                                    <SelectMatkul
-                                        data={Pilihan}
-                                        title="Pilihan Pertama"
-                                    ></SelectMatkul>
+                                    <div className="w-72">
+                                        <Select label="Pilihan 2" size="md" variant="outlined" id= 'class2' onChange={handle2Change}>
+                                            {class2Options.map((item,index) => (
+                                            <Option key={index} value={pracID[index]}>{item}</Option>
+                                            ))}
+                                        </Select>
+                                    </div>
                                 </div>
                             </div>
 
@@ -121,6 +211,7 @@ export default function Dashboard({ auth }) {
                                         variant="gradient"
                                         color="indigo"
                                         className="btn"
+                                        type="submit"
                                     >
                                         Input
                                     </Button>

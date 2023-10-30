@@ -6,12 +6,8 @@ export default function SelectDefault(props) {
     <div className="w-72">
       <Select label={props.title} size="md" variant="outlined">
         {props.data.map((item,index) => (
-            <Option key={index}>{item}</Option>
+          <Option key={index} value={item}>{item}</Option>
         ))}
-        {/* <Option>Struktur Data</Option>
-        <Option>Basis Data Lanjutan</Option>
-        <Option>Basis Data</Option>
-        <Option>Sistem Operasi</Option> */}
       </Select>
     </div>
   );
