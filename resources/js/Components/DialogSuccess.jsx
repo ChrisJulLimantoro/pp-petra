@@ -19,7 +19,7 @@ export default function DialogSuccess(props) {
     const handleOpen2 = () => {
         setOpen(!open);
         const taken = pageData.lowongan[props.id];
-
+        taken.jumlah_asisten -= 1;
         const updatedLowongan = pageData.lowongan.filter(
             (item, index) => index !== props.id
         );
