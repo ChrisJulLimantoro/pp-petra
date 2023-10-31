@@ -33,8 +33,6 @@ class DaftarPraktikumController extends Controller
         $daftar = Http::withHeader('Accept', 'application/json')->withToken(session('token'))->get($url);
         $daftar = json_decode($daftar->getBody(), true);
         $data['daftar'] = $daftar['data'];
-        // dd($data['daftar']);
-        // echo session('user_id');
         $data['daftarPraktikum'] = [];
         $nama = [];
         $day = [];
@@ -44,12 +42,8 @@ class DaftarPraktikumController extends Controller
         $time = [];
         foreach ($data['daftar'] as $x) {
             if ($x['student_id'] == session('user_id')) {
-                // echo "YA";
                 $temp = $x['practicum'];
-                //Nama Matkul
                 $nama[] = $temp['name'];
-                // array_push($data['nama'], $temp['name']);
-                // $data['nama'] = $temp['name'];
 
                 if ($temp['day'] == "1") {
                     $day[] = 'Senin';
@@ -93,10 +87,6 @@ class DaftarPraktikumController extends Controller
                 $time[] = $startHour . " - " . $endHour;
             }
         }
-        // $data['namaTable'] = $nama;
-        // $data['dayTable'] = $day;
-        // $data['classTable'] = $class;
-        // dd($data['classTable']);
         $dataTable = [
             "Mata Kuliah Praktikum" => $nama,
             "Hari" => $day,
@@ -172,9 +162,5 @@ class DaftarPraktikumController extends Controller
             'choice' => '2'
         ]));
         return $res;
-        // return response()->json([
-        //     'response' => $res,
-        //     'response1' => $res2
-        // ]);
     }
 }

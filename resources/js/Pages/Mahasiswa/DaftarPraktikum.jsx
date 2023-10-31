@@ -11,6 +11,8 @@ import { DataTableContext } from "@/Components/DataTable/DataTable";
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Select, Option } from "@material-tailwind/react";
+import NotificationAlert from "@/Components/NotificationAlert";
+import { useRef } from "react";
 
 
 export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) {
@@ -20,11 +22,9 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
     const [class1Options, setClass1Options] = useState([]);
     const [class2Options, setClass2Options] = useState([]);
     let [pracID, setPracID]= useState(null);
-    // const [alert, setAlert] = useState({
-    //     isOpen: false,
-    //     color: "red",
-    //     message: "Role unassigned successfully!",
-    // });
+
+    const alertRef = useRef();
+    const alertGagal= useRef();
     useEffect(() => {
         if(course){
             axios.get(route('mahasiswa.getClass', course))
@@ -47,7 +47,7 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
     const kolom = [
         "Hari",
         "Jam",
-        "Mata Kuliah Praktikum",
+        "Mata_Kuliah_Praktikum",
         "Kelas",
         "Pilihan",
         "Status",
@@ -56,7 +56,7 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
         {
             hari: "Selasa",
             jam: "16.30 - 19.30",
-            "mata kuliah praktikum": "Struktur Data",
+            mata_kuliah_praktikum: "Struktur Data",
             kelas: "A",
             pilihan: "Pilihan 1",
             status: "Seleksi Kelas",
@@ -64,7 +64,7 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
         {
             hari: "Kamis",
             jam: "16.30 - 19.30",
-            "mata kuliah praktikum": "Struktur Data",
+            mata_kuliah_praktikum: "Struktur Data",
             kelas: "B",
             pilihan: "Pilihan 2",
             status: "Ditolak",
@@ -72,14 +72,14 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
         {
             hari: "Kamis",
             jam: "16.30 - 19.30",
-            "mata kuliah praktikum": "Struktur Data",
+            mata_kuliah_praktikum: "Struktur Data",
             kelas: "B",
             pilihan: "Pilihan 2",
             status: "Diterima",
         },
     ];
+    
     const handleUpdateData = (updatedData) => {
-        // Handle updated data here
         console.log(updatedData);
     };
     const styles = `
@@ -108,13 +108,6 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
   const handle2Change = (selectedOption) => {
     setSelected2Options(selectedOption);
   }
-//   const showAlert = (message, color) => {
-//     setAlert({isOpen: true, color: color, message: message});
-
-//     setTimeout(() => {
-//         setAlert({...alert, isOpen: false})
-//     }, 1000);
-// }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -127,17 +120,26 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
     axios.post(route('mahasiswa.addPracticum'), data)
     .then((response) => {
         if (response.data.success) {
-            alert("OK");
-            // showAlert("green", "Anda Berhasil Mendaftar");
+            alertRef.current?.show(
+                "Berhasil mendaftar",
+                "green",
+                2000 
+            );
         }
         else {
-            alert("NO");
-            // showAlert("red", "Anda Berhasil Mendaftar");
+            alertGagal.current?.show(
+                "Gagal Mendaftar",
+                "red",
+                2000
+            );
         }
     })
     .catch((error) => {
-        alert("Y");
-    //    showAlert("red", "SOMETHING WENT WRONG!");
+        alertGagal.current?.show(
+            "Gagal Mendaftar",
+            "red",
+            2000
+        );
     })
   }
 
@@ -147,6 +149,18 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
                 <title>SAOCP-Daftar Praktikum</title>
                 <style>{styles}</style>
             </Head>
+            <NotificationAlert 
+                ref={alertRef}
+                className="w-[20rem] fixed top-6 right-10 py-4 z-10"
+                defaultColor="red"
+                defaultShowTime={4000}
+            />
+            <NotificationAlert 
+                ref={alertGagal}
+                className="w-[20rem] fixed top-6 right-10 py-4 z-10"
+                defaultColor="red"
+                defaultShowTime={4000}
+            />
             <div className="grid grid-cols-3">
                 <div className="col-span-1">
                     <SidebarUser></SidebarUser>
@@ -183,10 +197,6 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
                                             ))}
                                         </Select>
                                     </div>
-                                    {/* <SelectMatkul
-                                        data={class1Options}
-                                        title="Pilihan Pertama"
-                                    ></SelectMatkul> */}
                                 </div>
                             </div>
 
