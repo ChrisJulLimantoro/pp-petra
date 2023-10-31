@@ -8,6 +8,7 @@ import { DataTableContext } from "@/Components/DataTable/DataTable";
 import { Typography, Switch, Select, Option, Breadcrumbs, Card, Alert } from "@material-tailwind/react";
 import { Component } from "react";
 import { Head } from "@inertiajs/react";
+import SidebarUser from "@/Layouts/SidebarUser";
 
 export default class AssignRoutes extends Component {
     state = {
@@ -224,7 +225,7 @@ export default class AssignRoutes extends Component {
                     </style>
                 </Head>
 
-                <SidebarLayout>
+                <SidebarUser>
                     {this.state.alert.isOpen && (
                         <Alert
                             open={true}
@@ -297,7 +298,7 @@ export default class AssignRoutes extends Component {
                             )}
                         </DataTableContext.Consumer>
                     </DataTable>
-                </SidebarLayout>
+                </SidebarUser>
             </>
         );
     }

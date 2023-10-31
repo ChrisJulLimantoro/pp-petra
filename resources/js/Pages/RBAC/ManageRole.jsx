@@ -1,4 +1,5 @@
 import SidebarLayout from "@/Layouts/SidebarLayout";
+import SidebarUser from "@/Layouts/SidebarUser";
 import TableHeader from "@/Components/DataTable/TableHeader";
 import TableBody from "@/Components/DataTable/TableBody";
 import TableFooter from "@/Components/DataTable/TableFooter";
@@ -246,7 +247,7 @@ export default function ManageRole({ roles }) {
     }
 
     return (
-        <SidebarLayout>
+        <SidebarUser>
             <Head>
                 <title>Add Role</title>
             </Head>
@@ -378,6 +379,6 @@ export default function ManageRole({ roles }) {
                     )}
                 </DataTableContext.Consumer>
             </DataTable>
-        </SidebarLayout>
+        </SidebarUser>
     );
 }
