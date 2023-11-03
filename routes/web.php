@@ -1,15 +1,17 @@
 <?php
 
-use App\Http\Controllers\EventController;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Foundation\Application;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\RBACController;
-use App\Http\Controllers\RoomController;
+use App\Http\Controllers\DaftarPraktikum;
+use App\Http\Controllers\DaftarPraktikumController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\PracticumController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RBACController;
 use App\Http\Controllers\RBACRoleAssignmentController;
+use App\Http\Controllers\RoomController;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,11 +69,16 @@ Route::prefix('mahasiswa')->group(function () {
         return Inertia::render('Mahasiswa/Dashboard');
     })->name('Dashboard');
 
-    Route::get('/daftarPraktikum', function () {
-        return Inertia::render('Mahasiswa/DaftarPraktikum');
-    })->name('Daftar Praktikum');
+    Route::get('/daftarPraktikum', [DaftarPraktikumController::class, 'getSubject'])->name('Daftar Praktikum');
+
+    Route::get('/getClass/{course}', [DaftarPraktikumController::class, 'getClass'])->name('mahasiswa.getClass');
+
+    Route::post('/addStudentPracticum', [DaftarPraktikumController::class, 'addClass'])->name('mahasiswa.addPracticum');
 });
 
+Route::get('/contoh-datatable', function () {
+    return Inertia::render('ContohDatatable');
+})->name('contoh.datatable');
 Route::prefix('asisten')->group(function () {
     Route::get('/', function () {
         return Inertia::render('Assistant/Dashboard');
@@ -80,7 +87,7 @@ Route::prefix('asisten')->group(function () {
     Route::get('/viewKelas', function () {
         return Inertia::render('Asisten/viewKelas');
     })->name('View Kelas');
-    
+
     Route::prefix('praktikum')->group(function () {
         Route::get('/', [PracticumController::class, 'index'])->name('practicum.index');
         Route::post('/', [PracticumController::class, 'store'])->name('practicum.store');
@@ -90,22 +97,21 @@ Route::prefix('asisten')->group(function () {
         Route::get('/{id}', function ($id) {
             return Inertia::render('Assistant/DetailKelas', ['id' => $id]);
         })->name('practicum.detail');
-    
+
         Route::get('/{id}/move', function ($id) {
             return Inertia::render('Assistant/Move', ['id' => $id]);
         })->name('Move Mahasiswa');
-    
+
         Route::get('/{id}/addassistant', function ($id) {
             return Inertia::render('Assistant/AddAssistant', ['id' => $id]);
         })->name('practicum.addAssistant');
-    
+
         Route::get('/{id}/addmahasiswa', function ($id) {
             return Inertia::render('Assistant/AddMahasiswa', ['id' => $id]);
         })->name('practicum.addStudent');
-
     });
 });
-Route::prefix('room')->group(function() {
+Route::prefix('room')->group(function () {
     Route::get('/', [RoomController::class, 'index'])->name('room.all');
     // Route::get('/{id}', [RoomController::class, 'show'])->name('room.show');
     Route::post('/', [RoomController::class, 'store'])->name('room.add');
@@ -113,7 +119,7 @@ Route::prefix('room')->group(function() {
     Route::delete('/{id}', [RoomController::class, 'destroy'])->name('room.delete');
 });
 
-Route::prefix('event')->group(function() {
+Route::prefix('event')->group(function () {
     Route::get('/', [EventController::class, 'index'])->name('event.all');
     Route::post('/', [EventController::class, 'store'])->name('event.add');
     Route::post('/{id}', [EventController::class, 'save'])->name('event.edit');
@@ -123,7 +129,7 @@ Route::prefix('event')->group(function() {
 
 
 Route::prefix('tutorial')->group(function () {
-    Route::get('/contoh-datatable', function() {
+    Route::get('/contoh-datatable', function () {
         return Inertia::render('Tutorial/ContohDatatable');
     })->name('contoh.datatable');
 

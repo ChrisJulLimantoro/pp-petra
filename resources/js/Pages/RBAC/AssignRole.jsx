@@ -2,9 +2,10 @@ import { RoleSearchProvider } from "@/Components/RBAC/AssignRole/RoleSearchConte
 import { RolesSection } from "@/Components/RBAC/AssignRole/RolesSection";
 import { UserSearchProvider } from "@/Components/RBAC/AssignRole/UserSearchContext";
 import { UsersSection } from "@/Components/RBAC/AssignRole/UsersSection";
-import SidebarUser from "@/Layouts/SidebarUser";
+import SidebarLayout from "@/Layouts/SidebarLayout";
 import { Head } from "@inertiajs/react";
 import React, { useState } from "react";
+import SidebarUser from "@/Layouts/SidebarUser";
 
 export default function AssignRole({
     auth,

@@ -65,7 +65,6 @@ function NotificationAlert(props, ref) {
                 }
             }
         >
-            Lorem ipsum dolor sit.
             {alert.message}
         </Alert>
     );

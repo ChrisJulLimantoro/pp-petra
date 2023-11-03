@@ -8,17 +8,15 @@ import {
     Accordion,
     AccordionHeader,
     AccordionBody,
-    Button
 } from "@material-tailwind/react";
 import {
     PresentationChartBarIcon,
 } from "@heroicons/react/24/solid";
-import { ChevronRightIcon, ChevronDownIcon, Bars3Icon, MapIcon, MapPinIcon, KeyIcon } from "@heroicons/react/24/outline";
-import { Head, Link } from "@inertiajs/react";
+import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
+import { Head } from "@inertiajs/react";
 
 export default function SideBar({ children, props }) {
     const [open, setOpen] = React.useState(0);
-    const [minimized, setMinimized] = React.useState(false  );
 
     const handleOpen = (value) => {
         setOpen(open === value ? 0 : value);
@@ -37,12 +35,11 @@ export default function SideBar({ children, props }) {
                 `}
                 </style>
             </Head>
-
             <div className="box-border flex flex-row min-h-screen gap-x-7 bg-blue-gray-50 overflow-x-hidden">
-                <Card className={(minimized ? 'max-w-[60px] p-2' : 'w-1/5 p-4') + " h-full shadow-xl shadow-blue-gray-900/5 fixed rounded-none transition-all"}>
-                    <div className="mb-2 w-full flex justify-center">
+                <Card className="h-full w-1/5 p-4 shadow-xl shadow-blue-gray-900/5 fixed">
+                    <div className="mb-2 p-4">
                         <Typography variant="h5" color="blue-gray">
-                            {minimized ? <Button variant="text" className="p-3"><Bars3Icon width={20} /></Button> : 'SAOCP'}
+                            SAOCP
                         </Typography>
                     </div>
                     <List>
@@ -63,7 +60,7 @@ export default function SideBar({ children, props }) {
                                     className="border-b-0 p-3"
                                 >
                                     <ListItemPrefix>
-                                        <KeyIcon className="h-5 w-5 mr-2" />
+                                        <PresentationChartBarIcon className="h-5 w-5 mr-2" />
                                     </ListItemPrefix>
                                     <Typography
                                         color="blue-gray"
@@ -75,56 +72,36 @@ export default function SideBar({ children, props }) {
                             </ListItem>
                             <AccordionBody className="py-1">
                                 <List className="p-0">
-                                    <Link href={route('rbac.manageRole')}>
-                                        <ListItem>
-                                            <ListItemPrefix>
-                                                <ChevronRightIcon
-                                                    strokeWidth={3}
-                                                    className="h-3 w-5"
-                                                />
-                                            </ListItemPrefix>
-                                            Manage Role
-                                        </ListItem>
-                                    </Link>
-                                    <Link href={route('rbac.assignRoleView')}>
-                                        <ListItem>
-                                            <ListItemPrefix>
-                                                <ChevronRightIcon
-                                                    strokeWidth={3}
-                                                    className="h-3 w-5"
-                                                />
-                                            </ListItemPrefix>
-                                            Add User to Role
-                                        </ListItem>
-                                    </Link>
-                                    <Link href={route('rbac.assignRoutes')}>
-                                        <ListItem>
-                                            <ListItemPrefix>
-                                                <ChevronRightIcon
-                                                    strokeWidth={3}
-                                                    className="h-3 w-5"
-                                                />
-                                            </ListItemPrefix>
-                                            Add Routes to Role
-                                        </ListItem>
-                                    </Link>
+                                    <ListItem>
+                                        <ListItemPrefix>
+                                            <ChevronRightIcon
+                                                strokeWidth={3}
+                                                className="h-3 w-5"
+                                            />
+                                        </ListItemPrefix>
+                                        Add Role
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemPrefix>
+                                            <ChevronRightIcon
+                                                strokeWidth={3}
+                                                className="h-3 w-5"
+                                            />
+                                        </ListItemPrefix>
+                                        Assign User to Role
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemPrefix>
+                                            <ChevronRightIcon
+                                                strokeWidth={3}
+                                                className="h-3 w-5"
+                                            />
+                                        </ListItemPrefix>
+                                        Assign Routes to Role
+                                    </ListItem>
                                 </List>
                             </AccordionBody>
                         </Accordion>
-
-                        <Link href={route('room.all')}>
-                            <ListItem selected={open === 1}>
-                                <ListItemPrefix>
-                                    <MapPinIcon className="h-5 w-5 mr-2" />
-                                </ListItemPrefix>
-                                <Typography 
-                                    color="blue-gray"
-                                    className="mr-auto font-normal"
-                                >
-                                    Room
-                                </Typography>
-                            </ListItem>
-                        </Link>
                         {/* <Accordion
                             open={open === 2}
                             icon={
@@ -211,8 +188,7 @@ export default function SideBar({ children, props }) {
                         </ListItem> */}
                     </List>
                 </Card>
-
-                <div className={minimized ? 'w-[60px]' : 'w-1/5'}></div>       
+                <div className="w-1/5"></div>
                 <div className="p-7 w-4/5">{children}</div>
             </div>
         </>
