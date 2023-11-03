@@ -113,42 +113,17 @@ export default function Index({ events }) {
         }
     };
 
-    function changeStatus(event, context) {
-        let selectedEvent = events.data[event.value];
-
-        let raw = events.data.map((currentEvent) =>
-            currentEvent.id === selectedEvent.id
-                ? { ...currentEvent, access: event.checked }
-                : currentEvent
-        );
-
-        let filtered = [...context.filteredData].map((currentEvent) =>
-            currentEvent.id === selectedEvent.id
-                ? { ...currentEvent, access: event.checked }
-                : currentEvent
-        );
-
-        axios
-            .post(route("event.changeStatus", selectedEvent.id), {
-                status: event.checked ? 1 : 0,
-            })
-            .then((response) => {
-                if (response.data.success) {
-                    // Update the event status in the local state
-                    selectedEvent.status = event.checked ? 1 : 0;
-                    context.updateData(raw, filtered);
-                    showAlert("Event status updated!", "green");
-                } else {
-                    showAlert("Something went wrong!", "red");
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-                showAlert("Something went wrong!", "red");
-            });
-    }
+    const changeStatus = (index, context) => {
+        eventReducer(events, {
+            type: "status",
+            index: index,
+            context: context,
+        });
+    };
 
     function eventReducer(events, action) {
+        console.log(action.type);
+        console.log(action);
         if (action.type == "add") {
             axios
                 .post(route("event.add"), data)
@@ -211,6 +186,37 @@ export default function Index({ events }) {
                     console.log(err);
                     showAlert("Something went wrong!", "red");
                 });
+            // return events;
+        } else if (action.type == "status") {
+            let selectedEvent = event.data.find(
+                (h) => h.id === action.index.value
+            );
+
+            axios
+                .post(route("event.changeStatus", selectedEvent.id), {
+                    status: action.index.checked ? 1 : 0,
+                })
+                .then((response) => {
+                    if (response.data.success) {
+                        // Update the event status in the local state
+                        selectedEvent.status = action.index.checked ? 1 : 0;
+                        let allEvents = [...event.data].map((event) =>
+                            event.id === action.index.value
+                                ? { ...event, access: action.index.checked }
+                                : event
+                        );
+                        setEvent(allEvents);
+                        // context.updateData(raw, filtered);
+                        showAlert("Event status updated!", "green");
+                    } else {
+                        showAlert("Something went wrong!", "red");
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    showAlert("Something went wrong!", "red");
+                });
+            // return events;
         } else {
             throw Error("Unknown action type");
         }
@@ -308,16 +314,10 @@ export default function Index({ events }) {
                             <TableCell>
                                 <Switch
                                     onChange={(e) => {
-                                        const newCheckedStates = [
-                                            ...isSwitchChecked,
-                                        ];
-                                        newCheckedStates[index] =
-                                            e.target.checked;
-                                        setIsSwitchChecked(newCheckedStates);
                                         changeStatus(e.target, context);
                                     }}
-                                    value={index}
-                                    checked={isSwitchChecked[index]}
+                                    value={event.id}
+                                    checked={event.status === 1}
                                 />
                             </TableCell>
                         )
@@ -326,8 +326,9 @@ export default function Index({ events }) {
                             <div className="flex gap-5">
                                 {edit ===
                                     index +
-                                        context.perPage *
-                                            (context.currentPage - 1) && (
+                                        context.perPage(
+                                            context.currentPage - 1
+                                        ) && (
                                     <>
                                         <Tooltip content="Save" placement="top">
                                             <CheckIcon
@@ -447,7 +448,7 @@ export default function Index({ events }) {
                 className="w-full"
                 rawData={events.data}
                 columns={["Name", "Start Date", "End Date", "Status", "Action"]}
-                changeStatus={changeStatus}
+                // changeStatus={changeStatus}
             >
                 <DataTableContext.Consumer>
                     {(context) => (
