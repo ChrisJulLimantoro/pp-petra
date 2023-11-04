@@ -46,7 +46,6 @@ function PracticumFormDialog(props, ref) {
     };
 
     const handleOpen = () => {
-        console.log(`${props.formData.subject_id}|${props.formData.subject_name}`);
         resetInputsError();
         setRoomCapacity(0);
         setOpen((prev) => !prev);
@@ -152,7 +151,6 @@ function PracticumFormDialog(props, ref) {
                                 >
                                     {props.subjects.map(
                                         (subject) => {
-                                            console.log(subject)
                                             return (
                                                 <Option
                                                     value={`${subject.id}|${subject.name}`}
