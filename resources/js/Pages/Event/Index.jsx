@@ -223,7 +223,7 @@ export default function Index({ events }) {
     }
 
     const renderBody = (event, index, context) => {
-        console.log(context.perPage)
+        console.log(context.perPage);
         // if no data found
         if (event.empty) {
             return (
@@ -260,7 +260,10 @@ export default function Index({ events }) {
                         column !== "Status" ? (
                             <TableCell>
                                 {/* {context.perPage} */}
-                                {edit === index + context.perPage * (context.currentPage - 1) ? (
+                                {edit ===
+                                index +
+                                    context.perPage *
+                                        (context.currentPage - 1) ? (
                                     <Input
                                         label=""
                                         size="md"
@@ -323,7 +326,10 @@ export default function Index({ events }) {
                     ) : (
                         <TableCell>
                             <div className="flex gap-5">
-                                {edit === index + context.perPage * (context.currentPage - 1) && (
+                                {edit ===
+                                    index +
+                                        context.perPage *
+                                            (context.currentPage - 1) && (
                                     <>
                                         <Tooltip content="Save" placement="top">
                                             <CheckIcon
@@ -426,7 +432,7 @@ export default function Index({ events }) {
             )}
 
             <Breadcrumbs className="mb-2">
-                <a href={route("dashboard")} className="opacity-60">
+                <a href={route("Dashboard")} className="opacity-60">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-4 w-4"
