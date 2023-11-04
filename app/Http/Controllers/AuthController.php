@@ -10,9 +10,10 @@ use Inertia\Inertia;
 class AuthController extends Controller
 {
     private $googleClient;
-    public function __construct() {
+    public function __construct()
+    {
         $this->googleClient = new Google_Client();
-        
+
         $this->googleClient->setClientId(env('GOOGLE_CLIENT_ID'));
         $this->googleClient->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
         $this->googleClient->setRedirectUri(url("/processLogin"));
@@ -27,7 +28,8 @@ class AuthController extends Controller
         return Inertia::render('Auth/Login', $data);
     }
 
-    function login(Request $request) {
+    function login(Request $request)
+    {
         if ($request->getScheme() == 'http') {
             if (!isset($request->code)) {
                 return redirect()->to("/login")->with('error', "Error Authentication!!");
@@ -38,23 +40,23 @@ class AuthController extends Controller
             if ($payload) {
                 // dd($payload['email']);
                 //check petra mail
-                if(isset($payload['hd']) && str_ends_with($payload['hd'], "petra.ac.id")){
+                if (isset($payload['hd']) && str_ends_with($payload['hd'], "petra.ac.id")) {
                     //set session  
                     $request->session()->put('email', $payload['email']);
                     $request->session()->put('name', $payload['name']);
                     // session untuk mahasiswa tanpa nrp maka dosen dan admin
-                    if(str_ends_with($payload['hd'], "john.petra.ac.id")){
-                        $request->session()->put('nrp',substr($payload['email'],0,9));
+                    if (str_ends_with($payload['hd'], "john.petra.ac.id")) {
+                        $request->session()->put('nrp', substr($payload['email'], 0, 9));
                     }
                     // get laravel sanctum token from API
                     $url = env('API_URL') . "/login";
-                    $response = Http::post($url,[
+                    $response = Http::post($url, [
                         'email' => $payload['email'],
                         'password' => env('API_SECRET')
                     ]);
                     $res = json_decode($response);
                     // dd($res);
-                    if(!$res->success){
+                    if (!$res->success) {
                         $request->session()->flush();
                         return redirect()->to("/login")->with('error', "Not Registered, please contact admin!!");
                     }
@@ -63,12 +65,10 @@ class AuthController extends Controller
                     return  redirect()->to("/");
                     // return;
 
-                }else{
+                } else {
                     // echo 'gagal salah email, bkn email petra';
                     return redirect()->to("/login")->with('error', "Please Use Your @john.petra.ac.id email");
                 }
-
-
             } else {
                 // Invalid ID token
             }
@@ -89,44 +89,41 @@ class AuthController extends Controller
 
                     //verify the idtoken to convert to the data
                     $payload = $this->googleClient->verifyIdToken($id_token);
-            
+
                     if ($payload) {
                         // dd($payload);
 
                         //check petra mail
-                        if(isset($payload['hd']) && $payload['hd'] == "petra.ac.id"){
+                        if (isset($payload['hd']) && $payload['hd'] == "petra.ac.id") {
                             //set session  
-                            
+
                             //with ajax
                             session()->put('email', $payload['email']);
                             echo 'berhasil';
                             // return;
 
 
-                        }else{
+                        } else {
                             echo 'gagal salah email, bbkn email petra';
                             // return redirect()->to("/login")->with('error', "Please Use Your @john.petra.ac.id email");
                         }
-
-
                     } else {
                         // Invalid ID token
                     }
 
                     $retry = false;
-
                 } catch (\Firebase\JWT\BeforeValidException $e) {
                     $attempt++;
                     $retry = $attempt < 2;
                 }
             } while ($retry);
-            
         } else {
             return redirect()->to("/login")->with('error', "Error CSRF");
         }
     }
-    function logout(Request $request) {
+    function logout(Request $request)
+    {
         $request->session()->flush();
-        return redirect()->to("/login");
+        return redirect()->to("/");
     }
 }

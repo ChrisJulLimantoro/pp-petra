@@ -16,6 +16,7 @@ import {
     CardFooter,
     Input,
     Alert,
+    Switch,
 } from "@material-tailwind/react";
 import { Head, useForm } from "@inertiajs/react";
 import React, { useState, useReducer, useRef } from "react";
@@ -27,12 +28,18 @@ import {
     XMarkIcon,
 } from "@heroicons/react/24/outline";
 
-export default function Index({ rooms }) {
-    const columns = ["Name", "Code", "Capacity", "Action"];
+export default function Index({ events }) {
+    const columns = ["Name", "Start date", "End Date", "Status", "Action"];
 
-    const room = useRef(rooms.data);
+    const [event, setEvent] = useReducer(eventReducer, events);
+
+    // for the switch
+    const initialCheckedStates = events.data.map((event) => event.status === 1);
+    const [isSwitchChecked, setIsSwitchChecked] =
+        useState(initialCheckedStates);
 
     const [open, setOpen] = useState(false);
+    const [open2, setOpen2] = useState(false);
 
     const [alert, setAlert] = useState({
         isOpen: false,
@@ -40,21 +47,46 @@ export default function Index({ rooms }) {
         message: "",
     });
 
-    const [data, setData] = useState({ name: "", code: "", capacity: 0 });
-    const [data2, setData2] = useState({ name: "", code: "", capacity: 0 });
+    const [data, setData] = useState({
+        name: "",
+        startdate: "",
+        enddate: "",
+        status: "",
+    });
+    const [data2, setData2] = useState({
+        name: "",
+        startdate: "",
+        enddate: "",
+        status: "",
+    });
     const [error, setError] = useState();
     const [edit, setEdit] = useState();
 
     const handleOpen = () => setOpen(!open);
+    const handleOpen2 = (index) => {
+        setOpen2(!open2);
+        setDel(index);
+    };
 
-    const handleAdd = (context) => roomHandler(room.current, { type: "add", context: context });
-    const handleSave = (index, context) => roomHandler(room.current, { type: "save", index: index, context: context });
+    const handleAdd = (context) =>
+        eventReducer(events, { type: "add", context: context });
+    const handleSave = (index, context) =>
+        eventReducer(events, { type: "save", index: index, context: context });
+
+    const handleDelete = (index, context) => {
+        eventReducer(events, {
+            type: "delete",
+            index: index,
+            context: context,
+        });
+    };
 
     const resetForm = () => {
         setData({
             name: "",
-            code: "",
-            capacity: 0,
+            startdate: "",
+            enddate: "",
+            status: "",
         });
         setError(null);
     };
@@ -73,23 +105,59 @@ export default function Index({ rooms }) {
         } else {
             setEdit(index);
             setData2({
-                name: room.current[index].name,
-                code: room.current[index].code,
-                capacity: room.current[index].capacity,
+                name: events.data[index].name,
+                start_date: events.data[index].start_date,
+                end_date: events.data[index].end_date,
+                status: events.data[index].status,
             });
         }
     };
 
-    function roomHandler(room, action) {
+    function changeStatus(event, context) {
+        let selectedEvent = events.data[event.value];
+
+        let raw = events.data.map((currentEvent) =>
+            currentEvent.id === selectedEvent.id
+                ? { ...currentEvent, access: event.checked }
+                : currentEvent
+        );
+
+        let filtered = [...context.filteredData].map((currentEvent) =>
+            currentEvent.id === selectedEvent.id
+                ? { ...currentEvent, access: event.checked }
+                : currentEvent
+        );
+
+        axios
+            .post(route("event.changeStatus", selectedEvent.id), {
+                status: event.checked ? 1 : 0,
+            })
+            .then((response) => {
+                if (response.data.success) {
+                    // Update the event status in the local state
+                    selectedEvent.status = event.checked ? 1 : 0;
+                    context.updateData(raw, filtered);
+                    showAlert("Event status updated!", "green");
+                } else {
+                    showAlert("Something went wrong!", "red");
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                showAlert("Something went wrong!", "red");
+            });
+    }
+
+    function eventReducer(events, action) {
         if (action.type == "add") {
             axios
-                .post(route("room.add"), data)
+                .post(route("event.add"), data)
                 .then((response) => {
                     if (response.data.success) {
                         resetForm();
 
-                        room.unshift(response.data.data);
-                        showAlert("New room added!", "green");
+                        events.data.push(response.data.data);
+                        showAlert("New event added!", "green");
                         setOpen(false);
                     } else {
                         setError(response.data.error_message);
@@ -100,18 +168,23 @@ export default function Index({ rooms }) {
                     showAlert("Something went wrong!", "red");
                 });
 
-            return rooms;
+            return events;
         } else if (action.type == "save") {
-            let selectedroom = room[action.index];
+            let selectedevent = events.data[action.index];
 
             axios
-                .post(route("room.edit", selectedroom.id), data2)
+                .post(route("event.edit", selectedevent.id), data2)
                 .then((response) => {
                     if (response.data.success) {
-                        setData2({ name: "", code: "", capacity: "" });
+                        setData2({
+                            name: "",
+                            startdate: "",
+                            enddate: "",
+                            status: "",
+                        });
 
-                        room[action.index] = response.data.data;
-                        showAlert("Room detail updated!", "green");
+                        events.data[action.index] = response.data.data;
+                        showAlert("Event detail updated!", "green");
                         setEdit(-1);
                     } else {
                         showAlert("Something went wrong!", "red");
@@ -122,15 +195,30 @@ export default function Index({ rooms }) {
                     showAlert("Something went wrong!", "red");
                 });
 
-            return rooms;
+            return events;
+        } else if (action.type == "delete") {
+            axios
+                .post(route("event.delete", events.data[action.index].id))
+                .then((response) => {
+                    if (response.data.success) {
+                        events.data.splice(action.index, 1);
+                        showAlert("Event deleted!", "green");
+                    } else {
+                        showAlert("Something went wrong!", "red");
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    showAlert("Something went wrong!", "red");
+                });
         } else {
             throw Error("Unknown action type");
         }
     }
 
-    const renderBody = (room, index, context) => {
+    const renderBody = (event, index, context) => {
         // if no data found
-        if (room.empty) {
+        if (event.empty) {
             return (
                 <tr key={"notFound"}>
                     <TableCell colSpan={4}>
@@ -147,7 +235,7 @@ export default function Index({ rooms }) {
         }
 
         return (
-            <tr key={room.slug ?? index}>
+            <tr key={index}>
                 <TableCell>
                     <Typography
                         variant="small"
@@ -162,58 +250,77 @@ export default function Index({ rooms }) {
 
                 {columns.map((column) =>
                     column !== "Action" ? (
-                        <TableCell>
-                            {edit ===
-                            index +
-                                context.perPage * (context.currentPage - 1) ? (
-                                <Input
-                                    label=""
-                                    size="md"
-                                    name={column
-                                        .toLowerCase()
-                                        .replaceAll(" ", "_")}
-                                    variant="standard"
-                                    className="text-blue-gray-900"
-                                    autoFocus
-                                    value={
-                                        data2[
-                                            column
-                                                .toLowerCase()
-                                                .replaceAll(" ", "_")
-                                        ] ??
-                                        room[
-                                            column
-                                                .toLowerCase()
-                                                .replaceAll(" ", "_")
-                                        ]
-                                    }
+                        column !== "Status" ? (
+                            <TableCell>
+                                {edit ===
+                                index +
+                                    context.perPage *
+                                        (context.currentPage - 1) ? (
+                                    <Input
+                                        label=""
+                                        size="md"
+                                        name={column
+                                            .toLowerCase()
+                                            .replaceAll(" ", "_")}
+                                        variant="standard"
+                                        className="text-blue-gray-900"
+                                        autoFocus
+                                        value={
+                                            data2[
+                                                column
+                                                    .toLowerCase()
+                                                    .replaceAll(" ", "_")
+                                            ] ??
+                                            event[
+                                                column
+                                                    .toLowerCase()
+                                                    .replaceAll(" ", "_")
+                                            ]
+                                        }
+                                        onChange={(e) => {
+                                            console.log(e.target.value);
+                                            setData2({
+                                                ...data2,
+                                                [column
+                                                    .toLowerCase()
+                                                    .replaceAll(" ", "_")]:
+                                                    e.target.value,
+                                            });
+                                        }}
+                                    />
+                                ) : (
+                                    <Typography
+                                        variant="small"
+                                        color="blue-gray"
+                                        className="font-normal"
+                                    >
+                                        {
+                                            event[
+                                                column
+                                                    .toLowerCase()
+                                                    .replaceAll(" ", "_")
+                                            ]
+                                        }
+                                    </Typography>
+                                )}
+                            </TableCell>
+                        ) : (
+                            <TableCell>
+                                <Switch
                                     onChange={(e) => {
-                                        console.log(e.target.value);
-                                        setData2({
-                                            ...data2,
-                                            [column
-                                                .toLowerCase()
-                                                .replaceAll(" ", "_")]:
-                                                e.target.value,
-                                        });
+                                        const newCheckedStates = [
+                                            ...isSwitchChecked,
+                                        ];
+                                        newCheckedStates[index] =
+                                            e.target.checked;
+                                        setIsSwitchChecked(newCheckedStates);
+                                        changeStatus(e.target, context);
                                     }}
+                                    value={index}
+                                    checked={isSwitchChecked[index]}
                                 />
-                            ) : (
-                                <Typography
-                                    variant="small"
-                                    color="blue-gray"
-                                    className="font-normal"
-                                >
-                                    {
-                                        room[
-                                            column
-                                                .toLowerCase()
-                                                .replaceAll(" ", "_")
-                                        ]
-                                    }
-                                </Typography>
-                            )}
-                        </TableCell>
+                            </TableCell>
+                        )
                     ) : (
                         <TableCell>
                             <div className="flex gap-5">
@@ -272,6 +379,25 @@ export default function Index({ rooms }) {
                                                 }
                                             />
                                         </Tooltip>
+                                        <Tooltip
+                                            content="Delete"
+                                            placement="top"
+                                        >
+                                            <TrashIcon
+                                                width={20}
+                                                cursor={"pointer"}
+                                                stroke="red"
+                                                onClick={() =>
+                                                    handleDelete(
+                                                        index +
+                                                            context.perPage *
+                                                                (context.currentPage -
+                                                                    1),
+                                                        context
+                                                    )
+                                                }
+                                            />
+                                        </Tooltip>
                                     </>
                                 )}
                             </div>
@@ -285,7 +411,7 @@ export default function Index({ rooms }) {
     return (
         <SidebarUser>
             <Head>
-                <title>Add room</title>
+                <title>Add Event</title>
             </Head>
 
             {alert.isOpen && (
@@ -314,21 +440,22 @@ export default function Index({ rooms }) {
                         <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
                     </svg>
                 </a>
-                <a href={route("room.all")}>Manage Room</a>
+                <a href={route("event.all")}>Manage Events</a>
             </Breadcrumbs>
 
             <DataTable
                 className="w-full"
-                rawData={rooms.data}
-                columns={["Name", "Code", "Capacity", "Action"]}
+                rawData={events.data}
+                columns={["Name", "Start Date", "End Date", "Status", "Action"]}
+                changeStatus={changeStatus}
             >
                 <DataTableContext.Consumer>
                     {(context) => (
                         <>
                             <Card className="max-w-full z-1 md:py-0 overflow-auto">
-                                <TableHeader title="Available Rooms">
+                                <TableHeader title="Available Events">
                                     <Button onClick={handleOpen}>
-                                        Add New Room
+                                        Add New Event
                                     </Button>
                                 </TableHeader>
 
@@ -336,8 +463,12 @@ export default function Index({ rooms }) {
                                     <TableBody.Head />
                                     <TableBody.Content>
                                         {context.paginatedData.map(
-                                            (room, index) =>
-                                                renderBody(room, index, context)
+                                            (event, index) =>
+                                                renderBody(
+                                                    event,
+                                                    index,
+                                                    context
+                                                )
                                         )}
                                     </TableBody.Content>
                                 </TableBody>
@@ -358,7 +489,7 @@ export default function Index({ rooms }) {
                                             variant="h4"
                                             color="blue-gray"
                                         >
-                                            Add New Room
+                                            Add New Event
                                         </Typography>
 
                                         <Typography variant="h6">
@@ -385,48 +516,50 @@ export default function Index({ rooms }) {
                                         )}
 
                                         <Typography variant="h6">
-                                            Code
+                                            Start Date
                                         </Typography>
                                         <Input
-                                            label="Code"
-                                            name="code"
+                                            label="start date"
+                                            name="startdate"
                                             size="lg"
-                                            value={data.code}
+                                            type="date"
+                                            value={data.startdate}
                                             onChange={(e) =>
                                                 setData({
                                                     ...data,
-                                                    code: e.target.value,
+                                                    startdate: e.target.value,
                                                 })
                                             }
-                                            error={error?.code}
-                                            success={error?.code}
+                                            error={error?.startdate}
+                                            success={error?.startdate}
                                         />
-                                        {error?.code && (
+                                        {error?.startdate && (
                                             <Typography color="red">
-                                                {error.code}
+                                                {error.startdate}
                                             </Typography>
                                         )}
 
                                         <Typography variant="h6">
-                                            Capacity
+                                            End Date
                                         </Typography>
                                         <Input
-                                            label="Capacity"
-                                            name="capacity"
+                                            label="End Date"
+                                            name="enddate"
                                             size="lg"
-                                            value={data.capacity}
+                                            type="date"
+                                            value={data.enddate}
                                             onChange={(e) =>
                                                 setData({
                                                     ...data,
-                                                    capacity: e.target.value,
+                                                    enddate: e.target.value,
                                                 })
                                             }
-                                            error={error?.capacity}
-                                            success={error?.capacity}
+                                            error={error?.enddate}
+                                            success={error?.enddate}
                                         />
-                                        {error?.capacity && (
+                                        {error?.enddate && (
                                             <Typography color="red">
-                                                {error.capacity}
+                                                {error.enddate}
                                             </Typography>
                                         )}
                                     </CardBody>
