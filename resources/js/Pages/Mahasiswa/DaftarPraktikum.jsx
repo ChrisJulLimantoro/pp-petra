@@ -13,6 +13,7 @@ import React, { useState, useEffect } from 'react';
 import { Select, Option } from "@material-tailwind/react";
 import NotificationAlert from "@/Components/NotificationAlert";
 import { useRef } from "react";
+import Swal from "sweetalert2";
 
 
 export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) {
@@ -116,31 +117,58 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
         pilihan1: selected1Options,
         pilihan2: selected2Options,
     };
+    if(data["matkul"]=="" || (data["pilihan1"] || data["pilihan2"])==""){
+        Swal.fire(
+            'All fields must be filled in!',
+            'Please Check Your Form',
+            'error'
+          )
+    }else{
 
-    axios.post(route('mahasiswa.addPracticum'), data)
-    .then((response) => {
-        if (response.data.success) {
-            alertRef.current?.show(
-                "Berhasil mendaftar",
-                "green",
-                2000 
-            );
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            axios.post(route('mahasiswa.addPracticum'), data)
+            .then((response) => {
+                if (response.data.success) {
+                    console.log(response)
+                    alertRef.current?.show(
+                        "Berhasil mendaftar",
+                        "green",
+                        2000 
+                    );
+                }
+                else {
+                    console.log(response)
+                    alertGagal.current?.show(
+                        "Gagal Mendaftar",
+                        "red",
+                        2000
+                    );
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+                alertGagal.current?.show(
+                    "Gagal Mendaftar",
+                    "red",
+                    2000
+                );
+            })
         }
-        else {
-            alertGagal.current?.show(
-                "Gagal Mendaftar",
-                "red",
-                2000
-            );
-        }
-    })
-    .catch((error) => {
-        alertGagal.current?.show(
-            "Gagal Mendaftar",
-            "red",
-            2000
-        );
-    })
+      })
+    }
+
+    // window.location.href = route('mahasiswa.addPracticum', data);
+
+    
   }
 
     return (
@@ -165,9 +193,9 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
                 <div className="col-span-1">
                     <SidebarUser></SidebarUser>
                 </div>
-                <div className="mt-16 w-full h-72 mx-8">
+                <div className="mt-16 w-full h-72 mx-8 bg-slade">
                     <div>
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleSubmit} method="POST">
                             <div className="grid grid-cols-2 mb-8">
                                 <div className="mt-2 divLabel">
                                     <h1 className="w-full">
@@ -246,7 +274,7 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
                                             searchData={(e) =>
                                                 context.searchData(e)
                                             }
-                                        ></TableHeader>
+                                        ><Button className="bg-lime-700 hover:bg-lime-800 justify-self-end">VALIDATE</Button></TableHeader>
 
                                         <TableBody className={"relative "}>
                                             <thead className="sticky top-0 z-10">

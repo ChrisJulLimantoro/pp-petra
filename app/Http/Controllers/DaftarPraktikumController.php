@@ -12,17 +12,22 @@ class DaftarPraktikumController extends Controller
 {
     public function getSubject()
     {
-        $url = env('API_URL') . "/students/" . session('user_id') . "/available-schedules";
+        $url = env('API_URL') . "/students/" . session('user_id') . "/available-schedules/" . session('event_id');
+        // dd($url);
         $subject = Http::withHeader('Accept', 'application/json')->withToken(session('token'))->get($url);
         $subject = json_decode($subject->getBody(), true);
+        // dd($url);
         $data['subject'] = $subject['data'];
+        // dd($data['subject']);
         $matkul = [];
         $id = [];
         foreach ($data['subject'] as $x) {
             foreach ($x['practicums'] as $y) {
-                if (!in_array($y['name'], $matkul)) {
-                    $matkul[] = $y['name'];
-                    $id[] = $y['subject_id'];
+                if (is_array($y)) {
+                    if (!in_array($y['name'], $matkul)) {
+                        $matkul[] = $y['name'];
+                        $id[] = $y['subject_id'];
+                    }
                 }
             };
         }
@@ -105,7 +110,7 @@ class DaftarPraktikumController extends Controller
 
     public function getClass($course)
     {
-        $res = Http::withHeader('Accept', 'application/json')->withToken(session('token'))->get(config('app')['API_URL'] . "/students/" . session('user_id') . "/available-schedules");
+        $res = Http::withHeader('Accept', 'application/json')->withToken(session('token'))->get(config('app')['API_URL'] . "/students/" . session('user_id') . "/available-schedules/" . session('event_id'));
         $class = $res->json('data');
         $data['class'] = $class;
         $get = [];
@@ -113,28 +118,30 @@ class DaftarPraktikumController extends Controller
         foreach ($data['class'] as $x) {
             $practicum = $x['practicums'];
             foreach ($practicum as $y) {
-                if (strtolower($y['subject_id']) == strtolower($course)) {
-                    $pracID[] = $y['id'];
-                    if ($y['day'] == "1") {
-                        $day = 'Senin';
-                    } elseif ($y['day'] == "2") {
-                        $day = 'Selasa';
-                    } elseif ($y['day'] == "3") {
-                        $day = ' Rabu';
-                    } elseif ($y['day'] == "4") {
-                        $day = 'Kamis';
-                    } elseif ($y['day'] == "5") {
-                        $day = 'Jumat';
-                    } elseif ($y['day'] == "6") {
-                        $day = 'Sabtu';
-                    }
+                if (is_array($y)) {
+                    if (strtolower($y['subject_id']) == strtolower($course)) {
+                        $pracID[] = $y['id'];
+                        if ($y['day'] == "1") {
+                            $day = 'Senin';
+                        } elseif ($y['day'] == "2") {
+                            $day = 'Selasa';
+                        } elseif ($y['day'] == "3") {
+                            $day = ' Rabu';
+                        } elseif ($y['day'] == "4") {
+                            $day = 'Kamis';
+                        } elseif ($y['day'] == "5") {
+                            $day = 'Jumat';
+                        } elseif ($y['day'] == "6") {
+                            $day = 'Sabtu';
+                        }
 
-                    if (strlen($y['time']) == "3") {
-                        $time = substr($y['time'], 0, 1) . ":" . substr($y['time'], 1, 2);
-                    } else if (strlen($y['time']) == "4") {
-                        $time = substr($y['time'], 0, 2) . ":" . substr($y['time'], 2, 3);
+                        if (strlen($y['time']) == "3") {
+                            $time = substr($y['time'], 0, 1) . ":" . substr($y['time'], 1, 2);
+                        } else if (strlen($y['time']) == "4") {
+                            $time = substr($y['time'], 0, 2) . ":" . substr($y['time'], 2, 3);
+                        }
+                        $get[] = $y['code'] . " --> " . $day . "(" . $time . ")";
                     }
-                    $get[] = $y['code'] . " --> " . $day . "(" . $time . ")";
                 }
             }
         }
@@ -148,19 +155,39 @@ class DaftarPraktikumController extends Controller
 
     public function addClass(Request $request)
     {
-        $res = json_decode(Http::withHeader('Accept', 'application/json')->withToken(session('token'))->post(env('API_URL') . '/student-practicums', [
-            'student_id' => session('user_id'),
-            'practicum_id' => $request->pilihan1,
-            'event_id' => '9a715752-e243-421b-a558-0378267a2cb9',
-            'choice' => '1'
-        ]));
-
-        $res2 = json_decode(Http::withHeader('Accept', 'application/json')->withToken(session('token'))->post(env('API_URL') . '/student-practicums', [
-            'student_id' => session('user_id'),
-            'practicum_id' => $request->pilihan2,
-            'event_id' => '9a715752-e243-421b-a558-0378267a2cb9',
-            'choice' => '2'
-        ]));
+        if (!(is_null($request->pilihan1) || is_null($request->pilihan2))) {
+            if (is_null($request->pilihan2)) {
+                $res = json_decode(Http::withHeader('Accept', 'application/json')->withToken(session('token'))->post(env('API_URL') . '/student-practicums', [
+                    'student_id' => session('user_id'),
+                    'practicum_id' => $request->pilihan1,
+                    'event_id' => session('event_id'),
+                    'choice' => '1'
+                ]));
+            } elseif (is_null($request->pilihan1)) {
+                $res = json_decode(Http::withHeader('Accept', 'application/json')->withToken(session('token'))->post(env('API_URL') . '/student-practicums', [
+                    'student_id' => session('user_id'),
+                    'practicum_id' => $request->pilihan2,
+                    'event_id' => session('event_id'),
+                    'choice' => '2'
+                ]));
+            } else {
+                $res = json_decode(Http::withHeader('Accept', 'application/json')->withToken(session('token'))->post(env('API_URL') . '/student-practicums-bulk',   ['data'=> [
+                    [
+                        'student_id' => session('user_id'),
+                        'practicum_id' => $request->pilihan1,
+                        'event_id' => session('event_id'),
+                        'choice' => '1'
+                    ],
+                    [
+                        'student_id' => session('user_id'),
+                        'practicum_id' => $request->pilihan2,
+                        'event_id' => session('event_id'),
+                        'choice' => '2'
+                    ]]]
+                ));
+            }
+        }
+        // dd($res);
         return $res;
     }
 }
