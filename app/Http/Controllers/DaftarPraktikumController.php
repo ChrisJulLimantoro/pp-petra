@@ -171,7 +171,8 @@ class DaftarPraktikumController extends Controller
                     'choice' => '2'
                 ]));
             } else {
-                $res = json_decode(Http::withHeader('Accept', 'application/json')->withToken(session('token'))->post(env('API_URL') . '/student-practicums-bulk',   ['data'=> [
+                $res = json_decode(Http::withHeader('Accept', 'application/json')->withToken(session('token'))->post(env('API_URL') . '/student-practicums-bulk',   
+                ['data'=> [
                     [
                         'student_id' => session('user_id'),
                         'practicum_id' => $request->pilihan1,
@@ -184,10 +185,9 @@ class DaftarPraktikumController extends Controller
                         'event_id' => session('event_id'),
                         'choice' => '2'
                     ]]]
-                ));
+                )->getBody());
             }
         }
-        // dd($res);
         return $res;
     }
 }
