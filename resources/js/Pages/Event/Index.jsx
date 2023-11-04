@@ -223,6 +223,7 @@ export default function Index({ events }) {
     }
 
     const renderBody = (event, index, context) => {
+        console.log(context.perPage)
         // if no data found
         if (event.empty) {
             return (
@@ -258,10 +259,8 @@ export default function Index({ events }) {
                     column !== "Action" ? (
                         column !== "Status" ? (
                             <TableCell>
-                                {edit ===
-                                index +
-                                    context.perPage *
-                                        (context.currentPage - 1) ? (
+                                {/* {context.perPage} */}
+                                {edit === index + context.perPage * (context.currentPage - 1) ? (
                                     <Input
                                         label=""
                                         size="md"
@@ -324,11 +323,7 @@ export default function Index({ events }) {
                     ) : (
                         <TableCell>
                             <div className="flex gap-5">
-                                {edit ===
-                                    index +
-                                        context.perPage(
-                                            context.currentPage - 1
-                                        ) && (
+                                {edit === index + context.perPage * (context.currentPage - 1) && (
                                     <>
                                         <Tooltip content="Save" placement="top">
                                             <CheckIcon
