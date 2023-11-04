@@ -120,7 +120,7 @@ export default function MultiLevelSidebar({ children, className = "" }) {
                         </ListItem>
                         <AccordionBody className="py-1">
                             <List className="p-0">
-                                <Link href={route("Daftar Praktikum")}>
+                                <Link href={route("mahasiswa.daftarPraktikum")}>
                                     <ListItem className="mx-5">
                                         <ListItemPrefix>
                                             <Square2StackIcon
@@ -132,7 +132,7 @@ export default function MultiLevelSidebar({ children, className = "" }) {
                                     </ListItem>
                                 </Link>
 
-                                <Link href={route("View Kelas")}>
+                                <Link href={route("mahasiswa.viewKelasPraktikum")}>
                                     <ListItem className="mx-5">
                                         <ListItemPrefix>
                                             <EyeIcon
@@ -308,7 +308,7 @@ export default function MultiLevelSidebar({ children, className = "" }) {
                         </ListItem>
                         <AccordionBody className="py-1">
                             <List className="p-0">
-                                <Link href={route("Daftar Praktikum")}>
+                                <Link href={route("mahasiswa.daftarPraktikum")}>
                                     <ListItem className="mx-5">
                                         <Square2StackIcon
                                             strokeWidth={3}
@@ -468,7 +468,7 @@ export default function MultiLevelSidebar({ children, className = "" }) {
                             ? mobileOpenedStyle
                             : sidebarState === 2
                             ? desktopFullStyle
-                            : "w-screen p-5") + " transition-all duration-300"
+                            : "w-screen p-5") + " transition-all duration-300 bg-white"
                     }
                 >
                     {sidebarState === 0 ? mobileSidebar() : null}

@@ -9,6 +9,8 @@ import { RoleAssignmentProvider } from "./RoleAssignmentContext";
 export function RolesSection({ selectedUser }) {
     const [loading, setLoading] = useState(false);
     const [selectedUserRoles, setSelectedUserRoles] = useState([]);
+    const [assignmentButtonDisabled, setAssignmentButtonDisabled] =
+        useState(false);
     const [alert, setAlert] = useState({
         isOpen: false,
         color: "red",
@@ -25,12 +27,8 @@ export function RolesSection({ selectedUser }) {
         if (!loading) {
             setLoading(true);
         }
-
-        const controller = new AbortController();
         axios
-            .get(route("rbac.getUserRoles", { user_id: selectedUser }), {
-                signal: controller.signal,
-            })
+            .get(route("rbac.getUserRoles", { user_id: selectedUser }))
             .then((response) => {
                 setSelectedUserRoles(response.data);
             })
@@ -40,10 +38,6 @@ export function RolesSection({ selectedUser }) {
             .finally(() => {
                 setLoading(false);
             });
-        
-        return () => {
-            controller.abort();
-        }
     }, [selectedUser]);
 
     return (

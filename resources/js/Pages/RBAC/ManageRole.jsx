@@ -1,3 +1,4 @@
+import SidebarLayout from "@/Layouts/SidebarLayout";
 import SidebarUser from "@/Layouts/SidebarUser";
 import TableHeader from "@/Components/DataTable/TableHeader";
 import TableBody from "@/Components/DataTable/TableBody";
@@ -38,7 +39,7 @@ export default function ManageRole({ roles }) {
     const [del, setDel] = useState(0);
 
     const handleOpen = () => setOpen(!open);
-    const handleOpen2 = (index) => {setOpen2(!open2); setDel(index)};
+    const handleOpen2 = (index) => {console.log(index); setOpen2(!open2); setDel(index)};
 
     const handleAdd = () => roleReducer(role.current, {type: 'add'});
     const handleSave = (index) => roleReducer(role.current, {type: 'save', index: index});
@@ -57,7 +58,7 @@ export default function ManageRole({ roles }) {
 
         setTimeout(() => {
             setAlert({...alert, isOpen: false})
-        }, 2000);
+        }, 1000);
     }
 
     const toggleEdit = (index) => {
@@ -76,22 +77,17 @@ export default function ManageRole({ roles }) {
             .then((response) => {
                 if (response.data.success) {
                     resetForm();
+                    setOpen(false);
     
                     role.unshift(response.data.data)
                     showAlert("New role added!", 'green')
-                    setOpen(false)
                 }
                 else {
                     setError(response.data.error_message)
-
-                    if (error == 'role already exists') {
-                        setOpen(false)
-                        showAlert("Role already exist!", 'red')
-                    }
+                    showAlert("Something went wrong!", 'red')
                 }
             })
-            .catch((err) => {
-                console.log(err)
+            .catch(() => {
                 showAlert("Something went wrong!", 'red')
             })
         }
@@ -112,8 +108,7 @@ export default function ManageRole({ roles }) {
                     showAlert("Something went wrong!", 'red')
                 }
             })
-            .catch((err) => {
-                console.log(err)
+            .catch(() => {
                 showAlert("Something went wrong!", 'red')
             })
         }
@@ -122,27 +117,20 @@ export default function ManageRole({ roles }) {
             let selectedRole = role[action.index]
 
             axios.delete(route('rbac.deleteRole', selectedRole.id))
-            .then((response) => {   
+            .then((response) => {
                 if (response.data.success) {
                     role = role.filter(r => r.id !== selectedRole.id);
                     action.context.updateData(role)
                     showAlert(selectedRole.name + " role deleted!", 'green');
                 }
                 else {
-                    if (response.data.error_message === 'cannot delete admin role') {
-                        showAlert("Can't delete that role!", 'red')
-                    }
-                    else {
-                        showAlert("Something went wrong!", 'red')
-                    }
+                    showAlert("Something went wrong!", 'red')
                 }
             })
-            .catch((err) => {
-                console.log(err)
+            .catch(() => {
                 showAlert("Something went wrong!", 'red')
             })
 
-            setDel(0);
             setOpen2(false);
         }
 
@@ -177,76 +165,78 @@ export default function ManageRole({ roles }) {
                         color="blue-gray"
                         className="font-normal"
                     >
-                        {index + 1 + (context.perPage * (context.currentPage - 1))}
+                        {index + 1}
                     </Typography>
                 </TableCell>
-
-                {columns.map((column) => (
-                    column !== "Action" ? (
-                        <TableCell>
-                            {edit === index + (context.perPage * (context.currentPage - 1)) ? (
-                                <Input 
-                                    label='' 
-                                    size='md' 
-                                    name={column.toLowerCase().replaceAll(' ', '_')}
-                                    variant="standard" 
-                                    className="text-blue-gray-900"
-                                    autoFocus
-                                    value={data2[column.toLowerCase().replaceAll(" ", "_")] ?? role[column.toLowerCase().replaceAll(" ", "_")]} 
-                                    onChange={(e) => {console.log(e.target.value); setData2({...data2, [column.toLowerCase().replaceAll(" ", "_")]: e.target.value})}} 
-                                />
-                            ) : (
-                                <Typography variant="small" color="blue-gray" className="font-normal">
-                                    {role[column.toLowerCase().replaceAll(" ", "_")]}
-                                </Typography>
-                            )}
-                        </TableCell>
+                <TableCell>
+                    {edit === index ? (
+                        <Input 
+                            label='' 
+                            size='md' 
+                            name='name'
+                            variant="standard" 
+                            className="text-blue-gray-900"
+                            autoFocus
+                            value={data2.name ?? role.name} 
+                            onChange={(e) => {console.log(e.target.value); setData2({...data2, name: e.target.value})}} 
+                        />
                     ) : (
-                        <TableCell>
-                            <div className="flex gap-5">
-                                {edit === index + (context.perPage * (context.currentPage - 1)) && (
-                                    <>
-                                        <Tooltip content="Save" placement="top">
-                                            <CheckIcon 
-                                            width={20} 
-                                            cursor='pointer' 
-                                            stroke="green"
-                                            onClick={() => handleSave(index + (context.perPage * (context.currentPage-1)), context)} />
-                                        </Tooltip>
-                                        <Tooltip content="Cancel" placement="top">
-                                            <XMarkIcon 
-                                            width={20} 
-                                            cursor='pointer' 
-                                            stroke="red" 
-                                            onClick={() => toggleEdit(-1)} />
-                                        </Tooltip>
-                                    </>
-                                )} 
+                        <Typography variant="small" color="blue-gray" className="font-normal">
+                            {role.name}
+                        </Typography>
+                    )}
+                </TableCell>
+                <TableCell>
+                    {edit === index ? (
+                        <Input 
+                            label='' 
+                            size='md' 
+                            name='slug'
+                            variant="standard" 
+                            className="text-blue-gray-900"
+                            value={data2.slug ?? role.slug} 
+                            onChange={(e) => setData2({...data2, slug: e.target.value})} 
+                        />
+                    ) : (
+                        <Typography variant="small" color="blue-gray" className="font-normal">
+                            {role.slug}
+                        </Typography>
+                    )}
+                </TableCell>
+                <TableCell>
+                    <div className="flex gap-5">
+                        {edit === index && (
+                            <>
+                                <Tooltip content="Save" placement="top">
+                                    <CheckIcon onClick={() => handleSave(index, context)} width={20} cursor='pointer' stroke="green" />
+                                </Tooltip>
+                                <Tooltip content="Cancel" placement="top">
+                                    <XMarkIcon width={20} cursor='pointer' stroke="red" onClick={() => toggleEdit(-1)} />
+                                </Tooltip>
+                            </>
+                        )} 
 
-                                {edit !== index + (context.perPage * (context.currentPage - 1)) && (
-                                    <>
-                                        <Tooltip content="Edit" placement="top">
-                                            <PencilSquareIcon 
-                                                width={20} 
-                                                cursor={'pointer'} 
-                                                stroke="orange" 
-                                                onClick={() => toggleEdit(index + (context.perPage * (context.currentPage-1)))}
-                                            /> 
-                                        </Tooltip>
-                                        <Tooltip content="Delete" placement="top">
-                                            <TrashIcon 
-                                                width={20} 
-                                                cursor={'pointer'} 
-                                                stroke="red"
-                                                onClick={() => handleOpen2(index + (context.perPage * (context.currentPage-1)))}  
-                                            />
-                                        </Tooltip>
-                                    </>
-                                )}
-                            </div>
-                        </TableCell>
-                    )
-                ))}
+                        {edit !== index && (
+                            <>
+                                <Tooltip content="Edit" placement="top">
+                                    <PencilSquareIcon 
+                                        width={20} 
+                                        cursor={'pointer'} 
+                                        stroke="orange" 
+                                        onClick={() => toggleEdit(index)}
+                                    /> 
+                                </Tooltip>
+                                <Tooltip content="Delete" placement="top">
+                                    <TrashIcon 
+                                        width={20} 
+                                        cursor={'pointer'} 
+                                        stroke="red"
+                                        onClick={() => handleOpen2(index)}  />
+                                </Tooltip>
+                            </>
+                        )}
+                    </div>
+                </TableCell>
             </tr>
         );
     }
@@ -292,7 +282,7 @@ export default function ManageRole({ roles }) {
             <DataTable
                 className="w-full" 
                 rawData={roles.data} 
-                columns={columns}
+                columns={['Name', 'Slug', 'Action']}
             >
                 <DataTableContext.Consumer>
                     {(context) => (
@@ -354,8 +344,8 @@ export default function ManageRole({ roles }) {
                                         {error?.slug && <Typography color="red">{error.slug}</Typography>}
                                     </CardBody>
                                     <CardFooter className="pt-0 flex gap-3">
-                                        <Button variant="filled" className="w-1/2"onClick={() => handleAdd(context)}>Add</Button>
-                                        <Button variant="text" className="w-1/2" onClick={() => setOpen(false)}>Cancel</Button>
+                                        <Button variant="filled" color="black" className="w-1/2"onClick={() => handleAdd(context)}>Add</Button>
+                                        <Button variant="text" color="black" className="w-1/2" onClick={() => setOpen(false)}>Cancel</Button>
                                     </CardFooter>
                                 </Card>
                             </Dialog>
@@ -376,7 +366,7 @@ export default function ManageRole({ roles }) {
                                     </CardBody>
                                     <CardFooter className="pt-0 flex gap-3">
                                         <Button variant="filled" color="red" className="w-1/2" onClick={() => handleDelete(del, context)}>Delete</Button>
-                                        <Button variant="text" className="w-1/2" onClick={() => setOpen2(false)}>Cancel</Button>
+                                        <Button variant="text" color="black" className="w-1/2" onClick={() => setOpen2(false)}>Cancel</Button>
                                     </CardFooter>
                                 </Card>
                             </Dialog>
