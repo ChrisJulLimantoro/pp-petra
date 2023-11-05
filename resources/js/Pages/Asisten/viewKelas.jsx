@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext } from "react";
 import { Head } from "@inertiajs/react";
 import SidebarUser from "@/Layouts/SidebarUser";
-import { Button, Card, Typography } from "@material-tailwind/react";
+import {Card, Typography } from "@material-tailwind/react";
 import DataTable from "@/Components/DataTable/DataTable";
 import TableHeader from "@/Components/DataTable/TableHeader";
 import TableBody from "@/Components/DataTable/TableBody";
@@ -13,19 +13,17 @@ import DialogSuccess from "@/Components/DialogSuccess";
 import DialogAsk from "@/Components/DialogAsk";
 
 export const viewKelasContext = createContext();
-export const username = "Leo" + " ";
 export default function viewKelas({ auth }) {
     function processData(dataLowongan, context) {
         return dataLowongan.map((item) => ({
             ...item,
             status:
-                item.jumlah_asisten - item.daftar_asisten.length === 0
+                item.jumlah_asisten === item.kuota
                     ? "FULL"
-                    : `-${
-                          item.jumlah_asisten - item.daftar_asisten.length
-                      } Asisten`,
+                    : `${item.jumlah_asisten} / ${item.kuota}`,
         }));
     }
+
 
     const [lowongan, setLowongan] = useState(processData(dataLowongan));
     const [ajar, setAjar] = useState(processData(dataAjar));
@@ -35,8 +33,6 @@ export default function viewKelas({ auth }) {
         "Jam",
         "Mata Kuliah Praktikum",
         "Kelas",
-        "Jumlah Asisten",
-        "Daftar Asisten",
         "Status",
         "Action",
     ];
@@ -46,8 +42,6 @@ export default function viewKelas({ auth }) {
         "Jam",
         "Mata Kuliah Praktikum",
         "Kelas",
-        "Jumlah Asisten",
-        "Daftar Asisten",
         "Status",
         "Action",
     ];
@@ -240,7 +234,8 @@ export default function viewKelas({ auth }) {
                 <div className="flex flex-wrap max-w-min">
                     {/* Table Ajar */}
                     <div
-                        className="col-span-1 flex-auto lg:ml-[-11vw] mt-5"
+                        // className="col-span-1 flex-auto lg:ml-[-11vw] mt-5"
+                        className="col-span-1 flex-auto lg:mt-5"
                         //style={{ width: "70vw" }}
                     >
                         <DataTable
@@ -276,7 +271,9 @@ export default function viewKelas({ auth }) {
 
                     {/* Table Lowongan */}
                     <div
-                        className=" col-span-1 flex-auto lg:ml-[-11vw] mt-5"
+                        // className=" col-span-1 flex-auto lg:ml-[-11vw] mt-5"
+                        className="col-span-1 flex-auto lg:mt-5"
+
                         // style={{ width: "70vw" }}
                     >
                         <DataTable

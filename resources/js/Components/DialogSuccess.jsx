@@ -6,7 +6,7 @@ import {
     DialogBody,
     DialogFooter,
 } from "@material-tailwind/react";
-import { viewKelasContext, username } from "@/Pages/Asisten/viewKelas";
+import { viewKelasContext } from "@/Pages/Asisten/viewKelas";
 
 export default function DialogSuccess(props) {
     const [open, setOpen] = useState(false);
@@ -19,7 +19,7 @@ export default function DialogSuccess(props) {
     const handleOpen2 = () => {
         setOpen(!open);
         const taken = pageData.lowongan[props.id];
-        taken.daftar_asisten.push(username);
+        taken.jumlah_asisten += 1;
         const updatedLowongan = pageData.lowongan.filter(
             (item, index) => index !== props.id
         );
