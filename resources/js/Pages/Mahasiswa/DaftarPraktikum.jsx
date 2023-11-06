@@ -1,7 +1,7 @@
 import { Head } from "@inertiajs/react";
 import SidebarUser from "@/Layouts/SidebarUser";
 import SelectMatkul from "@/Components/SelectMatkul";
-import { Button, Card } from "@material-tailwind/react";
+import { Button, Card, Typography, Tooltip } from "@material-tailwind/react";
 import DataTable from "@/Components/DataTable/DataTable";
 import TableHeader from "@/Components/DataTable/TableHeader";
 import TableBody from "@/Components/DataTable/TableBody";
@@ -14,6 +14,7 @@ import { Select, Option } from "@material-tailwind/react";
 import NotificationAlert from "@/Components/NotificationAlert";
 import { useRef } from "react";
 import Swal from "sweetalert2";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
 
 export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) {
@@ -45,45 +46,90 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
     const dataMatkul = matkul;
     const idMatkul= id;
     const Pilihan = ["A", "B", "C", "D", "E"];
-    const kolom = [
+    const columnssss = [
+        "#",
         "Hari",
         "Jam",
-        "Mata_Kuliah_Praktikum",
+        "Mata Kuliah Praktikum",
         "Kelas",
         "Pilihan",
-        "Status",
+        "Status"
     ];
-    const data = [
-        {
-            hari: "Selasa",
-            jam: "16.30 - 19.30",
-            mata_kuliah_praktikum: "Struktur Data",
-            kelas: "A",
-            pilihan: "Pilihan 1",
-            status: "Seleksi Kelas",
-        },
-        {
-            hari: "Kamis",
-            jam: "16.30 - 19.30",
-            mata_kuliah_praktikum: "Struktur Data",
-            kelas: "B",
-            pilihan: "Pilihan 2",
-            status: "Ditolak",
-        },
-        {
-            hari: "Kamis",
-            jam: "16.30 - 19.30",
-            mata_kuliah_praktikum: "Struktur Data",
-            kelas: "B",
-            pilihan: "Pilihan 2",
-            status: "Diterima",
-        },
-    ];
+
+    const data = dataTable;
+    console.log(dataTable);
+    const renderBody = (data, index, context) => {
+        // if no data found
+        console.log(data);
+        if (data.empty) {
+            return (
+                <tr key={"notFound"}>
+                    <TableCell colSpan={columnssss.length}>
+                        <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal text-center"
+                        >
+                            No data found
+                        </Typography>
+                    </TableCell>
+                </tr>
+            );
+        }
+
+        return (
+            <tr key={index}>
+                
+{/* 
+                {console.log(columnssss.length)} */}
+                {columnssss.map((column) => (
+                    column === "#" ? (
+                        <TableCell>
+                    <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                    >
+                        {index +
+                            1 +
+                            context.perPage * (context.currentPage - 1)}
+                    </Typography>
+                </TableCell>
+                    ) : 
+                    <TableCell key={column}>
+                        {column === "Status" ? (
+                         <Tooltip content="Delete" placement="top">
+                             <TrashIcon 
+                                className="justify-self-center mx-6"
+                                 width={20} 
+                                 cursor={'pointer'} 
+                                 stroke="red"
+                                 onClick={() => handleOpen2(index)}  />
+                         </Tooltip>
+                        ) : (
+                            <Typography variant="small" color="blue-gray" className="font-normal">
+                                {
+                                console.log(column.toLowerCase().replaceAll(" ", "_"),data[column.toLowerCase().replaceAll(" ", "_")])
+                                }
+                                {
+                                data[column.toLowerCase().replaceAll(" ", "_")]
+                                }
+                            </Typography>
+                        )}
+                    </TableCell>
+                ))}
+            </tr>
+        );
+    };
     
     const handleUpdateData = (updatedData) => {
         console.log(updatedData);
     };
     const styles = `
+
+    html{
+        overflow-x: hidden;
+    }
     .divLabel{
         width: 15vw;
     }
@@ -109,6 +155,15 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
   const handle2Change = (selectedOption) => {
     setSelected2Options(selectedOption);
   }
+
+  const resetForm = () => {
+    setData({
+        course: '',
+        selected1Options: '',
+        selected2Options: ''
+    })
+    setError(null)
+}
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -261,7 +316,7 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
                         className="col-span-1 flex-auto lg:ml-[-11vw]"
                         style={{ width: "70vw"}}
                     >
-                        <DataTable rawData={data} columns={kolom}>
+                        <DataTable rawData={data} columns={columnssss}>
                             <DataTableContext.Consumer>
                                 {(context) => (
                                     <Card className="w-full z-[1]">
@@ -274,25 +329,16 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
                                             searchData={(e) =>
                                                 context.searchData(e)
                                             }
-                                        ><Button className="bg-lime-700 hover:bg-lime-800 justify-self-end">VALIDATE</Button></TableHeader>
+                                        ><Button className="bg-lime-800 hover:bg-lime-950 justify-self-end rounded-full">VALIDATE</Button></TableHeader>
 
                                         <TableBody className={"relative "}>
-                                            <thead className="sticky top-0 z-10">
-                                                <tr>
-                                                    {context.columns?.map(
-                                                        context.renderHead
-                                                    )}
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {context.paginatedData?.map(
-                                                    (e, value) =>
-                                                        context.renderBody(
-                                                            e,
-                                                            value
-                                                        )
+                                            <TableBody.Head />
+                                            <TableBody.Content>
+                                                {context.paginatedData.map(
+                                                    (data, index) =>
+                                                        renderBody(data, index, context)
                                                 )}
-                                            </tbody>
+                                            </TableBody.Content>
                                         </TableBody>
 
                                         <TableFooter

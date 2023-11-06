@@ -67,7 +67,7 @@ Route::prefix('rbac')->group(function () {
 Route::prefix('mahasiswa')->group(function () {
     Route::get('/', function () {
         return Inertia::render('Mahasiswa/Dashboard');
-    })->name('Dashboard');
+    })->name('dashboard');
 
     Route::get('/daftarPraktikum', [DaftarPraktikumController::class, 'getSubject'])->name('mahasiswa.daftarPraktikum');
 

@@ -16,7 +16,7 @@ export default class AssignRoutes extends Component {
         alert: {isOpen: false, color: 'gray', message: ''},
     }
 
-    TABLE_HEAD = ["URI", "Name", "Method", "Access"];
+    TABLE_HEAD = ["#", "URI", "Name", "Method", "Access"];
     static contextType = DataTableContext;
 
     findRoutes(r, context, first = false) {

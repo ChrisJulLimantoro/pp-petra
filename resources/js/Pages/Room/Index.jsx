@@ -147,7 +147,7 @@ export default function Index({ rooms }) {
         }
 
         return (
-            <tr key={room.slug ?? index}>
+            <tr key={index}>
                 <TableCell>
                     <Typography
                         variant="small"
@@ -163,6 +163,7 @@ export default function Index({ rooms }) {
                 {columns.map((column) =>
                     column !== "Action" ? (
                         <TableCell>
+                            {console.log(column.toLowerCase().replaceAll(' ','_'),data2[column.toLowerCase().replaceAll(' ','_')])}
                             {edit ===
                             index +
                                 context.perPage * (context.currentPage - 1) ? (
@@ -320,7 +321,7 @@ export default function Index({ rooms }) {
             <DataTable
                 className="w-full"
                 rawData={rooms.data}
-                columns={["Name", "Code", "Capacity", "Action"]}
+                columns={["#", "Name", "Code", "Capacity", "Action"]}
             >
                 <DataTableContext.Consumer>
                     {(context) => (

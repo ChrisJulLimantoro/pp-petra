@@ -282,7 +282,7 @@ export default function ManageRole({ roles }) {
             <DataTable
                 className="w-full" 
                 rawData={roles.data} 
-                columns={['Name', 'Slug', 'Action']}
+                columns={['#', 'Name', 'Slug', 'Action']}
             >
                 <DataTableContext.Consumer>
                     {(context) => (

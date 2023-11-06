@@ -11,6 +11,7 @@ import { DataTableContext } from "@/Components/DataTable/DataTable";
 
 export default function viewKelas({dataTable}){
     const columns = [
+        "#",
         "Hari",
         "Jam",
         "Mata Kuliah Praktikum",
@@ -19,58 +20,58 @@ export default function viewKelas({dataTable}){
         "Ruang"
     ];
     const data = dataTable;
-    const renderBody = (data, index, context) => {
-        // if no data found
-        if (data.empty) {
-            return (
-                <tr key={"notFound"}>
-                    <TableCell colSpan={4}>
-                        <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal text-center"
-                        >
-                            No data found
-                        </Typography>
-                    </TableCell>
-                </tr>
-            );
-        }
+    // const renderBody = (data, index, context) => {
+    //     // if no data found
+    //     if (data.empty) {
+    //         return (
+    //             <tr key={"notFound"}>
+    //                 <TableCell colSpan={4}>
+    //                     <Typography
+    //                         variant="small"
+    //                         color="blue-gray"
+    //                         className="font-normal text-center"
+    //                     >
+    //                         No data found
+    //                     </Typography>
+    //                 </TableCell>
+    //             </tr>
+    //         );
+    //     }
 
-        return (
-            <tr key={index}>
-                <TableCell>
-                    <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                    >
-                        {index +
-                            1 +
-                            context.perPage * (context.currentPage - 1)}
-                    </Typography>
-                </TableCell>
+    //     return (
+    //         <tr key={index}>
+    //             <TableCell>
+    //                 <Typography
+    //                     variant="small"
+    //                     color="blue-gray"
+    //                     className="font-normal"
+    //                 >
+    //                     {index +
+    //                         1 +
+    //                         context.perPage * (context.currentPage - 1)}
+    //                 </Typography>
+    //             </TableCell>
 
-                {columns.map((column) =>
-                        <TableCell>
-                                <Typography
-                                    variant="small"
-                                    color="blue-gray"
-                                    className="font-normal"
-                                >
-                                    {
-                                        data[
-                                            column
-                                                .toLowerCase()
-                                                .replaceAll(" ", "_")
-                                        ]
-                                    }
-                                </Typography>
-                        </TableCell>
-                )}
-            </tr>
-        );
-    };
+    //             {columns.map((column) =>
+    //                     <TableCell>
+    //                             <Typography
+    //                                 variant="small"
+    //                                 color="blue-gray"
+    //                                 className="font-normal"
+    //                             >
+    //                                 {
+    //                                     data[
+    //                                         column
+    //                                             .toLowerCase()
+    //                                             .replaceAll(" ", "_")
+    //                                     ]
+    //                                 }
+    //                             </Typography>
+    //                     </TableCell>
+    //             )}
+    //         </tr>
+    //     );
+    // };
 
     const state = {
         rawData: [],
@@ -149,12 +150,7 @@ export default function viewKelas({dataTable}){
 
                                         <TableBody className={"relative "}>
                                             <TableBody.Head />
-                                            <TableBody.Content>
-                                                {context.paginatedData.map(
-                                                    (data, index) =>
-                                                        renderBody(data, index, context)
-                                                )}
-                                            </TableBody.Content>
+                                            <TableBody.Content />
                                         </TableBody>
 
                                         <TableFooter
