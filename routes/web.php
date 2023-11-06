@@ -50,7 +50,6 @@ Route::get("/", [AuthController::class, 'loginView'])->name('login');
 Route::get("/processLogin", [AuthController::class, 'login'])->name('processLogin');
 Route::get("/logout", [AuthController::class, 'logout'])->name('logout');
 Route::prefix('rbac')->group(function () {
-    Route::get('/', [RBACController::class, 'getAllRoutes'])->name('dashboard');
     Route::get('/manageRole', [RBACController::class, 'manageRole'])->name('rbac.manageRole');
     Route::post('/manageRole', [RBACController::class, 'addRole'])->name('rbac.addRole');
     Route::post('/manageRole/{id}', [RBACController::class, 'editRole'])->name('rbac.editRole');
