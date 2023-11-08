@@ -77,7 +77,9 @@ Route::prefix('mahasiswa')->group(function () {
 
     Route::get('/viewKelas', [ViewPraktikumController::class, 'index'])->name('mahasiswa.viewKelasPraktikum');
 
-    Route::delete('deletePracticum', [DaftarPraktikumController::class, 'deletePracticum'])->name('mahasiswa.deletePracticum');
+    Route::delete('deletePracticum/{idPracticum}', [DaftarPraktikumController::class, 'deletePracticum'])->name('mahasiswa.deletePracticum');
+
+    Route::post('validate', [DaftarPraktikumController::class, 'valid'])->name('mahasiswa.validate');
 });
 
 Route::get('/contoh-datatable', function () {

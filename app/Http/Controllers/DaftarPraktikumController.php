@@ -39,11 +39,14 @@ class DaftarPraktikumController extends Controller
         $daftar = json_decode($daftar->getBody(), true);
         $data['daftar'] = $daftar['data'];
         $dataTable = [];
+        $pracID=[];
         // dd(session('user_id'));
         // dd($data['daftar']);
         // dd($data['daftar']);
+        $status='';
         foreach ($data['daftar'] as $x) {
             if ($x['student_id'] == session('user_id')) {
+                $pracID[]= $x['id'];
 
                 if ($x['practicum']['day'] == "1") {
                     $day = 'Senin';
@@ -64,10 +67,16 @@ class DaftarPraktikumController extends Controller
                     $choice = "Pilihan 2";
                 }
 
-                if ($x['accepted'] == 1) {
-                    $status[] = "Diterima";
-                } else {
-                    $status[] = $x['rejected_reason'];
+                if ($x['accepted'] == 0) {
+                    $status = "Pending..";
+                } elseif($x['accepted'] == 1) {
+                    $status = "Terima Pilihan 1";
+                }elseif($x['accepted'] == 2) {
+                    $status = "Tolak Pilihan 1";
+                }elseif($x['accepted'] == 3) {
+                    $status = "Terima Pilihan 2";
+                }else{
+                    $status = "Tolak Semua";
                 }
 
                 $endHour = $x['practicum']['time'] + 300;
@@ -85,21 +94,35 @@ class DaftarPraktikumController extends Controller
 
                 $time = $startHour . " - " . $endHour;
 
-                array_push($dataTable, [
-                    'hari' => $day,
-                    'jam' => $time,
-                    'mata_kuliah_praktikum' => $x['practicum']['name'],
-                    'kelas' => $x['practicum']['code'],
-                    'pilihan' => $choice
-                ]);
+                if(session('is_validate')){
+                    array_push($dataTable, [
+                        'hari' => $day,
+                        'jam' => $time,
+                        'mata_kuliah_praktikum' => $x['practicum']['name'],
+                        'kelas' => $x['practicum']['code'],
+                        'pilihan' => $choice
+                    ]);
+                }else{
+                    array_push($dataTable, [
+                        'hari' => $day,
+                        'jam' => $time,
+                        'mata_kuliah_praktikum' => $x['practicum']['name'],
+                        'kelas' => $x['practicum']['code'],
+                        'pilihan' => $choice,
+                        'status' => $status
+                    ]);
+                }
             }
         }
-
         // dd($dataTable);
+        dd(session('roles'));
+
         return Inertia::render('Mahasiswa/DaftarPraktikum', [
             'matkul' => $data['matkul'],
             'id' => $data['id'],
-            'dataTable' => $dataTable
+            'dataTable' => $dataTable,
+            'practicumID' => $pracID,
+            'ValidateStatus' => session('is_validate')
         ]);
     }
 
@@ -194,6 +217,16 @@ class DaftarPraktikumController extends Controller
             Http::withToken(session('token'))->delete(env('API_URL') . '/student-practicums/' . $idPracticum)
         );
 
+        return $response;
+    }
+
+    public function valid(){
+        $response= json_decode(
+            Http::withHeader('Accept', 'application/json')->withToken(session('token'))->post(env('API_URL'). '/validate/' . session('user_id'). "/event/" . session('event_id'))->getBody());
+        // dd($response);
+        if($response->success){
+            session(['is_validate' => true]);
+        }
         return $response;
     }
 }

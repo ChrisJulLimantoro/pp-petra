@@ -17,14 +17,15 @@ import Swal from "sweetalert2";
 import { TrashIcon } from "@heroicons/react/24/outline";
 
 
-export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) {
+export default function Dashboard({ auth, matkul, id, practicumID, dataTable, ValidateStatus }) {
+    console.log("Val"+ValidateStatus)
     let [course, setCourse] = useState('');
     let [selected1Options, setSelected1Options ]= useState([]);
     let [selected2Options, setSelected2Options ]= useState([]);
     const [class1Options, setClass1Options] = useState([]);
     const [class2Options, setClass2Options] = useState([]);
     let [pracID, setPracID]= useState(null);
-
+    console.log(ValidateStatus);
     const alertRef = useRef();
     const alertGagal= useRef();
     useEffect(() => {
@@ -57,10 +58,11 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
     ];
 
     const data = dataTable;
-    console.log(dataTable);
-    const renderBody = (data, index, context) => {
+    // console.log(dataTable);
+    const renderBody = (data, index, context, practicumID) => {
         // if no data found
         console.log(data);
+        console.log(practicumID)
         if (data.empty) {
             return (
                 <tr key={"notFound"}>
@@ -78,10 +80,7 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
         }
 
         return (
-            <tr key={index}>
-                
-{/* 
-                {console.log(columnssss.length)} */}
+            <tr key={practicumID} id={practicumID[index]}>
                 {columnssss.map((column) => (
                     column === "#" ? (
                         <TableCell>
@@ -96,15 +95,17 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
                     </Typography>
                 </TableCell>
                     ) : 
+                    
                     <TableCell key={column}>
-                        {column === "Status" ? (
+                        {console.log("validate:"+ValidateStatus)}
+                        {column === "Status" && ValidateStatus === false ? (
                          <Tooltip content="Delete" placement="top">
                              <TrashIcon 
                                 className="justify-self-center mx-6"
                                  width={20} 
                                  cursor={'pointer'} 
                                  stroke="red"
-                                 onClick={() => handleOpen2(index)}  />
+                                 onClick={() => handleDelete(practicumID[index])}  />
                          </Tooltip>
                         ) : (
                             <Typography variant="small" color="blue-gray" className="font-normal">
@@ -121,10 +122,98 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
             </tr>
         );
     };
+
+    const handleValidate= ()=>{
+        Swal.fire({
+            title: 'Are you sure want to validate?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                axios.post(route('mahasiswa.validate'))
+                .then((response) => {
+                    if (response.data.success) {
+                        console.log(response)
+                        alertRef.current?.show(
+                            "Berhasil Validate, Silahkan cek email!",
+                            "green",
+                            2000 
+                        );
+                        // window.location.href= route("mahasiswa.daftarPraktikum");
+                        
+                    }
+                    else {
+                        console.log(response);
+                        alertGagal.current?.show(
+                            response.data.error_message,
+                            "red",
+                            2000
+                        );
+                    }
+                })
+                .catch((error) => {
+                    console.log(error)
+                    alertGagal.current?.show(
+                        "Gagal Validasi",
+                        "red",
+                        2000
+                    );
+                })
+            }
+            // window.location.reload();
+          })
+        
+    }
     
-    const handleUpdateData = (updatedData) => {
-        console.log(updatedData);
-    };
+    const handleDelete= (deleteID)=>{
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(route('mahasiswa.deletePracticum', deleteID))
+                .then((response) => {
+                    if (response.data.success) {
+                        console.log(response)
+                        alertRef.current?.show(
+                            "Berhasil menghapus",
+                            "green",
+                            2000 
+                        );
+                        // window.location.href= route("mahasiswa.daftarPraktikum");
+                        
+                    }
+                    else {
+                        console.log(response)
+                        alertGagal.current?.show(
+                            "Gagal Menghapussss",
+                            "red",
+                            2000
+                        );
+                    }
+                })
+                .catch((error) => {
+                    console.log(error)
+                    alertGagal.current?.show(
+                        "Gagal Menghapus",
+                        "red",
+                        2000
+                    );
+                })
+            }
+            // window.location.reload();
+          })
+        
+    }
     const styles = `
 
     html{
@@ -220,10 +309,6 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
         }
       })
     }
-
-    // window.location.href = route('mahasiswa.addPracticum', data);
-
-    
   }
 
     return (
@@ -249,6 +334,7 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
                     <SidebarUser></SidebarUser>
                 </div>
                 <div className="mt-16 w-full h-72 mx-8 bg-slade">
+                    {!ValidateStatus &&(
                     <div>
                         <form onSubmit={handleSubmit} method="POST">
                             <div className="grid grid-cols-2 mb-8">
@@ -312,6 +398,7 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
                             </div>
                         </form>
                     </div>
+                    )}
                     <div
                         className="col-span-1 flex-auto lg:ml-[-11vw]"
                         style={{ width: "70vw"}}
@@ -329,14 +416,21 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable }) 
                                             searchData={(e) =>
                                                 context.searchData(e)
                                             }
-                                        ><Button className="bg-lime-800 hover:bg-lime-950 justify-self-end rounded-full">VALIDATE</Button></TableHeader>
+                                        >{!ValidateStatus && (
+                                            <Button
+                                              className="bg-lime-800 hover:bg-lime-950 justify-self-end rounded-full"
+                                              onClick={handleValidate}
+                                            >
+                                              VALIDATE
+                                            </Button>
+                                          )}</TableHeader>
 
                                         <TableBody className={"relative "}>
                                             <TableBody.Head />
                                             <TableBody.Content>
                                                 {context.paginatedData.map(
                                                     (data, index) =>
-                                                        renderBody(data, index, context)
+                                                        renderBody(data, index, context, practicumID)
                                                 )}
                                             </TableBody.Content>
                                         </TableBody>
