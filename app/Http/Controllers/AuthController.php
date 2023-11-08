@@ -64,6 +64,8 @@ class AuthController extends Controller
                     $request->session()->put('user_id', $res->data->id);
                     $request->session()->put('event_id', $res->data->event_id);
                     $request->session()->put('event_name', $res->data->event_name);
+                    $request->session()->put('is_validate', $res->data->is_validate);
+                    $request->session()->put('roles', $res->data->roles);
                     return  redirect()->to(route('Dashboard'));
                     // return;
 
