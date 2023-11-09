@@ -145,7 +145,7 @@ export default class AssignRoutes extends Component {
         }
         
         return (
-            <tr key={index.uri ?? value}>
+            <tr key={index.id ?? value}>
                 <TableCell>
                     <Typography
                         variant="small"

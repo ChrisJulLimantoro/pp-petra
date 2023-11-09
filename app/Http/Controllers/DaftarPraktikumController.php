@@ -115,7 +115,7 @@ class DaftarPraktikumController extends Controller
             }
         }
         // dd($dataTable);
-        dd(session('roles'));
+        // dd(session('roles'));
 
         return Inertia::render('Mahasiswa/DaftarPraktikum', [
             'matkul' => $data['matkul'],
