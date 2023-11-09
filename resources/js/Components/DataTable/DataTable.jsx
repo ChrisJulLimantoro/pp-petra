@@ -23,7 +23,7 @@ export default class DataTable extends Component {
     constructor(props) {
         super(props);
         
-        props.columns.splice(0, 0, '#');
+        // props.columns.splice(0, 0, '#');
         this.state.rawData = props.rawData;
         this.state.filteredData = props.rawData;
         this.state.paginatedData = this.paginateData(props.rawData);

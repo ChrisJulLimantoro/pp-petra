@@ -98,6 +98,7 @@ export default function Dashboard({ auth, data, events, registrations }) {
         <>
             <Head>
                 <title>SAOCP-Dashboard</title>
+                <style>{styles}</style>
             </Head>
 
             <SidebarUser className='overflow-x-hidden'>

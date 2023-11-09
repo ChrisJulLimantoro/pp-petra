@@ -45,13 +45,14 @@ use App\Http\Controllers\RBACRoleAssignmentController;
 //     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 //     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 // });
-
+Route::get('test',function(){
+    return 'test';
+})->middleware('cekRole:admin');
 Route::get('/routes', [App\Http\Controllers\RBACController::class, 'getAllRoutes'])->name('routes');
 Route::get("/", [AuthController::class, 'loginView'])->name('login');
 Route::get("/processLogin", [AuthController::class, 'login'])->name('processLogin');
 Route::get("/logout", [AuthController::class, 'logout'])->name('logout');
 Route::prefix('rbac')->group(function () {
-    Route::get('/', [RBACController::class, 'getAllRoutes'])->name('dashboard');
     Route::get('/manageRole', [RBACController::class, 'manageRole'])->name('rbac.manageRole');
     Route::post('/manageRole', [RBACController::class, 'addRole'])->name('rbac.addRole');
     Route::post('/manageRole/{id}', [RBACController::class, 'editRole'])->name('rbac.editRole');
@@ -69,7 +70,7 @@ Route::prefix('rbac')->group(function () {
 Route::prefix('mahasiswa')->group(function () {
     Route::get('/', function () {
         return Inertia::render('Mahasiswa/Dashboard');
-    })->name('Dashboard');
+    })->name('dashboard');
 
     Route::get('/daftarPraktikum', [DaftarPraktikumController::class, 'getSubject'])->name('mahasiswa.daftarPraktikum');
 
@@ -78,6 +79,10 @@ Route::prefix('mahasiswa')->group(function () {
     Route::post('/addStudentPracticum', [DaftarPraktikumController::class, 'addClass'])->name('mahasiswa.addPracticum');
 
     Route::get('/viewKelas', [ViewPraktikumController::class, 'index'])->name('mahasiswa.viewKelasPraktikum');
+
+    Route::delete('deletePracticum/{idPracticum}', [DaftarPraktikumController::class, 'deletePracticum'])->name('mahasiswa.deletePracticum');
+
+    Route::post('validate', [DaftarPraktikumController::class, 'valid'])->name('mahasiswa.validate');
 });
 
 Route::get('/contoh-datatable', function () {
@@ -130,6 +135,7 @@ Route::prefix('event')->group(function () {
 });
 
 
+
 Route::prefix('tutorial')->group(function () {
     Route::get('/contoh-datatable', function () {
         return Inertia::render('Tutorial/ContohDatatable');
@@ -139,3 +145,8 @@ Route::prefix('tutorial')->group(function () {
         return Inertia::render('Tutorial/ContohAlert');
     })->name('tutorial.alert');
 });
+
+Route::prefix('asisten')->group(function () {
+    Route::get('/viewKelas', [PracticumController::class, 'viewPracticum'])->name('View Kelas');
+});
+
