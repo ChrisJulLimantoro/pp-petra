@@ -1,18 +1,19 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DaftarPraktikum;
-use App\Http\Controllers\DaftarPraktikumController;
-use App\Http\Controllers\EventController;
-use App\Http\Controllers\PracticumController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ViewPraktikumController;
-use App\Http\Controllers\RBACController;
-use App\Http\Controllers\RBACRoleAssignmentController;
-use App\Http\Controllers\RoomController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RBACController;
+use App\Http\Controllers\RoomController;
+use App\Http\Controllers\DaftarPraktikum;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PracticumController;
+use App\Http\Controllers\ViewPraktikumController;
+use App\Http\Controllers\DaftarPraktikumController;
+use App\Http\Controllers\RBACRoleAssignmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,9 +84,7 @@ Route::get('/contoh-datatable', function () {
     return Inertia::render('ContohDatatable');
 })->name('contoh.datatable');
 Route::prefix('asisten')->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('Assistant/Dashboard');
-    })->name('Dashboard');
+    Route::get('/', [ReportController::class, 'dashboard'])->name('asisten.dashboard');
 
     Route::get('/viewKelas', function () {
         return Inertia::render('Asisten/viewKelas');
