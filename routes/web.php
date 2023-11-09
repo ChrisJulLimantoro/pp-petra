@@ -136,6 +136,7 @@ Route::prefix('event')->group(function () {
 });
 
 
+
 Route::prefix('tutorial')->group(function () {
     Route::get('/contoh-datatable', function () {
         return Inertia::render('Tutorial/ContohDatatable');
@@ -145,3 +146,8 @@ Route::prefix('tutorial')->group(function () {
         return Inertia::render('Tutorial/ContohAlert');
     })->name('tutorial.alert');
 });
+
+Route::prefix('asisten')->group(function () {
+    Route::get('/viewKelas', [PracticumController::class, 'viewPracticum'])->name('View Kelas');
+});
+

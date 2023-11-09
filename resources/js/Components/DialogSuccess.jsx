@@ -6,13 +6,6 @@ import {
     DialogBody,
     DialogFooter,
 } from "@material-tailwind/react";
-// import {
-//     dataLowongan,
-//     dataAjar,
-//     updateDataAjar,
-//     updateDataLowongan,
-// } from "@/Pages/Asisten/arr";
-import { DataTableContext } from "./DataTable/DataTable";
 import { viewKelasContext } from "@/Pages/Asisten/viewKelas";
 
 export default function DialogSuccess(props) {
@@ -26,7 +19,7 @@ export default function DialogSuccess(props) {
     const handleOpen2 = () => {
         setOpen(!open);
         const taken = pageData.lowongan[props.id];
-
+        taken.jumlah_asisten += 1;
         const updatedLowongan = pageData.lowongan.filter(
             (item, index) => index !== props.id
         );
