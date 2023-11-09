@@ -8,21 +8,9 @@ export default function Dashboard({ auth }) {
             <Head>
                 <title>SAOCP-Dashboard</title>
             </Head>
-            <div className="grid grid-cols-7 gap-1">
-                <div className='col-span-2'>
-                    <SidebarUser>
-
-                    </SidebarUser>
-                </div>
-                <div className="mt-10 w-full h-72 col-span-4">
-                    <Carousel className="w-full">
-
-                    </Carousel>
-                    <div className="mt-10">
-                    </div> 
-                </div>
+            <SideBarUser>
                 
-            </div>
+            </SideBarUser>
             
            
         </>

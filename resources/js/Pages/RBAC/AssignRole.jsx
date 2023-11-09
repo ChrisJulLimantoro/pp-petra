@@ -5,6 +5,7 @@ import { UsersSection } from "@/Components/RBAC/AssignRole/UsersSection";
 import SidebarLayout from "@/Layouts/SidebarLayout";
 import { Head } from "@inertiajs/react";
 import React, { useState } from "react";
+import SidebarUser from "@/Layouts/SidebarUser";
 
 export default function AssignRole({
     auth,
@@ -17,7 +18,7 @@ export default function AssignRole({
     const [selectedUser, setSelectedUser] = useState(null);
 
     return (
-        <SidebarLayout>
+        <SidebarUser>
             <Head>
                 <title>Assign Role</title>
                 <style>
@@ -75,6 +76,6 @@ export default function AssignRole({
                     </RoleSearchProvider>
                 </section>
             </div>
-        </SidebarLayout>
+        </SidebarUser>
     );
 }

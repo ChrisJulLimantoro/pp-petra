@@ -1,4 +1,5 @@
 import SidebarLayout from "@/Layouts/SidebarLayout";
+import SidebarUser from "@/Layouts/SidebarUser";
 import TableHeader from "@/Components/DataTable/TableHeader";
 import TableBody from "@/Components/DataTable/TableBody";
 import TableFooter from "@/Components/DataTable/TableFooter";
@@ -17,12 +18,14 @@ import {
     Input,
     Alert,
 } from "@material-tailwind/react";
-import { Head, useForm } from "@inertiajs/react";
-import React, { useState, useReducer, useRef } from "react";
-import { CheckIcon, PencilIcon, PencilSquareIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Head } from "@inertiajs/react";
+import React, { useState, useRef } from "react";
+import { CheckIcon, PencilSquareIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 export default function ManageRole({ roles }) {
-    const [role, setRole] = useReducer(roleReducer, roles)
+    const columns = ['Name', 'Slug', 'Action']
+
+    const role = useRef(roles.data)
 
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
@@ -36,11 +39,11 @@ export default function ManageRole({ roles }) {
     const [del, setDel] = useState(0);
 
     const handleOpen = () => setOpen(!open);
-    const handleOpen2 = (index) => {setOpen2(!open2); setDel(index)};
+    const handleOpen2 = (index) => {console.log(index); setOpen2(!open2); setDel(index)};
 
-    const handleAdd = (context) => roleReducer(roles, {type: 'add', context: context});
-    const handleSave = (index, context) => roleReducer(roles, {type: 'save', index: index, context: context});
-    const handleDelete = (index, context) => roleReducer(roles, {type: 'delete', index: index, context: context});
+    const handleAdd = () => roleReducer(role.current, {type: 'add'});
+    const handleSave = (index) => roleReducer(role.current, {type: 'save', index: index});
+    const handleDelete = (index, context) => roleReducer(role.current, {type: 'delete', index: index, context: context});
 
     const resetForm = () => {
         setData({
@@ -55,7 +58,7 @@ export default function ManageRole({ roles }) {
 
         setTimeout(() => {
             setAlert({...alert, isOpen: false})
-        }, 2000);
+        }, 1000);
     }
 
     const toggleEdit = (index) => {
@@ -68,45 +71,36 @@ export default function ManageRole({ roles }) {
         }
     }
 
-    function roleReducer(roles, action) {
+    function roleReducer(role, action) {
         if (action.type == 'add') {
             axios.post(route('rbac.addRole'), data)
             .then((response) => {
                 if (response.data.success) {
                     resetForm();
+                    setOpen(false);
     
-                    roles.data.unshift(response.data.data)
-                    action.context.updateData(roles.data)
+                    role.unshift(response.data.data)
                     showAlert("New role added!", 'green')
-                    setOpen(false)
                 }
                 else {
                     setError(response.data.error_message)
-
-                    if (error == 'role already exists') {
-                        setOpen(false)
-                        showAlert("Role already exist!", 'red')
-                    }
+                    showAlert("Something went wrong!", 'red')
                 }
             })
-            .catch((err) => {
-                console.log(err)
+            .catch(() => {
                 showAlert("Something went wrong!", 'red')
             })
-
-            return roles;
         }
 
         else if (action.type == 'save') {
-            let selectedRole = roles.data[action.index]
+            let selectedRole = role[action.index]
 
             axios.post(route('rbac.editRole', selectedRole.id), data2)
             .then((response) => {
                 if (response.data.success) {
                     setData2({name: '', slug: ''});
                     
-                    roles.data[action.index] = response.data.data;
-                    action.context.updateData(roles.data);
+                    role[action.index] = response.data.data;
                     showAlert("Role edited!", 'green');
                     setEdit(-1);
                 }
@@ -114,41 +108,30 @@ export default function ManageRole({ roles }) {
                     showAlert("Something went wrong!", 'red')
                 }
             })
-            .catch((err) => {
-                console.log(err)
+            .catch(() => {
                 showAlert("Something went wrong!", 'red')
             })
-
-            return roles;
         }
 
         else if (action.type == 'delete') {
-            let selectedRole = roles.data[action.index]
+            let selectedRole = role[action.index]
 
             axios.delete(route('rbac.deleteRole', selectedRole.id))
             .then((response) => {
                 if (response.data.success) {
-                    roles.data = roles.data.filter(role => role.id !== selectedRole.id);
-                    action.context.updateData(roles.data);
+                    role = role.filter(r => r.id !== selectedRole.id);
+                    action.context.updateData(role)
                     showAlert(selectedRole.name + " role deleted!", 'green');
                 }
                 else {
-                    if (response.data.error_message === 'cannot delete admin role') {
-                        showAlert("Can't delete that role!", 'red')
-                    }
-                    else {
-                        showAlert("Something went wrong!", 'red')
-                    }
+                    showAlert("Something went wrong!", 'red')
                 }
             })
-            .catch((err) => {
-                console.log(err)
+            .catch(() => {
                 showAlert("Something went wrong!", 'red')
             })
 
-            setDel(0);
             setOpen2(false);
-            return roles;
         }
 
         else {
@@ -182,11 +165,11 @@ export default function ManageRole({ roles }) {
                         color="blue-gray"
                         className="font-normal"
                     >
-                        {index + 1 + (context.perPage * (context.currentPage - 1))}
+                        {index + 1}
                     </Typography>
                 </TableCell>
                 <TableCell>
-                    {edit === index + (context.perPage * (context.currentPage - 1)) ? (
+                    {edit === index ? (
                         <Input 
                             label='' 
                             size='md' 
@@ -204,7 +187,7 @@ export default function ManageRole({ roles }) {
                     )}
                 </TableCell>
                 <TableCell>
-                    {edit === index + (context.perPage * (context.currentPage - 1)) ? (
+                    {edit === index ? (
                         <Input 
                             label='' 
                             size='md' 
@@ -222,10 +205,10 @@ export default function ManageRole({ roles }) {
                 </TableCell>
                 <TableCell>
                     <div className="flex gap-5">
-                        {edit === index + (context.perPage * (context.currentPage - 1)) && (
+                        {edit === index && (
                             <>
                                 <Tooltip content="Save" placement="top">
-                                    <CheckIcon onClick={() => handleSave(index + (context.perPage * (context.currentPage-1)), context)} width={20} cursor='pointer' stroke="green" />
+                                    <CheckIcon onClick={() => handleSave(index, context)} width={20} cursor='pointer' stroke="green" />
                                 </Tooltip>
                                 <Tooltip content="Cancel" placement="top">
                                     <XMarkIcon width={20} cursor='pointer' stroke="red" onClick={() => toggleEdit(-1)} />
@@ -233,14 +216,14 @@ export default function ManageRole({ roles }) {
                             </>
                         )} 
 
-                        {edit !== index + (context.perPage * (context.currentPage - 1)) && (
+                        {edit !== index && (
                             <>
                                 <Tooltip content="Edit" placement="top">
                                     <PencilSquareIcon 
                                         width={20} 
                                         cursor={'pointer'} 
                                         stroke="orange" 
-                                        onClick={() => toggleEdit(index + (context.perPage * (context.currentPage-1)))}
+                                        onClick={() => toggleEdit(index)}
                                     /> 
                                 </Tooltip>
                                 <Tooltip content="Delete" placement="top">
@@ -248,8 +231,7 @@ export default function ManageRole({ roles }) {
                                         width={20} 
                                         cursor={'pointer'} 
                                         stroke="red"
-                                        onClick={() => handleOpen2(index + (context.perPage * (context.currentPage-1)))}  
-                                    />
+                                        onClick={() => handleOpen2(index)}  />
                                 </Tooltip>
                             </>
                         )}
@@ -260,7 +242,7 @@ export default function ManageRole({ roles }) {
     }
 
     return (
-        <SidebarLayout>
+        <SidebarUser>
             <Head>
                 <title>Add Role</title>
             </Head>
@@ -300,7 +282,7 @@ export default function ManageRole({ roles }) {
             <DataTable
                 className="w-full" 
                 rawData={roles.data} 
-                columns={['Name', 'Slug', 'Action']}
+                columns={['#', 'Name', 'Slug', 'Action']}
             >
                 <DataTableContext.Consumer>
                     {(context) => (
@@ -362,8 +344,8 @@ export default function ManageRole({ roles }) {
                                         {error?.slug && <Typography color="red">{error.slug}</Typography>}
                                     </CardBody>
                                     <CardFooter className="pt-0 flex gap-3">
-                                        <Button variant="filled" className="w-1/2"onClick={() => handleAdd(context)}>Add</Button>
-                                        <Button variant="text" className="w-1/2" onClick={() => setOpen(false)}>Cancel</Button>
+                                        <Button variant="filled" color="black" className="w-1/2"onClick={() => handleAdd(context)}>Add</Button>
+                                        <Button variant="text" color="black" className="w-1/2" onClick={() => setOpen(false)}>Cancel</Button>
                                     </CardFooter>
                                 </Card>
                             </Dialog>
@@ -384,7 +366,7 @@ export default function ManageRole({ roles }) {
                                     </CardBody>
                                     <CardFooter className="pt-0 flex gap-3">
                                         <Button variant="filled" color="red" className="w-1/2" onClick={() => handleDelete(del, context)}>Delete</Button>
-                                        <Button variant="text" className="w-1/2" onClick={() => setOpen2(false)}>Cancel</Button>
+                                        <Button variant="text" color="black" className="w-1/2" onClick={() => setOpen2(false)}>Cancel</Button>
                                     </CardFooter>
                                 </Card>
                             </Dialog>
@@ -392,6 +374,6 @@ export default function ManageRole({ roles }) {
                     )}
                 </DataTableContext.Consumer>
             </DataTable>
-        </SidebarLayout>
+        </SidebarUser>
     );
 }
