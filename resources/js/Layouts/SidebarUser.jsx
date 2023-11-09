@@ -444,7 +444,7 @@ export default function MultiLevelSidebar({ children, className = "" }) {
                 </style>
             </Head>
 
-            <div className="box-border flex flex-row min-h-screen gap-x-7 bg-blue-gray-50 overflow-x-hidden">
+            <div className="box-border flex flex-row min-h-screen gap-x-7 overflow-x-hidden">
                 {sidebarState === 1
                     ? minimizedSidebar()
                     : sidebarState === 2

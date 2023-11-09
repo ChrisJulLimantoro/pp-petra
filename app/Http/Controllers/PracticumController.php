@@ -136,6 +136,7 @@ class PracticumController extends Controller
             ->delete(env('API_URL') . '/practicums/' . $id);
 
         return redirect()->back()->with('message', $res->json());
+    }
 
     public function viewPracticum(){
         $dataPracticum = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/practicums'), true);
