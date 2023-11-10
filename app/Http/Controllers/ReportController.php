@@ -39,43 +39,57 @@ class ReportController extends Controller
         ]);
     }
 
-    public function detailReport() {
+    public function detailApplication() {
         $subjects = json_decode(
             Http::withHeaders(['Accept' => 'application/json'])
             ->withToken(session('token'))
             ->get(env('API_URL') . '/subjects')
         )->data;
 
+        $events = json_decode(
+            Http::withHeaders(['Accept' => 'application/json'])
+            ->withToken(session('token'))
+            ->get(env('API_URL') . '/events')
+        );
+        $events = collect($events->data);
+        $events = $events->filter(function($event) {
+            return $event->status === 1;
+        });
+
         $initialReport = json_decode(
             Http::withHeaders(['Accept' => 'application/json'])
             ->withToken(session('token'))
-            ->get(env('API_URL') . '/subjects-get-unapplied/' . $subjects[0]->id)
+            ->get(env('API_URL') . '/subjects-get-detailed-report/' . $subjects[0]->id . '/' . $events[0]->id)
         )->data;
 
-        foreach($initialReport as $r) {
-            $r->name = $r->user->name;
-            unset($r->user);
-        }
-
         return Inertia::render('Assistant/DetailReport', [
-            'title' => "Detailed Report",
+            'title' => "Detail Pendaftaran",
             'subjects' => $subjects,
+            'events' => $events,
             'initialReport' => $initialReport,
         ]);
     }
 
-    public function getReportData($id) {
+    public function getApplicationData($subject, $event) {
         $data = json_decode(
             Http::withHeaders(['Accept' => 'application/json'])
             ->withToken(session('token'))
-            ->get(env('API_URL') . '/subjects-get-unapplied/' . $id)
+            ->get(env('API_URL') . '/subjects-get-detailed-report/' . $subject . '/' . $event)
+        )->data;
+
+        return response()->json($data); 
+    }
+
+    public function historyApplication() {
+        $data = json_decode(
+            Http::withHeaders(['Accept' => 'application/json'])
+            ->withToken(session('token'))
+            ->get(env('API_URL') . '/student-practicum-nico')
         )->data;
 
         foreach($data as $d) {
             $d->name = $d->user->name;
             unset($d->user);
         }
-
-        return response()->json($data); 
     }
 }

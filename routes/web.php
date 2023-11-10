@@ -90,8 +90,9 @@ Route::get('/contoh-datatable', function () {
 })->name('contoh.datatable');
 Route::prefix('asisten')->group(function () {
     Route::get('/', [ReportController::class, 'dashboard'])->name('asisten.dashboard');
-    Route::get('/detailed-report', [ReportController::class, 'detailReport'])->name('asisten.detailedReport');
-    Route::get('/get-report-data/{id}', [ReportController::class, 'getReportData'])->name('asisten.getReportData');
+
+    Route::get('/application-detail', [ReportController::class, 'detailApplication'])->name('reports.detail');
+    Route::get('/get-application-report/{subject}/{event}', [ReportController::class, 'getApplicationData'])->name('reports.getApplicationData');
 
     Route::get('/viewKelas', function () {
         return Inertia::render('Asisten/viewKelas');

@@ -8,21 +8,25 @@ import TableFooter from "@/Components/DataTable/TableFooter";
 import TableCell from "@/Components/DataTable/TableCell";
 import { DataTableContext } from "@/Components/DataTable/DataTable";
 import NotificationAlert from "@/Components/NotificationAlert";
-import { Card, Select, Option, Spinner, Typography } from '@material-tailwind/react';
+import { Card, Select, Option, Spinner, Typography, Chip } from '@material-tailwind/react';
 
-export default function DetailReport({ title, subjects, initialReport }) {
+export default function DetailReport({ title, subjects, events, initialReport }) {
     const [activeSubject, setActiveSubject] = useState(subjects[0].id);
+    const [activeEvent, setActiveEvent] = useState(events[0].id);
     const [loading, setLoading] = useState(false);
-    const [data, setData] = useState(initialReport);
+    const applied = useRef(initialReport.applied);
+    const notYetApplied = useRef(initialReport.unapplied);
     const alertRef = useRef();
-    const columns = ['#', 'Name', 'Name', 'Program', 'Semester']
+    const columns1 = ['#', 'NRP', 'Nama', 'Program', 'Semester', 'Pilihan 1', 'Pilihan 2', 'Status'];
+    const columns2 = ['#', 'NRP', 'Nama', 'Program', 'Semester'];
 
-    const loadData = (subject) => {
+    const handleChangeSubject = (subject) => {
         setLoading(true);
-        axios.get(route('asisten.getReportData', subject))
+        axios.get(route('reports.getApplicationData', [subject, activeEvent]))
         .then((response) => {
+            applied.current = response.data.applied;
+            notYetApplied.current = response.data.unapplied;
             setLoading(false)
-            setData(response.data)
             setActiveSubject(subject);
         })
         .catch((err) => {
@@ -35,11 +39,31 @@ export default function DetailReport({ title, subjects, initialReport }) {
         })
     }
 
-    const renderBody = (data, index, context) => {
-        if (data.empty) {
+    const handleChangeEvent = (event) => {
+        setLoading(true);
+        axios.get(route('reports.getApplicationData', [activeSubject, event]))
+        .then((response) => {
+            applied.current = response.data.applied;
+            notYetApplied.current = response.data.unapplied;
+            setLoading(false)
+            setActiveEvent(event)
+        })
+        .catch((err) => {
+            console.log(err)
+            alertRef.current?.show(
+                "Error",
+                "red", 
+                2000 
+            );
+        })
+    }
+
+    const renderApplied = (data, index, context) => {
+        if (data.empty || applied.current.length === 0) {
+            console.log(applied.current.length === 0)
             return (
-                <tr key={"notFound"}>
-                    <TableCell colSpan={columns.length}>
+                <tr key={"notFound_1"}>
+                    <TableCell colSpan={columns1.length}>
                         <Typography
                             variant="small"
                             color="blue-gray"
@@ -54,7 +78,7 @@ export default function DetailReport({ title, subjects, initialReport }) {
 
         return (
             <tr key={data.id}>
-                {columns.map((column) => (
+                {columns1.map((column) => (
                     column === '#' ? (
                         <TableCell>
                             <Typography
@@ -66,20 +90,13 @@ export default function DetailReport({ title, subjects, initialReport }) {
                             </Typography>
                         </TableCell> 
                     ) : 
-                    column === 'Program' ? (
+                    column === 'Status' ? (
                         <TableCell key={column}>
-                            <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal"
-                            >
-                                {
-                                    data[column.toLowerCase().replaceAll(" ", "_")] === 'i' ? 
-                                    'Informatika' : 
-                                    data[column.toLowerCase().replaceAll(" ", "_")] === 's' ? 
-                                    'SIB' : 'DSA'
-                                }
-                            </Typography>
+                            {data.status === 'Applied' ? 
+                                <Chip color='orange' variant='ghost' value={data.status} className='text-center' />
+                            : 
+                                <Chip color='green' variant='ghost' value={data.status} className='text-center' />
+                            }
                         </TableCell>
                     ) : (
                         <TableCell key={column}>
@@ -101,70 +118,120 @@ export default function DetailReport({ title, subjects, initialReport }) {
         <>
             <Head>
                 <title>{title}</title>
+                <style>
+                    {`
+                        html {
+                            overflow-x: hidden;
+                        }
+                    `}
+                </style>
             </Head>
 
             <SidebarUser>
                 <NotificationAlert 
                     ref={alertRef}
                     className="w-[20rem] fixed top-6 right-10 py-4 z-10"
-                    defaultColor="red" // optional default green
-                    defaultShowTime={4000} // optional default 1000 ms
+                    defaultColor="red"
+                    defaultShowTime={2000}
                 />
 
-                <DataTable
-                    className="w-full overflow-hidden" 
-                    rawData={data}
-                    columns={columns}
-                >
-                    <DataTableContext.Consumer>
-                        {(context) => (
-                            <Card className="w-full z-[1]">
-                                <TableHeader 
-                                    title="Mahasiswa yang belum daftar"
-                                >
-                                    <div className="flex w-20 justify-center md:justify-start z-20">
-                                        <Select 
-                                            variant="outlined" 
-                                            label="Select Role"
-                                            value={activeSubject}
-                                            onChange = {(e) => loadData(e)}
-                                            className="relative z-99"
-                                        >
-                                            {subjects?.map((subject, index) => (
-                                                <Option key={subject.name} value={subject.id}>
-                                                    {subject.name}
-                                                </Option>
-                                            ))}
-                                        </Select>
-                                    </div>
-                                </TableHeader>
+                <div className="flex flex-col gap-5 md:mr-5">
+                    <div className="flex flex-col md:flex-row gap-5">
+                        <Select 
+                            variant="outlined" 
+                            label="Mata Kuliah"
+                            value={activeSubject}
+                            onChange = {(e) => handleChangeSubject(e)}
+                            className="relative z-99 w-full"
+                        >
+                            {subjects?.map((subject, index) => (
+                                <Option key={subject.name} value={subject.id}>
+                                    {subject.name}
+                                </Option>
+                            ))}
+                        </Select>
 
-                                <TableBody className="relative">
-                                    <TableBody.Head />
-                                    <TableBody.Content>
-                                        {loading ? (
-                                            <tr>
-                                                <TableCell colSpan={5} className="text-center">
-                                                    <div className="flex flex-col items-center gap-3">
-                                                        <Spinner />
-                                                        <Typography>Loading...</Typography>
-                                                    </div>
-                                                </TableCell>
-                                            </tr>
-                                        ) : 
-                                            context.paginatedData?.map((data, index) => renderBody(data, index, context))
-                                        }
-                                    </TableBody.Content>
-                                </TableBody>
-    
-                                <TableFooter />
-                            </Card>
-                        )}
-                    </DataTableContext.Consumer>
-                </DataTable>
+                        <Select 
+                            variant="outlined" 
+                            label="Periode"
+                            value={activeEvent}
+                            onChange = {(e) => handleChangeEvent(e)}
+                            className="relative z-99"
+                        >
+                            {events?.map((event, index) => (
+                                <Option key={event.id} value={event.id}>
+                                    {event.name}
+                                </Option>
+                            ))}
+                        </Select>
+                    </div>
+
+                    {/* Applied */}
+                    <DataTable
+                        className="w-full overflow-hidden" 
+                        rawData={applied.current}
+                        columns={columns1}
+                    >
+                        <DataTableContext.Consumer>
+                            {(context) => (
+                                <Card className="w-full z-[1] border border-gray-200">
+                                    <TableHeader title="Sudah daftar" />
+
+                                    <TableBody className="relative">
+                                        <TableBody.Head />
+                                        <TableBody.Content>
+                                            {loading ? (
+                                                <tr>
+                                                    <TableCell colSpan={columns1.length} className="text-center">
+                                                        <div className="flex flex-col items-center gap-3">
+                                                            <Spinner />
+                                                            <Typography>Loading...</Typography>
+                                                        </div>
+                                                    </TableCell>
+                                                </tr>
+                                            ) : 
+                                                context.paginatedData?.map((data, index) => renderApplied(data, index, context))
+                                            }
+                                        </TableBody.Content>
+                                    </TableBody>
+        
+                                    <TableFooter />
+                                </Card>
+                            )}
+                        </DataTableContext.Consumer>
+                    </DataTable>
+
+                    {/* Not yet applied */}
+                    <DataTable
+                        className="w-full overflow-hidden" 
+                        rawData={notYetApplied.current}
+                        columns={columns2}
+                    >
+                        <Card className="w-full z-[1] border border-gray-200">
+                            <TableHeader title="Belum daftar" />
+
+                            <TableBody className="relative">
+                                <TableBody.Head />
+                                <TableBody.Content>
+                                    {loading && (
+                                        <tr>    
+                                            <TableCell colSpan={columns1.length} className="text-center">
+                                                <div className="flex flex-col items-center gap-3">
+                                                    <Spinner />
+                                                    <Typography>Loading...</Typography>
+                                                </div>
+                                            </TableCell>
+                                        </tr>
+                                    )}
+                                </TableBody.Content>
+                            </TableBody>
+
+                            <TableFooter />
+                        </Card>
+                    </DataTable>
+                </div>
+
             </SidebarUser>
         </>
     )
 }
-
-

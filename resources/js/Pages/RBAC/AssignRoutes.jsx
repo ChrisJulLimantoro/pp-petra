@@ -265,7 +265,7 @@ export default class AssignRoutes extends Component {
                     >
                         <DataTableContext.Consumer>
                             {(context) => (
-                                <Card className="w-full z-[1]">
+                                <Card className="w-full z-[1] border border-gray-200">
                                     <TableHeader 
                                         title="Assign Routes to Role"
                                     >
