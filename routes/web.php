@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssistantController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DaftarPraktikum;
 use App\Http\Controllers\DaftarPraktikumController;
@@ -110,6 +111,19 @@ Route::prefix('asisten')->group(function () {
         })->name('practicum.addStudent');
     });
 });
+
+Route::prefix('manage-asisten')->group(function () {
+    Route::get('/', [AssistantController::class, 'index'])->name('assistant.index');
+    Route::get('/getAssistantRoleId', [AssistantController::class, 'getAssistantRoleId'])->name('assistant.getAssistantRoleId');
+    Route::delete('/{id}', [AssistantController::class, 'delete'])->name('assistant.delete');
+    Route::post('/', [AssistantController::class, 'store'])->name('assistant.store');
+    Route::get('/getUser/{nrp?}', [AssistantController::class, 'getUser'])->name('assistant.getUser');
+    Route::get('/getRooms', [AssistantController::class, 'getRooms'])->name('assistant.getRooms');
+    Route::patch('/users/{id}', [AssistantController::class, 'updateUser'])->name('assistant.updateUser');
+    Route::patch('/users/{id}/room', [AssistantController::class, 'updateRoom'])->name('assistant.updateRoom');
+
+});
+
 Route::prefix('room')->group(function () {
     Route::get('/', [RoomController::class, 'index'])->name('room.all');
     // Route::get('/{id}', [RoomController::class, 'show'])->name('room.show');
