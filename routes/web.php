@@ -147,6 +147,6 @@ Route::prefix('tutorial')->group(function () {
 });
 
 Route::prefix('asisten')->group(function () {
-    Route::get('/viewKelas', [PracticumController::class, 'viewPracticum'])->name('View Kelas');
+    Route::get('/viewAjar', [PracticumController::class, 'viewPracticum'])->name('View Kelas');
 });
 

@@ -139,11 +139,37 @@ class PracticumController extends Controller
     }
 
     public function viewPracticum(){
-        $dataPracticum = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/practicums'), true);
+        $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        $dataPracticum = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/practicum-karen'), true);
         // dd($dataPracticum);
-        return Inertia::render('Asisten/viewKelas', [
-            'dataLowongan' => $dataPracticum
-        ]);
+        $data = [];
 
+        foreach ($dataPracticum['data'] as $dp){
+
+            $parts = explode("-", $dp['time']);
+
+            $startHour = substr_replace($parts[0], '.', -2, 0);
+            $endHour = substr_replace($parts[1], '.', -2, 0);
+
+            $time = $startHour . " - " . $endHour;
+
+            $data[] = [
+                "hari" => $days[$dp['day']-1],
+                "jam" => $time,
+                "mata_kuliah_praktikum" => $dp['name'],
+                "kelas" => $dp['code'],
+                "jumlah_asisten" => $dp['assistants'],
+                "kuota" => $dp['quota'],
+            ];
+        }
+        
+        $dataA = array_slice($data,0,1);
+        $dataL = array_slice($data,1);
+        
+        // dd($dataA);
+        return Inertia::render('Asisten/viewKelas', [
+            'dataLowongan' => $dataL,
+            'dataAjar' => $dataA,
+        ]);
     }
 }
