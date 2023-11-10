@@ -265,7 +265,6 @@ export default function Dashboard({ auth, data, events, registrations }) {
                                         <Card className='flex flex-col p-6 border gap-5 overflow-auto max-h-[50vh]'>
                                             <div className="flex justify-between">
                                                 <Typography className='font-bold text-lg'>Pendaftaran Terbaru</Typography>
-                                                <Link href={route('reports.history')} className='text-blue-500'>Lihat Detail</Link>
                                             </div>
 
                                             <table className="w-full min-w-max table-auto text-fixed">
