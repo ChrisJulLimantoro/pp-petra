@@ -432,7 +432,7 @@ export default function Index({ events }) {
             )}
 
             <Breadcrumbs className="mb-2">
-                <a href={route("dashboard")} className="opacity-60">
+                <a href={route("asisten.dashboard")} className="opacity-60">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-4 w-4"

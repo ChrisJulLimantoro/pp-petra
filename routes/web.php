@@ -14,6 +14,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BulkInsertStudentController;
 use Inertia\Inertia;
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +49,8 @@ use Inertia\Inertia;
 Route::get('test',function(){
     return 'test';
 })->middleware('cekRole:admin');
+Route::get("/viewMahasiswa", [BulkInsertStudentController::class, 'index'])->name('viewMahasiswa');
+Route::post("/uploadMahasiswa", [BulkInsertStudentController::class, 'insert'])->name('uploadMahasiswa');
 Route::get('/routes', [App\Http\Controllers\RBACController::class, 'getAllRoutes'])->name('routes');
 Route::get("/", [AuthController::class, 'loginView'])->name('login');
 Route::get("/processLogin", [AuthController::class, 'login'])->name('processLogin');
@@ -67,6 +70,7 @@ Route::prefix('rbac')->group(function () {
     Route::post('/users/{user_id}/roles/{role_id}', [RBACController::class, 'assignRole'])->name('rbac.assignRole');
     Route::delete('/users/{user_id}/roles/{role_id}', [RBACController::class, 'unassignRole'])->name('rbac.unassignRole');
 });
+
 Route::prefix('mahasiswa')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('mahasiswa.dashboard');
 
@@ -88,6 +92,7 @@ Route::get('/contoh-datatable', function () {
 })->name('contoh.datatable');
 Route::prefix('asisten')->group(function () {
     Route::get('/', [ReportController::class, 'dashboard'])->name('asisten.dashboard');
+    
 
     Route::get('/application-detail', [ReportController::class, 'detailApplication'])->name('reports.detail');
     Route::get('/get-application-report/{subject}/{event}', [ReportController::class, 'getApplicationData'])->name('reports.getApplicationData');

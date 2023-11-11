@@ -287,7 +287,7 @@ export default function MultiLevelSidebar({ children, className = "" }) {
                     </ListItem>
 
                     {/* Dashboard */}
-                    <Link href={route("dashboard")}>
+                    <Link href={route("asisten.dashboard")}>
                         <ListItem className="w-fit p-3">
                             <PresentationChartBarIcon className="h-5 w-5" />
                         </ListItem>
