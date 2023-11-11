@@ -10,6 +10,7 @@ use App\Http\Controllers\ViewPraktikumController;
 use App\Http\Controllers\RBACController;
 use App\Http\Controllers\RBACRoleAssignmentController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -67,9 +68,7 @@ Route::prefix('rbac')->group(function () {
     Route::delete('/users/{user_id}/roles/{role_id}', [RBACController::class, 'unassignRole'])->name('rbac.unassignRole');
 });
 Route::prefix('mahasiswa')->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('Mahasiswa/Dashboard');
-    })->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('mahasiswa.dashboard');
 
     Route::get('/daftarPraktikum', [DaftarPraktikumController::class, 'getSubject'])->name('mahasiswa.daftarPraktikum');
 
