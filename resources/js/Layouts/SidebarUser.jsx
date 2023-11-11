@@ -23,6 +23,7 @@ import {
     MapPinIcon,
     UserPlusIcon,
     CalendarDaysIcon,
+    TableCellsIcon
 } from "@heroicons/react/24/solid";
 import {
     ChevronRightIcon,
@@ -148,14 +149,23 @@ export default function MultiLevelSidebar({ children, className = "" }) {
                                 <Link href={route("practicum.index")}>
                                     <ListItem className="mx-5">
                                         <ListItemPrefix>
-                                            <UserPlusIcon className="h-5 w-5" />
+                                            <TableCellsIcon className="h-5 w-5" />
                                         </ListItemPrefix>
-                                        Asisten
+                                        Manage Praktikum
                                     </ListItem>
                                 </Link>
                             </List>
                         </AccordionBody>
                     </Accordion>
+
+                    <Link href={route("assistant.index")}>
+                        <ListItem>
+                            <ListItemPrefix>
+                                <UserPlusIcon className="h-5 w-5" />
+                            </ListItemPrefix>
+                            Asisten
+                        </ListItem>
+                    </Link>
 
                     {/* Room */}
                     <Link href={route("room.all")}>
