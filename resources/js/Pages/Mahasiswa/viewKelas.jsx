@@ -2,11 +2,9 @@ import { Head } from "@inertiajs/react";
 import SidebarUser from "@/Layouts/SidebarUser";
 import DataTable from "@/Components/DataTable/DataTable";
 import TableHeader from "@/Components/DataTable/TableHeader";
-import { Button, Card, Typography } from "@material-tailwind/react";
+import { Button, Card, Breadcrumbs } from "@material-tailwind/react";
 import TableBody from "@/Components/DataTable/TableBody";
 import TableFooter from "@/Components/DataTable/TableFooter";
-import TableCell from "@/Components/DataTable/TableCell";
-import { DataTableContext } from "@/Components/DataTable/DataTable";
 
 
 export default function viewKelas({dataTable}){
@@ -20,153 +18,40 @@ export default function viewKelas({dataTable}){
         "Ruang"
     ];
     const data = dataTable;
-    // const renderBody = (data, index, context) => {
-    //     // if no data found
-    //     if (data.empty) {
-    //         return (
-    //             <tr key={"notFound"}>
-    //                 <TableCell colSpan={4}>
-    //                     <Typography
-    //                         variant="small"
-    //                         color="blue-gray"
-    //                         className="font-normal text-center"
-    //                     >
-    //                         No data found
-    //                     </Typography>
-    //                 </TableCell>
-    //             </tr>
-    //         );
-    //     }
-
-    //     return (
-    //         <tr key={index}>
-    //             <TableCell>
-    //                 <Typography
-    //                     variant="small"
-    //                     color="blue-gray"
-    //                     className="font-normal"
-    //                 >
-    //                     {index +
-    //                         1 +
-    //                         context.perPage * (context.currentPage - 1)}
-    //                 </Typography>
-    //             </TableCell>
-
-    //             {columns.map((column) =>
-    //                     <TableCell>
-    //                             <Typography
-    //                                 variant="small"
-    //                                 color="blue-gray"
-    //                                 className="font-normal"
-    //                             >
-    //                                 {
-    //                                     data[
-    //                                         column
-    //                                             .toLowerCase()
-    //                                             .replaceAll(" ", "_")
-    //                                     ]
-    //                                 }
-    //                             </Typography>
-    //                     </TableCell>
-    //             )}
-    //         </tr>
-    //     );
-    // };
-
-    const state = {
-        rawData: [],
-        filteredData: [],
-        paginatedData: [],
-        columns: [],
-        currentPage: 1,
-        perPage: 10,
-        totalPages: 1,
-        sort: {
-            column: null,
-            direction: 'asc'
-        },
-    }
-    const search = (keyword) => {
-        // when no keyword is provided
-        console.log(keyword)
-        if (keyword.trim() == '' || keyword == null) {
-            setState({
-                paginatedData: paginateData(state.rawData),
-                filteredData: state.rawData,
-                currentPage: 1, 
-                totalPages: Math.ceil(state.rawData.length / state.perPage)
-            });
-        }
-
-        else {
-            const filtered = state.rawData.filter((data) => {
-                let found = false;
-
-               state.columns.map((column) => {
-                    let columnName = (column.toString().toLowerCase());
-                    console.log(columnName);
-                    if (data[columnName]?.toString().toLowerCase().includes(keyword.toLowerCase())) {
-                        found = true;
-                    }
-                })
-
-                return found;
-            });
-
-            let paginateData = [];
-
-            if (filtered.length > 0) {
-                paginateData = paginateData();
-            }
-            else {
-                filtered.push({empty: "No data found"})
-                paginateData =paginateData(filtered);
-            }
-
-            setState({
-                filteredData: filtered,
-                paginatedData: paginateData,
-                currentPage: 1, 
-                totalPages: Math.ceil(filtered.length / state.perPage)
-            });
-        }
-    }
-    // console.log(data);
+    
     return(
         <SidebarUser>
-            <DataTable rawData={data} columns={columns}>
-                            <DataTableContext.Consumer>
-                                {(context) => (
-                                    <Card className="w-full z-[1]">
-                                        <TableHeader
-                                            title="KELAS PRAKTIKUM"
-                                            perPage={context.perPage.toString()}
-                                            changePerPage={(e) =>
-                                                context.changePerPage(e)
-                                            }
-                                            searchData= {search}
-                                            
-                                        ></TableHeader>
+            <div className="px-6">
+                <Breadcrumbs className="mb-5">
+                    <a href={route('mahasiswa.dashboard')} className="opacity-60">
+                        <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        >
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                        </svg>
+                    </a>
+                    <a href="#" className="opacity-60">
+                        <span>Mahasiswa</span>
+                    </a>
+                    <a href='#'>Lihat Kelas Praktikum</a>
+                </Breadcrumbs>
 
-                                        <TableBody className={"relative "}>
-                                            <TableBody.Head />
-                                            <TableBody.Content />
-                                        </TableBody>
+                <DataTable rawData={data} columns={columns}>
+                    <Card className="w-full z-[1]  border border-gray-200">
+                        <TableHeader title="KELAS PRAKTIKUM" />
 
-                                        <TableFooter
-                                            currentPage={context.currentPage}
-                                            perPage={context.perPage}
-                                            totalPages={context.totalPages}
-                                            totalData={
-                                                context.filteredData.length
-                                            }
-                                            prev={context.prevPage}
-                                            next={context.nextPage}
-                                        ></TableFooter>
-                                    </Card>
-                                )}
-                            </DataTableContext.Consumer>
-            </DataTable>
+                        <TableBody className={"relative "}>
+                            <TableBody.Head />
+                            <TableBody.Content />
+                        </TableBody>
+
+                        <TableFooter />
+                    </Card>
+                </DataTable>
+            </div>
         </SidebarUser>
     )
 }
