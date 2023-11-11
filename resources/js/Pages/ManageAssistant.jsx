@@ -130,7 +130,7 @@ function AssistantTable(props) {
             <DataTable
                 className="w-full"
                 rawData={assistants}
-                columns={["Nama", "NRP", "Ruangan", "Action"]}
+                columns={["#", "Nama", "NRP", "Ruangan", "Action"]}
             >
                 <DataTableContext.Consumer>
                     {(context) => (
