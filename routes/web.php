@@ -11,10 +11,12 @@ use App\Http\Controllers\ViewPraktikumController;
 use App\Http\Controllers\RBACController;
 use App\Http\Controllers\RBACRoleAssignmentController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BulkInsertStudentController;
 use Inertia\Inertia;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -45,13 +47,16 @@ use Inertia\Inertia;
 //     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 //     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 // });
-
+Route::get('test',function(){
+    return 'test';
+})->middleware('cekRole:admin');
+Route::get("/viewMahasiswa", [BulkInsertStudentController::class, 'index'])->name('viewMahasiswa');
+Route::post("/uploadMahasiswa", [BulkInsertStudentController::class, 'insert'])->name('uploadMahasiswa');
 Route::get('/routes', [App\Http\Controllers\RBACController::class, 'getAllRoutes'])->name('routes');
 Route::get("/", [AuthController::class, 'loginView'])->name('login');
 Route::get("/processLogin", [AuthController::class, 'login'])->name('processLogin');
 Route::get("/logout", [AuthController::class, 'logout'])->name('logout');
 Route::prefix('rbac')->group(function () {
-    Route::get('/', [RBACController::class, 'getAllRoutes'])->name('dashboard');
     Route::get('/manageRole', [RBACController::class, 'manageRole'])->name('rbac.manageRole');
     Route::post('/manageRole', [RBACController::class, 'addRole'])->name('rbac.addRole');
     Route::post('/manageRole/{id}', [RBACController::class, 'editRole'])->name('rbac.editRole');
@@ -66,10 +71,9 @@ Route::prefix('rbac')->group(function () {
     Route::post('/users/{user_id}/roles/{role_id}', [RBACController::class, 'assignRole'])->name('rbac.assignRole');
     Route::delete('/users/{user_id}/roles/{role_id}', [RBACController::class, 'unassignRole'])->name('rbac.unassignRole');
 });
+
 Route::prefix('mahasiswa')->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('Mahasiswa/Dashboard');
-    })->name('Dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('mahasiswa.dashboard');
 
     Route::get('/daftarPraktikum', [DaftarPraktikumController::class, 'getSubject'])->name('mahasiswa.daftarPraktikum');
 
@@ -78,12 +82,18 @@ Route::prefix('mahasiswa')->group(function () {
     Route::post('/addStudentPracticum', [DaftarPraktikumController::class, 'addClass'])->name('mahasiswa.addPracticum');
 
     Route::get('/viewKelas', [ViewPraktikumController::class, 'index'])->name('mahasiswa.viewKelasPraktikum');
+
+    Route::delete('deletePracticum/{idPracticum}', [DaftarPraktikumController::class, 'deletePracticum'])->name('mahasiswa.deletePracticum');
+
+    Route::post('validate', [DaftarPraktikumController::class, 'valid'])->name('mahasiswa.validate');
 });
 
 Route::prefix('asisten')->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('Assistant/Dashboard');
-    })->name('Dashboard');
+    Route::get('/', [ReportController::class, 'dashboard'])->name('asisten.dashboard');
+    
+
+    Route::get('/application-detail', [ReportController::class, 'detailApplication'])->name('reports.detail');
+    Route::get('/get-application-report/{subject}/{event}', [ReportController::class, 'getApplicationData'])->name('reports.getApplicationData');
 
 
     Route::get('/viewKelas', function () {
@@ -141,6 +151,7 @@ Route::prefix('event')->group(function () {
 });
 
 
+
 Route::prefix('tutorial')->group(function () {
     Route::get('/contoh-datatable', function () {
         return Inertia::render('Tutorial/ContohDatatable');
@@ -150,3 +161,8 @@ Route::prefix('tutorial')->group(function () {
         return Inertia::render('Tutorial/ContohAlert');
     })->name('tutorial.alert');
 });
+
+Route::prefix('asisten')->group(function () {
+    Route::get('/viewKelas', [PracticumController::class, 'viewPracticum'])->name('View Kelas');
+});
+

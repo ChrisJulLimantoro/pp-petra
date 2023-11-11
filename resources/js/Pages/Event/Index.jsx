@@ -223,6 +223,7 @@ export default function Index({ events }) {
     }
 
     const renderBody = (event, index, context) => {
+        console.log(context.perPage);
         // if no data found
         if (event.empty) {
             return (
@@ -258,6 +259,7 @@ export default function Index({ events }) {
                     column !== "Action" ? (
                         column !== "Status" ? (
                             <TableCell>
+                                {/* {context.perPage} */}
                                 {edit ===
                                 index +
                                     context.perPage *
@@ -326,9 +328,8 @@ export default function Index({ events }) {
                             <div className="flex gap-5">
                                 {edit ===
                                     index +
-                                        context.perPage(
-                                            context.currentPage - 1
-                                        ) && (
+                                        context.perPage *
+                                            (context.currentPage - 1) && (
                                     <>
                                         <Tooltip content="Save" placement="top">
                                             <CheckIcon
@@ -431,7 +432,7 @@ export default function Index({ events }) {
             )}
 
             <Breadcrumbs className="mb-2">
-                <a href={route("dashboard")} className="opacity-60">
+                <a href={route("asisten.dashboard")} className="opacity-60">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-4 w-4"
@@ -447,7 +448,7 @@ export default function Index({ events }) {
             <DataTable
                 className="w-full"
                 rawData={events.data}
-                columns={["Name", "Start Date", "End Date", "Status", "Action"]}
+                columns={['#', "Name", "Start Date", "End Date", "Status", "Action"]}
                 // changeStatus={changeStatus}
             >
                 <DataTableContext.Consumer>

@@ -1,82 +1,58 @@
 export let dataLowongan = [
     {
-        // id: "SD4",
         hari: "Senin",
         jam: "07.30 - 10.30",
         mata_kuliah_praktikum: "Struktur Data",
         kelas: "D",
-        jumlah_asisten: 2,
-        daftar_pengajar: ["Jessica "],
+        jumlah_asisten: 0,
+        kuota: 2,
     },
     {
-        // id: "DAA4",
         hari: "Kamis",
         jam: "16.30 - 19.30",
         mata_kuliah_praktikum: "Desain dan Analisis Algoritma",
         kelas: "D",
-        jumlah_asisten: 3,
-        daftar_pengajar: ["CJ ", "Karen "],
+        jumlah_asisten: 2,
+        kuota: 3,
     },
     {
-        // id: "BDL1",
         hari: "Senin",
         jam: "15.30 - 18.30",
         mata_kuliah_praktikum: "Basis Data Lajutan",
         kelas: "A",
-        jumlah_asisten: 2,
-        daftar_pengajar: ["Jessica "],
+        jumlah_asisten: 1,
+        kuota: 2,
     },
     {
-        // id: "DAA2",
         hari: "Selasa",
         jam: "07.30 - 10.30",
         mata_kuliah_praktikum: "Desain dan Analisis Algoritma",
         kelas: "B",
-        jumlah_asisten: 3,
-        daftar_pengajar: ["CJ ", "Acto "],
+        jumlah_asisten: 1,
+        kuota: 3,
     },
 ];
 
 export let dataAjar = [
-        {
-            // id: "SD1",
-            hari: "Rabu",
-            jam: "16.30 - 19.30",
-            mata_kuliah_praktikum: "Struktur Data",
-            kelas: "A",
-            jumlah_asisten: 2,
-            daftar_pengajar: ["Leo ", "CJ"],
-        },
-        {
-            // id: "BD1",
-            hari: "Kamis",
-            jam: "16.30 - 19.30",
-            mata_kuliah_praktikum: "Basis Data",
-            kelas: "A",
-            jumlah_asisten: 2,
-            daftar_pengajar: ["Leo ", "CJ"],
-        },
+    {
+        hari: "Rabu",
+        jam: "16.30 - 19.30",
+        mata_kuliah_praktikum: "Struktur Data",
+        kelas: "A",
+        jumlah_asisten: 3,
+        kuota: 3,
+    },
+    {
+        hari: "Kamis",
+        jam: "16.30 - 19.30",
+        mata_kuliah_praktikum: "Basis Data",
+        kelas: "A",
+        jumlah_asisten: 2,
+        kuota: 2,
+    },
 ];
-
-// export const updateDataLowongan = (updatedData, context) => {
-//     console.log("Updating dataLowongan:", dataLowongan);
-//     dataLowongan.length = 0;
-//     Array.prototype.push.apply(dataLowongan, updatedData);
-//     dataLowongan = [...updatedData];
-//     context.updateData(updatedData)
-// };
-
-// export const updateDataAjar = (updatedData, context) => {
-//     console.log("Updating dataAjar:", dataAjar);
-//     dataAjar.length = 0;
-//     Array.prototype.push.apply(dataAjar, updatedData);
-//     dataAjar = [...updatedData];
-//     context.updateData(updatedData)
-// };
 
 export default {
     dataLowongan,
     dataAjar,
-    // updateDataLowongan,
-    // updateDataAjar,
 };

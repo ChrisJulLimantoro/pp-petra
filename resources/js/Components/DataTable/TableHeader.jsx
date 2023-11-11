@@ -4,7 +4,7 @@ import { Head } from "@inertiajs/react";
 import { useContext } from "react";
 import { DataTableContext } from "./DataTable";
 
-export default function TableHeader ({ title, description = '', children, className = '' }) {
+export default function TableHeader ({ title, description = '', titleClass, children, className = '' }) {
     const context = useContext(DataTableContext);
 
     return (
@@ -36,7 +36,7 @@ export default function TableHeader ({ title, description = '', children, classN
                 {/* Title, Description, Action Buttons */}
                 <div className="md:mb-2 px-5 py-3 flex items-center justify-between md:gap-8">
                     <div>
-                        <Typography variant="h5" color="blue-gray">
+                        <Typography variant="h5" color="blue-gray" className={titleClass}>
                             {title}
                         </Typography>
                         <Typography color="gray" className="mt-1 font-normal">
