@@ -147,7 +147,7 @@ export default function Index({ rooms }) {
         }
 
         return (
-            <tr key={room.slug ?? index}>
+            <tr key={index}>
                 <TableCell>
                     <Typography
                         variant="small"
@@ -163,6 +163,7 @@ export default function Index({ rooms }) {
                 {columns.map((column) =>
                     column !== "Action" ? (
                         <TableCell>
+                            {console.log(column.toLowerCase().replaceAll(' ','_'),data2[column.toLowerCase().replaceAll(' ','_')])}
                             {edit ===
                             index +
                                 context.perPage * (context.currentPage - 1) ? (
@@ -304,7 +305,7 @@ export default function Index({ rooms }) {
             )}
 
             <Breadcrumbs className="mb-2">
-                <a href={route("dashboard")} className="opacity-60">
+                <a href={route("asisten.dashboard")} className="opacity-60">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-4 w-4"
@@ -320,7 +321,7 @@ export default function Index({ rooms }) {
             <DataTable
                 className="w-full"
                 rawData={rooms.data}
-                columns={["Name", "Code", "Capacity", "Action"]}
+                columns={["#", "Name", "Code", "Capacity", "Action"]}
             >
                 <DataTableContext.Consumer>
                     {(context) => (

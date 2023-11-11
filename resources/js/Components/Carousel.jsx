@@ -1,13 +1,13 @@
 import { Carousel, IconButton } from "@material-tailwind/react";
  
-export default function CarouselCustomArrows() {
+export default function CarouselCustomArrows({children, className = ''}) {
 
   return (
     <Carousel
       autoplay={true}
       autoplayDelay={4000}
       loop={true}
-      className="rounded-xl"
+      className={"rounded-xl " + className}
       prevArrow={({ handlePrev }) => (
         <IconButton
           variant="text"
@@ -56,8 +56,22 @@ export default function CarouselCustomArrows() {
           </svg>
         </IconButton>
       )}
+      navigation={({ setActiveIndex, activeIndex, length }) => (
+        <div className="absolute bottom-4 left-2/4 z-50 flex -translate-x-2/4 gap-2">
+          {new Array(length).fill("").map((_, i) => (
+            <span
+              key={i}
+              className={`block h-1 cursor-pointer rounded-2xl transition-all content-[''] ${
+                activeIndex === i ? "w-8 bg-white" : "w-4 bg-white/50"
+              }`}
+              onClick={() => setActiveIndex(i)}
+            />
+          ))}
+        </div>
+      )}
     >
-      <div className="h-full w-full object-cover bg-red-200 flex justify-center content-center">
+      {children}
+      {/* <div className="h-full w-full object-cover bg-red-200 flex justify-center content-center">
             <div className="mt-4">
                 <h1 className="font-mono text-4xl text-center font-bold">PENGUNGUMAN</h1>
                 <br />
@@ -79,7 +93,7 @@ export default function CarouselCustomArrows() {
                 <br />
                 <h1 className="font-mono text-1xl mt-12 text-center max-w-md">Telah dibuka Lowongan untuk Asisten Dosen. Lowongan akan ditutup pada 18 Agustus 2023 Pk.23.59 WIB</h1>
             </div>       
-      </div>
+      </div> */}
     </Carousel>
   );
 }

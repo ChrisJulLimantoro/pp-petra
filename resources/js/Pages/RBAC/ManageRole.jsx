@@ -18,12 +18,14 @@ import {
     Input,
     Alert,
 } from "@material-tailwind/react";
-import { Head, useForm } from "@inertiajs/react";
-import React, { useState, useReducer, useRef } from "react";
-import { CheckIcon, PencilIcon, PencilSquareIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Head } from "@inertiajs/react";
+import React, { useState, useRef } from "react";
+import { CheckIcon, PencilSquareIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 export default function ManageRole({ roles }) {
-    const [role, setRole] = useReducer(roleReducer, roles)
+    const columns = ['Name', 'Slug', 'Action']
+
+    const role = useRef(roles.data)
 
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
@@ -39,9 +41,9 @@ export default function ManageRole({ roles }) {
     const handleOpen = () => setOpen(!open);
     const handleOpen2 = (index) => {console.log(index); setOpen2(!open2); setDel(index)};
 
-    const handleAdd = (context) => roleReducer(roles, {type: 'add', context: context});
-    const handleSave = (index, context) => roleReducer(roles, {type: 'save', index: index, context: context});
-    const handleDelete = (index, context) => roleReducer(roles, {type: 'delete', index: index, context: context});
+    const handleAdd = () => roleReducer(role.current, {type: 'add'});
+    const handleSave = (index) => roleReducer(role.current, {type: 'save', index: index});
+    const handleDelete = (index, context) => roleReducer(role.current, {type: 'delete', index: index, context: context});
 
     const resetForm = () => {
         setData({
@@ -69,7 +71,7 @@ export default function ManageRole({ roles }) {
         }
     }
 
-    function roleReducer(roles, action) {
+    function roleReducer(role, action) {
         if (action.type == 'add') {
             axios.post(route('rbac.addRole'), data)
             .then((response) => {
@@ -77,8 +79,7 @@ export default function ManageRole({ roles }) {
                     resetForm();
                     setOpen(false);
     
-                    roles.data.unshift(response.data.data)
-                    action.context.updateData(roles.data)
+                    role.unshift(response.data.data)
                     showAlert("New role added!", 'green')
                 }
                 else {
@@ -89,20 +90,17 @@ export default function ManageRole({ roles }) {
             .catch(() => {
                 showAlert("Something went wrong!", 'red')
             })
-
-            return roles;
         }
 
         else if (action.type == 'save') {
-            let selectedRole = roles.data[action.index]
+            let selectedRole = role[action.index]
 
             axios.post(route('rbac.editRole', selectedRole.id), data2)
             .then((response) => {
                 if (response.data.success) {
                     setData2({name: '', slug: ''});
                     
-                    roles.data[action.index] = response.data.data;
-                    action.context.updateData(roles.data);
+                    role[action.index] = response.data.data;
                     showAlert("Role edited!", 'green');
                     setEdit(-1);
                 }
@@ -113,19 +111,17 @@ export default function ManageRole({ roles }) {
             .catch(() => {
                 showAlert("Something went wrong!", 'red')
             })
-
-            return roles;
         }
 
         else if (action.type == 'delete') {
-            let selectedRole = roles.data[action.index]
+            let selectedRole = role[action.index]
 
             axios.delete(route('rbac.deleteRole', selectedRole.id))
             .then((response) => {
                 if (response.data.success) {
-                    roles.data = roles.data.filter(role => role.id !== selectedRole.id);
-                    action.context.updateData(roles.data);
-                    showAlert("Role deleted!", 'green');
+                    role = role.filter(r => r.id !== selectedRole.id);
+                    action.context.updateData(role)
+                    showAlert(selectedRole.name + " role deleted!", 'green');
                 }
                 else {
                     showAlert("Something went wrong!", 'red')
@@ -136,7 +132,6 @@ export default function ManageRole({ roles }) {
             })
 
             setOpen2(false);
-            return roles;
         }
 
         else {
@@ -287,12 +282,12 @@ export default function ManageRole({ roles }) {
             <DataTable
                 className="w-full" 
                 rawData={roles.data} 
-                columns={['Name', 'Slug', 'Action']}
+                columns={['#', 'Name', 'Slug', 'Action']}
             >
                 <DataTableContext.Consumer>
                     {(context) => (
                         <>
-                            <Card className="max-w-full z-1 md:py-0 overflow-auto">
+                            <Card className="max-w-full z-1 md:py-0 overflow-auto border border-gray-200">
                                 <TableHeader title="Roles Avaliable">
                                     <Button onClick={handleOpen}>Add New Role</Button>
                                 </TableHeader>
