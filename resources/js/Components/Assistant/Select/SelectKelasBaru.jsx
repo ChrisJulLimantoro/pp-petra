@@ -1,7 +1,7 @@
 import { Select, Option, Typography } from "@material-tailwind/react";
- 
+
 export default function SelectKelasBaru(props) {
-    const {title,datas} = props;
+    const { title, datas, current_practicum_id } = props;
 
     return (
         <div className="w-72">
@@ -9,11 +9,11 @@ export default function SelectKelasBaru(props) {
                 Masukkan Kelas Baru
             </Typography>
             <Select label={title} color="blue">
-                {
-                    datas.map((data) => (
-                        <Option value={`${data.id}`} key={data.id}>{data.name}   ({data.jadwal})</Option>
-                    ))
-                }
+                {datas.map((data) => (
+                    <Option value={`${data.id}`} key={data.id} disabled={data.id == current_practicum_id}>
+                        {data.code} ({data.jadwal})
+                    </Option>
+                ))}
             </Select>
         </div>
     );
