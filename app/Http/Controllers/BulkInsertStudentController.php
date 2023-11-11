@@ -41,6 +41,9 @@ class BulkInsertStudentController extends Controller
     {
         $prs = $request->file('file');
         
+        if($prs->getClientOriginalExtension() != 'csv'){
+            return response()->json(['success' => false,'data' => 'File must be in .csv format']);
+        }
         $handle = fopen($prs,'r');
         if($handle !== false){
             $headers = fgetcsv($handle, 0, ';');
@@ -49,7 +52,7 @@ class BulkInsertStudentController extends Controller
             }
             $save = [];
             if(!(in_array('nim',$column))){
-                return redirect()->back()->with('error','there is no NIM or NRP in the file');
+                return response()->json(['success'=>false,'data' => 'there is no NIM or NRP in the file']);
             }
             $nrp_index = array_search('nim',$column);
 
@@ -61,7 +64,7 @@ class BulkInsertStudentController extends Controller
                 foreach($headers as $h){
                     if(!$exist){
                         if($h == 'kodemk'){
-                            $save[$data[$nrp_index]]['prs'] = json_encode([$data[array_search($h,$column)]]);
+                            $save[$data[$nrp_index]]['prs'] = [['code' => $data[array_search($h,$column)], 'class' => $data[array_search('kelasmk',$column)]]];
                         }else if($h == 'nim'){
                             $save[$data[$nrp_index]]['email'] = strtolower($data[array_search($h,$column)]).'@john.petra.ac.id';
                         }else if($h == 'nama'){
@@ -77,9 +80,9 @@ class BulkInsertStudentController extends Controller
                         $save[$data[$nrp_index]]['program'] = 'i';
                     }else{
                         if($h == 'kodemk'){
-                            $decode = json_decode($save[$data[$nrp_index]]['prs']);
-                            $decode[] = $data[array_search($h,$column)];
-                            $save[$data[$nrp_index]]['prs'] = json_encode($decode);
+                            $decode = $save[$data[$nrp_index]]['prs'];
+                            $decode[] = ['code' => $data[array_search($h,$column)], 'class' => $data[array_search('kelasmk',$column)]];
+                            $save[$data[$nrp_index]]['prs'] = $decode;
                         }else{
                             continue;
                         }
@@ -97,6 +100,88 @@ class BulkInsertStudentController extends Controller
             }
         }else{
             return response()->json(['success' => false,'data' => 'hello']);
+        }
+    }
+    public function insertSchedule(Request $request)
+    {
+        $schedule = $request->file('file');
+        $handle = fopen($schedule,'r');
+        if($handle !== false){
+            $headers = [];
+            while(($data = fgetcsv($handle,0,';'))!== false){
+                if(strtolower($data[0]) != 'hari') continue;
+                else {
+                    $headers = $data;
+                    break;
+                }
+            }
+            if($headers == []){
+                return response()->json(['success' => false,'data' => 'File is not in the correct format']);
+            }
+            foreach($headers as $h){
+                $column[] = strtolower($h);
+            }
+            $save = [];
+            $day = "";
+            $i = 0;
+            while(($data = fgetcsv($handle,0,';')) !== false){
+                if($data[array_search('hari',$column)] != ""){
+                    if(strtolower($data[array_search('hari',$column)]) == 'senin'){
+                        $day = 1;
+                    }else if(strtolower($data[array_search('hari',$column)]) == 'selasa'){
+                        $day = 2;
+                    }else if(strtolower($data[array_search('hari',$column)]) == 'rabu'){
+                        $day = 3;
+                    }else if(strtolower($data[array_search('hari',$column)]) == 'kamis'){
+                        $day = 4;
+                    }else if(strtolower($data[array_search('hari',$column)]) == 'jumat'){
+                        $day = 5;
+                    }else if(strtolower($data[array_search('hari',$column)]) == 'sabtu'){
+                        $day = 6;
+                    }else if(strtolower($data[array_search('hari',$column)]) == 'minggu'){
+                        $day = 7;
+                    }else{
+                        $day = "";
+                    }
+                }
+                if($day == "") continue;
+                if($data[1] == "") continue;
+                if($data[2] == "") continue;
+                if($data[4] == "") continue;
+                if($data[3] == "") continue;
+                $save[$i] = [];
+                $save[$i]['day'] = $day;
+                foreach($column as $h){
+                    if($h == 'novak'){
+                        $save[$i]['code'] = $data[array_search($h,$column)];
+                    }else if($h == 'jam'){
+                        $time = explode(':', $data[array_search($h,$column)]);
+                        $time = intval($time[0].$time[1]);
+                        $save[$i]['time'] = $time;
+                        $duration = explode(':', $data[array_search('sampai',$column)]);
+                        $duration = intval($duration[0].$duration[1]);
+                        $duration = ($duration - $time)/100;
+                        $save[$i]['duration'] = $duration;
+                    }else if($h == 'kls'){
+                        $save[$i]['class'] = $data[array_search($h,$column)];
+                    }else if($h == 'nama'){
+                        $save[$i]['name'] = $data[array_search($h,$column)];
+                    }else{
+                        continue;
+                    }
+                }
+                $i++;
+                // dd($save);
+            }
+            // dd($save);
+            $response = Http::withHeaders(['Accept' => 'application/json'])->withToken(session('token'))->post(env('API_URL').'/master-schedules-bulk',['data'=>$save]);
+            $response = json_decode($response,true);
+            // dd($response);
+            if($response['success']){
+                return response()->json(['success' => true,'data' => $save]);
+            }else{
+                return response()->json(['success' => false,'data' => $response['message']]);
+            }
         }
     }
 }
