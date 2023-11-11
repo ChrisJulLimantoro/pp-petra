@@ -14,7 +14,6 @@ use App\Http\Controllers\DashboardController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -87,9 +86,10 @@ Route::get('/contoh-datatable', function () {
     return Inertia::render('ContohDatatable');
 })->name('contoh.datatable');
 Route::prefix('asisten')->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('Assistant/Dashboard');
-    })->name('Dashboard');
+    Route::get('/', [ReportController::class, 'dashboard'])->name('asisten.dashboard');
+
+    Route::get('/application-detail', [ReportController::class, 'detailApplication'])->name('reports.detail');
+    Route::get('/get-application-report/{subject}/{event}', [ReportController::class, 'getApplicationData'])->name('reports.getApplicationData');
 
     Route::get('/viewKelas', function () {
         return Inertia::render('Asisten/viewKelas');
@@ -135,6 +135,7 @@ Route::prefix('event')->group(function () {
 });
 
 
+
 Route::prefix('tutorial')->group(function () {
     Route::get('/contoh-datatable', function () {
         return Inertia::render('Tutorial/ContohDatatable');
@@ -144,3 +145,8 @@ Route::prefix('tutorial')->group(function () {
         return Inertia::render('Tutorial/ContohAlert');
     })->name('tutorial.alert');
 });
+
+Route::prefix('asisten')->group(function () {
+    Route::get('/viewKelas', [PracticumController::class, 'viewPracticum'])->name('View Kelas');
+});
+

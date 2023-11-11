@@ -287,7 +287,7 @@ export default function ManageRole({ roles }) {
                 <DataTableContext.Consumer>
                     {(context) => (
                         <>
-                            <Card className="max-w-full z-1 md:py-0 overflow-auto">
+                            <Card className="max-w-full z-1 md:py-0 overflow-auto border border-gray-200">
                                 <TableHeader title="Roles Avaliable">
                                     <Button onClick={handleOpen}>Add New Role</Button>
                                 </TableHeader>
