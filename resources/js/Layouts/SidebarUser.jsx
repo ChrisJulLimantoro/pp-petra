@@ -78,7 +78,7 @@ export default function MultiLevelSidebar({ children, className = "" }) {
 
                 <List className="min-w-full">
                     {/* Dashboard */}
-                    <Link href={route("dashboard")}>
+                    <Link href={route("asisten.dashboard")}>
                         <ListItem className="w-full">
                             <ListItemPrefix>
                                 <PresentationChartBarIcon
@@ -502,7 +502,7 @@ export default function MultiLevelSidebar({ children, className = "" }) {
 
                             <List>
                                 {/* Dashboard */}
-                                <Link href={route("dashboard")}>
+                                <Link href={route("asisten.dashboard")}>
                                     <ListItem className="w-full">
                                         <ListItemPrefix>
                                             <PresentationChartBarIcon
