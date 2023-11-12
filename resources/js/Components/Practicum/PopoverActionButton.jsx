@@ -23,7 +23,7 @@ export function PopoverActionButton(props) {
     };
 
     const handleDelete = async () => {
-        res = await Swal.fire({
+        const res = await Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
             icon: "warning",
@@ -32,14 +32,12 @@ export function PopoverActionButton(props) {
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, delete it!",
         });
-        if (res.isConfirmed) {
-            formDelete.current.submit();
-        }
+        if (res.isConfirmed) formDelete.current.submit();
     };
 
     const openPracticumDetail = () => {
         window.location.href = route("practicum.detail", props.practicumId);
-    }
+    };
 
     return (
         <Popover open={openPopover} handler={setOpenPopover}>
@@ -49,7 +47,10 @@ export function PopoverActionButton(props) {
                 className="z-50 max-w-[26rem] shadow-xl"
             >
                 <ButtonGroup variant="outlined">
-                    <Button className="py-2 focus-visible:outline-none hover:bg-gray-200 focus:ring-0 px-6" onClick={openPracticumDetail} >
+                    <Button
+                        className="py-2 focus-visible:outline-none hover:bg-gray-200 focus:ring-0 px-6"
+                        onClick={openPracticumDetail}
+                    >
                         <DocumentMagnifyingGlassIcon className="w-[24px]" />
                     </Button>
                     <Button
@@ -60,28 +61,27 @@ export function PopoverActionButton(props) {
                     </Button>
                     <Button
                         className="py-2 focus-visible:outline-none hover:bg-gray-200 focus:ring-0"
-                        onClick={() => handleDelete(props.practicumId)}
+                        onClick={() => handleDelete(formDelete)}
                     >
                         <TrashIcon className="w-[24px]" />
                     </Button>
                 </ButtonGroup>
-                <form
-                    action={route("practicum.destroy", props.practicumId)}
-                    ref={formDelete}
-                    method="post"
-                >
-                    <input type="hidden" name="_method" value="delete" />
-                    <input
-                        type="hidden"
-                        name="_token"
-                        value={
-                            document.head.querySelector(
-                                'meta[name="csrf-token"]'
-                            ).content
-                        }
-                    />
-                </form>
             </PopoverContent>
+            <form
+                action={route("practicum.destroy", props.practicumId)}
+                ref={formDelete}
+                method="post"
+            >
+                <input type="hidden" name="_method" value="delete" />
+                <input
+                    type="hidden"
+                    name="_token"
+                    value={
+                        document.head.querySelector('meta[name="csrf-token"]')
+                            .content
+                    }
+                />
+            </form>
         </Popover>
     );
 }

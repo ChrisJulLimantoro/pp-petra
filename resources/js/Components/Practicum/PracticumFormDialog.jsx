@@ -85,13 +85,15 @@ function PracticumFormDialog(props, ref) {
 
         let res;
         try {
-            if (Object.keys(props.formData).length > 0 ) {
-                res = await axios.patch(route('practicum.update', props.formData.id), Object.fromEntries(formData));
+            if (Object.keys(props.formData).length > 0) {
+                res = await axios.patch(
+                    route("practicum.update", props.formData.id),
+                    Object.fromEntries(formData)
+                );
             } else {
                 res = await axios.post(route("practicum.store"), formData);
             }
         } catch (e) {
-            console.log(e);
             const inputErrors = e.response.data.errors;
             inputErrors.room = inputErrors.room_id;
             inputErrors.subject = inputErrors.subject_id;
@@ -101,7 +103,8 @@ function PracticumFormDialog(props, ref) {
 
             const inputStates = { ...inputsError };
             Object.entries(inputErrors).forEach(([input, errors]) => {
-                if (errors == null || errors == undefined || errors.length == 0) return;
+                if (errors == null || errors == undefined || errors.length == 0)
+                    return;
                 inputStates[input] = true;
                 setinputsError(inputStates);
                 feedbackRefs[input].current.classList.remove("hidden");
@@ -146,14 +149,18 @@ function PracticumFormDialog(props, ref) {
                                     value={`${props.formData.subject_id}|${props.formData.subject_name}`}
                                     onChange={() => {}}
                                 >
-                                    {props.subjects.map((subject) => (
-                                        <Option
-                                            value={`${subject.id}|${subject.name}`}
-                                            key={`${subject.id}|${subject.name}`}
-                                        >
-                                            {subject.name}
-                                        </Option>
-                                    ))}
+                                    {props.subjects.map(
+                                        (subject) => {
+                                            return (
+                                                <Option
+                                                    value={`${subject.id}|${subject.name}`}
+                                                    key={`${subject.id}|${subject.name}`}
+                                                >
+                                                    {subject.name}
+                                                </Option>
+                                            );
+                                        }
+                                    )}
                                 </Select>
                                 <Typography
                                     variant="small"
@@ -338,7 +345,11 @@ function PracticumFormDialog(props, ref) {
                                 className="bg-[#19304B] text-[#FFBC00] min-w-[100px]"
                                 ref={submitButtonRef}
                             >
-                                <span>{ Object.keys(props.formData).length > 0 ? 'Edit' : 'Tambah' }</span>
+                                <span>
+                                    {Object.keys(props.formData).length > 0
+                                        ? "Edit"
+                                        : "Tambah"}
+                                </span>
                             </ButtonWithLoadingSpinner>
                         </div>
                     </form>

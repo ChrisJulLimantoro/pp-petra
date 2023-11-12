@@ -6,7 +6,8 @@ import TableWithAddButton from '@/Components/Assistant/Table/TableWithAddButton'
 import LabelAdd from '@/Components/Assistant/Labels/LabelAdd';
 import TableNoButton from '@/Components/Assistant/Table/TableNoButton';
 
-export default function AddAssistant({ auth }) {
+export default function AddAssistant(props) {
+    const { id } = props;
     const head_asisten = ["Nama", "NRP", "Jurusan"];
     const data_asisten = [
         {
@@ -94,7 +95,7 @@ export default function AddAssistant({ auth }) {
                 <div className="mt-10 w-full h-72 col-span-4">
                     <div className='judul'>
                         <AddTitle type="Asisten" matkul="Pemrograman Berorientasi Objek" 
-                            pararel="A" hari="Senin" jam_start="08.00" jam_end="10.00" ruangan="P.202" />    
+                            pararel="A" hari="Senin" jam_start="08.00" jam_end="10.00" ruangan="P.202" practicum_id={id} />    
                     </div>
 
                     <div className="tabel-asisten">

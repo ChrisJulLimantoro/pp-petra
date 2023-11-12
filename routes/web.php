@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssistantController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DaftarPraktikum;
 use App\Http\Controllers\DaftarPraktikumController;
@@ -90,15 +91,13 @@ Route::prefix('mahasiswa')->group(function () {
     Route::post('validate', [DaftarPraktikumController::class, 'valid'])->name('mahasiswa.validate');
 });
 
-Route::get('/contoh-datatable', function () {
-    return Inertia::render('ContohDatatable');
-})->name('contoh.datatable');
 Route::prefix('asisten')->group(function () {
     Route::get('/', [ReportController::class, 'dashboard'])->name('asisten.dashboard');
     
 
     Route::get('/application-detail', [ReportController::class, 'detailApplication'])->name('reports.detail');
     Route::get('/get-application-report/{subject}/{event}', [ReportController::class, 'getApplicationData'])->name('reports.getApplicationData');
+
 
     Route::get('/viewKelas', function () {
         return Inertia::render('Asisten/viewKelas');
@@ -110,13 +109,11 @@ Route::prefix('asisten')->group(function () {
         Route::delete('/{id}', [PracticumController::class, 'destroy'])->name('practicum.destroy');
         Route::patch('/{id}', [PracticumController::class, 'update'])->name('practicum.update');
 
-        Route::get('/{id}', function ($id) {
-            return Inertia::render('Assistant/DetailKelas', ['id' => $id]);
-        })->name('practicum.detail');
 
-        Route::get('/{id}/move', function ($id) {
-            return Inertia::render('Assistant/Move', ['id' => $id]);
-        })->name('Move Mahasiswa');
+
+        Route::get('/{id}', [PracticumController::class, 'getClassDetails'])->name('practicum.detail');
+
+        Route::get('/{id}/move/{type}/{student_assistant_practicum_id}', [PracticumController::class, 'getMovePraktikumDetails'])->name('practicum.move');
 
         Route::get('/{id}/addassistant', function ($id) {
             return Inertia::render('Assistant/AddAssistant', ['id' => $id]);
@@ -127,6 +124,19 @@ Route::prefix('asisten')->group(function () {
         })->name('practicum.addStudent');
     });
 });
+
+Route::prefix('manage-asisten')->group(function () {
+    Route::get('/', [AssistantController::class, 'index'])->name('assistant.index');
+    Route::get('/getAssistantRoleId', [AssistantController::class, 'getAssistantRoleId'])->name('assistant.getAssistantRoleId');
+    Route::delete('/{id}', [AssistantController::class, 'delete'])->name('assistant.delete');
+    Route::post('/', [AssistantController::class, 'store'])->name('assistant.store');
+    Route::get('/getUser/{nrp?}', [AssistantController::class, 'getUser'])->name('assistant.getUser');
+    Route::get('/getRooms', [AssistantController::class, 'getRooms'])->name('assistant.getRooms');
+    Route::patch('/users/{id}', [AssistantController::class, 'updateUser'])->name('assistant.updateUser');
+    Route::patch('/users/{id}/room', [AssistantController::class, 'updateRoom'])->name('assistant.updateRoom');
+
+});
+
 Route::prefix('room')->group(function () {
     Route::get('/', [RoomController::class, 'index'])->name('room.all');
     // Route::get('/{id}', [RoomController::class, 'show'])->name('room.show');
