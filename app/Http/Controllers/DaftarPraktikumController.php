@@ -13,8 +13,11 @@ class DaftarPraktikumController extends Controller
     public function getSubject()
     {
         $url = env('API_URL') . "/students/" . session('user_id') . "/available-schedules/" . session('event_id');
+        // dd($url);
         $subject = Http::withHeader('Accept', 'application/json')->withToken(session('token'))->get($url);
+        
         $subject = json_decode($subject->getBody(), true);
+    //    dd($subject)
         $data['subject'] = $subject['data'];
         $matkul = [];
         $id = [];

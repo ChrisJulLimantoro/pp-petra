@@ -76,7 +76,10 @@ export default function viewMahasiswa({dataTable}){
                     </TableCell>
                 ) : column === "Action" ? (
                     <TableCell key={column}>
-                            <Button color="blue" onClick={() => window.location.href = route("viewPRS", data['id_student'])} key={data[column.toLowerCase().replaceAll(" ", "_")]}>
+                            <Button color="red" className="w-20 p-4" onClick={() => handleDelete(data['id_student'])} key={data[column.toLowerCase().replaceAll(" ", "_")]}>
+                                Delete
+                            </Button>
+                            <Button color="blue" className="ml-4 w-20" onClick={() => window.location.href = route("viewPRS", data['id_student'])} key={data[column.toLowerCase().replaceAll(" ", "_")]}>
                                 View PRS
                             </Button>
                     </TableCell>
@@ -93,6 +96,53 @@ export default function viewMahasiswa({dataTable}){
             </tr>
         );
     };
+
+
+    const alertRef = useRef();
+    const alertGagal= useRef();
+    const handleDelete= (deleteID)=>{
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(route('deleteMahasiswa', deleteID))
+                .then((response) => {
+                    if (response.data.success) {
+                        alertRef.current?.show(
+                            "Berhasil menghapus",
+                            "green",
+                            2000 
+                        );
+                       
+                        
+                    }
+                    else {
+                        alertGagal.current?.show(
+                            "Gagal Menghapus",
+                            "red",
+                            2000
+                        );
+                    }
+                })
+                .catch((error) => {
+                    alertGagal.current?.show(
+                        "Gagal Menghapus",
+                        "red",
+                        2000
+                    );
+                })
+            }
+            setTimeout(function() {
+                window.location.reload();
+            },2000)
+          })
+    }
 
     const [fileData, setFileData]= useState([]);
     const [separator, setSeparator]= useState(''); 
@@ -153,6 +203,18 @@ export default function viewMahasiswa({dataTable}){
                 <title>SAOCP-Daftar Praktikum</title>
                 <style>{styles}</style>
             </Head>
+        <NotificationAlert 
+            ref={alertRef}
+            className="w-[20rem] fixed top-6 right-10 py-4 z-10"
+            defaultColor="red"
+            defaultShowTime={4000}
+        />
+        <NotificationAlert 
+            ref={alertGagal}
+            className="w-[20rem] fixed top-6 right-10 py-4 z-10"
+            defaultColor="red"
+            defaultShowTime={4000}
+        />
         <SidebarUser>
             <DataTable rawData={data} columns={columnssss}>
                 <DataTableContext.Consumer>

@@ -187,4 +187,13 @@ class BulkInsertStudentController extends Controller
             }
         }
     }
+
+    public function delete(string $idStudent)
+    {
+        $response = json_decode(
+            Http::withToken(session('token'))->delete(env('API_URL') . '/students/' . $idStudent)
+        );
+
+        return $response;
+    }
 }
