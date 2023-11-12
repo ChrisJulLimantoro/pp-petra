@@ -31,11 +31,14 @@ class BulkInsertStudentController extends Controller
                 "program_studi" => $prodi,
                 "ipk" => $x['ipk'],
                 "ips" => $x['ips'],
-                "semester" => $x['semester']
+                "semester" => $x['semester'],
+                "id_student"=> $x['user_id']
             ]);
         }
         // dd($return['data']);
-        return Inertia::render('Assistant/viewMahasiswa');
+        return Inertia::render('Assistant/viewMahasiswa',[
+            "dataTable" => $return['data']
+        ]);
     }
     public function insert(Request $request)
     {

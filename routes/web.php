@@ -15,6 +15,7 @@ use App\Http\Controllers\DashboardController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BulkInsertStudentController;
+use App\Http\Controllers\JadwalController;
 use Inertia\Inertia;
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +52,8 @@ Route::get('test',function(){
 })->middleware('cekRole:admin');
 Route::get("/viewMahasiswa", [BulkInsertStudentController::class, 'index'])->name('viewMahasiswa');
 Route::post("/uploadMahasiswa", [BulkInsertStudentController::class, 'insert'])->name('uploadMahasiswa');
+Route::get("/viewPRS/{id}", [BulkInsertStudentController::class, 'viewPRS'])->name('viewPRS');
+Route::get("/viewJadwal", [JadwalController::class, 'index'])->name('viewJadwal');
 Route::get('/routes', [App\Http\Controllers\RBACController::class, 'getAllRoutes'])->name('routes');
 Route::get("/", [AuthController::class, 'loginView'])->name('login');
 Route::get("/processLogin", [AuthController::class, 'login'])->name('processLogin');
