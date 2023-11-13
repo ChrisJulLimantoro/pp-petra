@@ -19,6 +19,7 @@ class DaftarPraktikumController extends Controller
         $subject = json_decode($subject->getBody(), true);
     //    dd($subject)
         $data['subject'] = $subject['data'];
+        // dd($data['subject']);
         $matkul = [];
         $id = [];
         foreach ($data['subject'] as $x) {
@@ -33,6 +34,7 @@ class DaftarPraktikumController extends Controller
         }
         $data['matkul'] = $matkul;
         $data['id'] = $id;
+        // dd($data['matkul']);
         $url = env('API_URL') . "/student-practicums";
         $daftar = Http::withHeader('Accept', 'application/json')->withToken(session('token'))->get($url);
         $daftar = json_decode($daftar->getBody(), true);
@@ -77,14 +79,14 @@ class DaftarPraktikumController extends Controller
 
                 $endHour = strval($x['practicum']['time'] + 300);
                 if (strlen($endHour) == "3") {
-                    $endHour = substr($endHour, 0, 1) . ":" . substr($endHour, 1, 2);
+                    $endHour = "0".substr($endHour, 0, 1) . ":" . substr($endHour, 1, 2);
                 } else if (strlen($endHour) == "4") {
                     $endHour = substr($endHour, 0, 2) . ":" . substr($endHour, 2, 3);
                 }
                 $startHour = strval($x['practicum']['time']);
                 if (strlen($startHour) == "3") {
                     $startHour= strval($startHour);
-                    $startHour = substr($startHour, 0, 1) . ":" . substr($startHour, 1, 2);
+                    $startHour = "0".substr($startHour, 0, 1) . ":" . substr($startHour, 1, 2);
                 } else if (strlen($startHour) == "4") {
                     $startHour= strval($startHour);
                     $startHour = strval(substr($startHour, 0, 2) . ":" . substr($startHour, 2, 3));
