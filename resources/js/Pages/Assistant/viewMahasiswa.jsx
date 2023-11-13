@@ -25,8 +25,8 @@ export default function viewMahasiswa({ dataTable }) {
     input[type="file"] {
         color: transparent;
         display: none;
-      }
-  
+    }
+
     /* Tambahkan teks placeholder kustom */
     `;
     const columnssss = [
@@ -40,7 +40,7 @@ export default function viewMahasiswa({ dataTable }) {
         "Action",
     ];
     const data = dataTable;
-    console.log(data);
+
     const renderBody = (data, index, context) => {
         // if no data found
         if (data.empty) {

@@ -73,6 +73,7 @@ class PracticumController extends Controller
         $props['rooms'] = $rooms;
         $props['practicums'] = $practicums;
 
+        // dd($props);
         return Inertia::render('Assistant/Practicum', $props);
     }
 

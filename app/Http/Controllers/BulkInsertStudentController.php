@@ -202,4 +202,52 @@ class BulkInsertStudentController extends Controller
 
         return $response;
     }
+
+    public function viewPrs($student_id)
+    {
+        $prs = json_decode(Http::withHeader('Accept','application/json')
+        ->withToken(session('token'))
+        ->get(env('API_URL') . "/students/$student_id/prs"),true)['data'];
+        // dd($prs);
+
+        $days = ['SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU'];
+        $times = [730, 830, 930, 1030, 1130, 1230, 1330, 1430, 1530, 1630, 1730, 1830, 1930, 2030];
+
+        $schedule = [];
+        // create template Schedule
+        foreach ($times as $time) {
+            $schedule[$time] = [];
+            foreach ($days as $day) {
+                $schedule[$time][$day] = null;
+            }
+        }
+
+        foreach($prs['prs'] as $pr){
+            if($pr['day'] == 1){
+                $day = 'SENIN';
+            }else if($pr['day'] == 2){
+                $day = 'SELASA';
+            }else if($pr['day'] == 3){
+                $day = 'RABU';
+            }else if($pr['day'] == 4){
+                $day = 'KAMIS';
+            }else if($pr['day'] == 5){
+                $day = 'JUMAT';
+            }else if($pr['day'] == 6){
+                $day = 'SABTU';
+            }else{
+                $day = 'MINGGU';
+            }
+            $schedule[$pr['time']][$day] = ['code' => $pr['code'],'class' => $pr['class'],'name' => $pr['name'],'duration' => $pr['duration']];
+            for($i=1; $i < $pr['duration']; $i++){
+                $schedule[$pr['time'] + 100*$i][$day] = 'merged';
+            }
+        }
+        // dd($schedule);
+        return Inertia::render('Assistant/viewPrs', [
+            'prs' => $schedule,
+            'name' => $prs['name'],
+            'nrp' => $prs['nrp'],
+        ]);
+    }
 }

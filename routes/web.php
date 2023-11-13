@@ -31,7 +31,7 @@ use Inertia\Inertia;
 
 Route::get("/viewMahasiswa", [BulkInsertStudentController::class, 'index'])->name('viewMahasiswa');
 Route::post("/uploadMahasiswa", [BulkInsertStudentController::class, 'insert'])->name('uploadMahasiswa');
-Route::get("/viewPRS/{id}", [BulkInsertStudentController::class, 'viewPRS'])->name('viewPRS');
+Route::get("/viewPRS/{student_id}", [BulkInsertStudentController::class, 'viewPrs'])->name('viewPRS');
 Route::get("/viewJadwal", [JadwalController::class, 'index'])->name('viewJadwal');
 Route::delete("/deleteMahasiswa/{idStudent}", [BulkInsertStudentController::class, 'delete'])->name('deleteMahasiswa');
 
