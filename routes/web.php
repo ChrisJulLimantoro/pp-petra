@@ -13,7 +13,6 @@ use App\Http\Controllers\RBACRoleAssignmentController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\DashboardController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BulkInsertStudentController;
 use App\Http\Controllers\JadwalController;
@@ -29,32 +28,11 @@ use Inertia\Inertia;
 |
 */
 
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('login'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// })->name('home');
-
-
-// Route::get('/dashboard', function () {
-//     return Inertia::render('Dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
-
-// Route::middleware('auth')->group(function () {
-//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-// });
-Route::get('test',function(){
-    return 'test';
-})->middleware('cekRole:admin');
 
 Route::get("/viewMahasiswa", [BulkInsertStudentController::class, 'index'])->name('viewMahasiswa');
 Route::post("/uploadMahasiswa", [BulkInsertStudentController::class, 'insert'])->name('uploadMahasiswa');
-Route::get("/viewPRS/{id}", [BulkInsertStudentController::class, 'viewPRS'])->name('viewPRS');
+Route::get("/viewPRS/{student_id}", [BulkInsertStudentController::class, 'viewPrs'])->name('viewPRS');
+Route::get("/viewJadwal", [JadwalController::class, 'index'])->name('viewJadwal');
 Route::delete("/deleteMahasiswa/{idStudent}", [BulkInsertStudentController::class, 'delete'])->name('deleteMahasiswa');
 
 Route::get("/viewJadwal", [JadwalController::class, 'index'])->name('viewJadwal');
@@ -84,24 +62,16 @@ Route::prefix('rbac')->group(function () {
 
 Route::prefix('mahasiswa')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('mahasiswa.dashboard');
-
     Route::get('/daftarPraktikum', [DaftarPraktikumController::class, 'getSubject'])->name('mahasiswa.daftarPraktikum');
-
     Route::get('/getClass/{course}', [DaftarPraktikumController::class, 'getClass'])->name('mahasiswa.getClass');
-
     Route::post('/addStudentPracticum', [DaftarPraktikumController::class, 'addClass'])->name('mahasiswa.addPracticum');
-
     Route::get('/viewKelas', [ViewPraktikumController::class, 'index'])->name('mahasiswa.viewKelasPraktikum');
-
     Route::delete('deletePracticum/{idPracticum}', [DaftarPraktikumController::class, 'deletePracticum'])->name('mahasiswa.deletePracticum');
-
     Route::post('validate', [DaftarPraktikumController::class, 'valid'])->name('mahasiswa.validate');
 });
 
 Route::prefix('asisten')->group(function () {
     Route::get('/', [ReportController::class, 'dashboard'])->name('asisten.dashboard');
-    
-
     Route::get('/application-detail', [ReportController::class, 'detailApplication'])->name('reports.detail');
     Route::get('/get-application-report/{subject}/{event}', [ReportController::class, 'getApplicationData'])->name('reports.getApplicationData');
 
@@ -115,17 +85,11 @@ Route::prefix('asisten')->group(function () {
         Route::post('/', [PracticumController::class, 'store'])->name('practicum.store');
         Route::delete('/{id}', [PracticumController::class, 'destroy'])->name('practicum.destroy');
         Route::patch('/{id}', [PracticumController::class, 'update'])->name('practicum.update');
-
-
-
         Route::get('/{id}', [PracticumController::class, 'getClassDetails'])->name('practicum.detail');
-
         Route::get('/{id}/move/{type}/{student_assistant_practicum_id}', [PracticumController::class, 'getMovePraktikumDetails'])->name('practicum.move');
-
         Route::get('/{id}/addassistant', function ($id) {
             return Inertia::render('Assistant/AddAssistant', ['id' => $id]);
         })->name('practicum.addAssistant');
-
         Route::get('/{id}/addmahasiswa', function ($id) {
             return Inertia::render('Assistant/AddMahasiswa', ['id' => $id]);
         })->name('practicum.addStudent');
@@ -173,6 +137,6 @@ Route::prefix('tutorial')->group(function () {
 });
 
 Route::prefix('asisten')->group(function () {
-    Route::get('/viewKelas', [PracticumController::class, 'viewPracticum'])->name('View Kelas');
+    Route::get('/viewAjar', [PracticumController::class, 'viewPracticum'])->name('View Kelas');
 });
 

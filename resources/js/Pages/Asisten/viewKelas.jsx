@@ -8,12 +8,12 @@ import TableBody from "@/Components/DataTable/TableBody";
 import TableFooter from "@/Components/DataTable/TableFooter";
 import TableCell from "@/Components/DataTable/TableCell";
 import { DataTableContext } from "@/Components/DataTable/DataTable";
-import { dataLowongan, dataAjar } from "./arr";
+// import { dataLowongan,dataAjar } from "./arr";
 import DialogSuccess from "@/Components/DialogSuccess";
 import DialogAsk from "@/Components/DialogAsk";
 
 export const viewKelasContext = createContext();
-export default function viewKelas({ auth }) {
+export default function viewKelas({ auth, dataAjar, dataLowongan}) {
     function processData(dataLowongan, context) {
         return dataLowongan.map((item) => ({
             ...item,
@@ -24,11 +24,11 @@ export default function viewKelas({ auth }) {
         }));
     }
 
-
     const [lowongan, setLowongan] = useState(processData(dataLowongan));
     const [ajar, setAjar] = useState(processData(dataAjar));
 
     const kolomAjar = [
+        "#",
         "Hari",
         "Jam",
         "Mata Kuliah Praktikum",
@@ -38,6 +38,7 @@ export default function viewKelas({ auth }) {
     ];
 
     const kolomLowongan = [
+        "#",
         "Hari",
         "Jam",
         "Mata Kuliah Praktikum",
@@ -58,7 +59,7 @@ export default function viewKelas({ auth }) {
         console.log("Updating dataAjar:", dataAjar);
     };
 
-    const titleAjar = "Daftar Praktikum";
+    const titleAjar = "Daftar Ajar Praktikum";
     const titleLowongan = "Daftar Lowongan Praktikum";
 
     const renderDataAjar = (item, index, context) => {
@@ -77,19 +78,28 @@ export default function viewKelas({ auth }) {
                 </tr>
             );
         }
-
         return (
             <tr key={index + 1 + context.perPage * (context.currentPage - 1)}>
-                <TableCell>
-                    <Typography variant="small" color="blue-gray">
-                        {index +
-                            1 +
-                            context.perPage * (context.currentPage - 1)}
-                    </Typography>
-                </TableCell>
-
                 {kolomAjar.map((kolom) =>
-                    kolom !== "Action" ? (
+                    kolom === "#" ? (
+                        <TableCell>
+                            <Typography variant="small" color="blue-gray">
+                                {index +
+                                    1 +
+                                    context.perPage * (context.currentPage - 1)}
+                            </Typography>
+                        </TableCell>
+                    ) : kolom === "Action" ? (
+                        <TableCell>
+                            <DialogAsk
+                                title="Delete"
+                                id={index}
+                                dialog="MENGAJAR KELAS INI"
+                                updateDataAjar={updateDataAjar}
+                                updateDataLowongan={updateDataLowongan}
+                            />
+                        </TableCell>
+                    ) : (
                         <TableCell>
                             <Typography
                                 variant="small"
@@ -120,16 +130,6 @@ export default function viewKelas({ auth }) {
                             >
                                 {item[kolom.toLowerCase().replaceAll(" ", "_")]}
                             </Typography>
-                        </TableCell>
-                    ) : (
-                        <TableCell>
-                            <DialogAsk
-                                title="Delete"
-                                id={index}
-                                dialog="MENGAJAR KELAS INI"
-                                updateDataAjar={updateDataAjar}
-                                updateDataLowongan={updateDataLowongan}
-                            />
                         </TableCell>
                     )
                 )}
@@ -163,16 +163,28 @@ export default function viewKelas({ auth }) {
                     "_2"
                 }
             >
-                <TableCell>
-                    <Typography variant="small" color="blue-gray">
-                        {index +
-                            1 +
-                            context.perPage * (context.currentPage - 1)}
-                    </Typography>
-                </TableCell>
-
                 {kolomLowongan.map((kolom) =>
-                    kolom !== "Action" ? (
+                    kolom === "#" ? (
+                        <TableCell>
+                            <Typography variant="small" color="blue-gray">
+                                {index +
+                                    1 +
+                                    context.perPage * (context.currentPage - 1)}
+                            </Typography>
+                        </TableCell>
+                    ) : kolom === "Action" ? (
+                        <TableCell>
+                            <DialogSuccess
+                                title="Ajar"
+                                dialog="PENDAFTARAN"
+                                id={index}
+                                updateDataAjar={updateDataAjar}
+                                updateDataLowongan={updateDataLowongan}
+                                data1={ajar}
+                                data2={lowongan}
+                            />
+                        </TableCell>
+                    ) : (
                         <TableCell>
                             <Typography
                                 variant="small"
@@ -203,18 +215,6 @@ export default function viewKelas({ auth }) {
                             >
                                 {item[kolom.toLowerCase().replaceAll(" ", "_")]}
                             </Typography>
-                        </TableCell>
-                    ) : (
-                        <TableCell>
-                            <DialogSuccess
-                                title="Ajar"
-                                dialog="PENDAFTARAN"
-                                id={index}
-                                updateDataAjar={updateDataAjar}
-                                updateDataLowongan={updateDataLowongan}
-                                data1={ajar}
-                                data2={lowongan}
-                            />
                         </TableCell>
                     )
                 )}
