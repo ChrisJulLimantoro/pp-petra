@@ -15,7 +15,7 @@ import SidebarUser from "@/Layouts/SidebarUser";
 import Carousel from "@/Components/Carousel";
 import { CheckBadgeIcon, ClockIcon, XCircleIcon } from '@heroicons/react/24/solid';
 
-export default function Dashboard({ auth, data, events, registrations }) {
+export default function Dashboard({ auth, routes, data, events, registrations }) {
     ChartJS.register(
         CategoryScale,
         LinearScale,
@@ -194,7 +194,7 @@ export default function Dashboard({ auth, data, events, registrations }) {
                 </style>
             </Head>
 
-            <SidebarUser className='overflow-x-hidden'>
+            <SidebarUser className='overflow-x-hidden' routes={routes}>
                 <Typography variant='h5' className='mb-5 pl-4' color='blue-gray'>Welcome Back, {auth}</Typography>
 
                 <Tabs value="Mahasiswa" className="justify-center">

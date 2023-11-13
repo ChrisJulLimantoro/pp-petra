@@ -12,7 +12,7 @@ use Illuminate\Http\Response;
 class BulkInsertStudentController extends Controller
 {
 
-    public function index(){
+    public function index(Request $request){
         $data = json_decode(Http::withToken(session('token'))->get(env('API_URL') . "/students/"), true);
         $data = $data['data'];
         // dd($data);
@@ -37,26 +37,21 @@ class BulkInsertStudentController extends Controller
         }
         // dd($return['data']);
         return Inertia::render('Assistant/viewMahasiswa',[
-            "dataTable" => $return['data']
+            "dataTable" => $return['data'],
+            'routes' => $request->routes ?? [],
         ]);
     }
     public function insert(Request $request)
     {
         $prs = $request->file('file');
-        $prs = $request->file('file');
         
-        if($prs->getClientOriginalExtension() != 'csv'){
-            return response()->json(['success' => false,'data' => 'File must be in .csv format']);
-        }
         if($prs->getClientOriginalExtension() != 'csv'){
             return response()->json(['success' => false,'data' => 'File must be in .csv format']);
         }
         $handle = fopen($prs,'r');
         if($handle !== false){
             $headers = fgetcsv($handle, 0, ';');
-            $headers = fgetcsv($handle, 0, ';');
             foreach($headers as $h){
-                $column[] = strtolower($h);
                 $column[] = strtolower($h);
             }
             $save = [];

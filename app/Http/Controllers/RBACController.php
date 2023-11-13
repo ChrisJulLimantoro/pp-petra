@@ -83,7 +83,7 @@ class RBACController extends Controller
 
     public function grantAccess(Request $request) {
         $response = json_decode(
-            Http::withToken(session('token'))->post(env('API_URL') . '/role-routes', [
+            Http::withHeaders(['Accept'=> 'application/json'])->withToken(session('token'))->post(env('API_URL') . '/role-routes', [
                 'role_id' => $request->role_id,
                 'route' => $request->route,
                 'method' => $request->method,

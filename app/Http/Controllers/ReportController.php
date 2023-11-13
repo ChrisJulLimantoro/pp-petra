@@ -8,7 +8,7 @@ use Inertia\Inertia;
 
 class ReportController extends Controller
 {
-    public function dashboard() {
+    public function dashboard(Request $request) {
         $data = json_decode(
             Http::withHeaders(['Accept' => 'application/json'])
             ->withToken(session('token'))
@@ -35,6 +35,7 @@ class ReportController extends Controller
             'auth' => session('name'),
             'data' => $data,
             'events' => $events,
+            'routes' => $request->routes ?? [],
             'registrations' => $registrations,
         ]);
     }

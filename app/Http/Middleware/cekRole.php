@@ -18,8 +18,12 @@ class cekRole
     {
         $name = $request->route()->getName();
         $method = $request->getMethod();
-        $cek = json_decode(Http::withToken(session('token'))->post(env('API_URL').'/rbac/cekRole',['route'=>$name,'method'=>$method,'user_id'=>session('user_id')]))->data;
+        $cek = json_decode(Http::withToken(session('token'))->post(env('API_URL').'/rbac/cek-role',['route'=>$name,'method'=>$method,'user_id'=>session('user_id')]));
         if($cek){
+            if ($method === 'GET') {
+                $routes = json_decode(Http::withToken(session('token'))->get(env('API_URL').'/rbac/get-routes/' . session('user_id')))->data;
+                $request->routes = $routes;
+            }
             return $next($request);
         }else{
             return redirect()->to(route('dashboard'))->with('error', 'You are not authorized to access this page');

@@ -264,7 +264,7 @@ export default function ManageRole({ roles }) {
 
             <div className="px-6">
                 <Breadcrumbs className="mb-5">
-                    <a href={route('asisten.dashboard')} className="opacity-60">
+                    <a href={route('Dashboard')} className="opacity-60">
                         <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-4 w-4"
@@ -277,7 +277,7 @@ export default function ManageRole({ roles }) {
                     <a href="#" className="opacity-60">
                         <span>RBAC</span>
                     </a>
-                    <a href={route('rbac.manageRole')}>Add New Role</a>
+                    <a href={route('RBAC.Manage Role')}>Add New Role</a>
                 </Breadcrumbs>
 
                 <DataTable

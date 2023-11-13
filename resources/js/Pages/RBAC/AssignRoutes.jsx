@@ -256,7 +256,7 @@ export default class AssignRoutes extends Component {
                             <a href="#" className="opacity-60">
                                 <span>RBAC</span>
                             </a>
-                            <a href={route('rbac.assignRoutes')}>Assign Routes</a>
+                            <a href={route('RBAC.Add Routes to Role')}>Assign Routes</a>
                         </Breadcrumbs>
                         
                         <DataTable
