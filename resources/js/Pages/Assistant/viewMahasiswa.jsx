@@ -10,8 +10,6 @@ import TableCell from "@/Components/DataTable/TableCell";
 import { DataTableContext } from "@/Components/DataTable/DataTable";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import React, { useState, useEffect } from "react";
 import { Select, Option } from "@material-tailwind/react";
 import NotificationAlert from "@/Components/NotificationAlert";
 import { useRef } from "react";
