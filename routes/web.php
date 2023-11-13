@@ -31,6 +31,7 @@ use Inertia\Inertia;
 
 Route::get("/viewMahasiswa", [BulkInsertStudentController::class, 'index'])->name('viewMahasiswa');
 Route::post("/uploadMahasiswa", [BulkInsertStudentController::class, 'insert'])->name('uploadMahasiswa');
+Route::post('/uploadSchedule',[BulkInsertStudentController::class, 'insertSchedule'])->name('uploadSchedule');
 Route::get("/viewPRS/{student_id}", [BulkInsertStudentController::class, 'viewPrs'])->name('viewPRS');
 Route::get("/viewJadwal", [JadwalController::class, 'index'])->name('viewJadwal');
 Route::delete("/deleteMahasiswa/{idStudent}", [BulkInsertStudentController::class, 'delete'])->name('deleteMahasiswa');
@@ -126,15 +127,15 @@ Route::prefix('event')->group(function () {
 
 
 
-Route::prefix('tutorial')->group(function () {
-    Route::get('/contoh-datatable', function () {
-        return Inertia::render('Tutorial/ContohDatatable');
-    })->name('contoh.datatable');
+// Route::prefix('tutorial')->group(function () {
+//     Route::get('/contoh-datatable', function () {
+//         return Inertia::render('Tutorial/ContohDatatable');
+//     })->name('contoh.datatable');
 
-    Route::get('/contoh-alert', function () {
-        return Inertia::render('Tutorial/ContohAlert');
-    })->name('tutorial.alert');
-});
+//     Route::get('/contoh-alert', function () {
+//         return Inertia::render('Tutorial/ContohAlert');
+//     })->name('tutorial.alert');
+// });
 
 Route::prefix('asisten')->group(function () {
     Route::get('/viewAjar', [PracticumController::class, 'viewPracticum'])->name('View Kelas');
