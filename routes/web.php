@@ -35,7 +35,7 @@ Route::get("/viewPRS/{id}", [BulkInsertStudentController::class, 'viewPRS'])->na
 Route::get("/viewJadwal", [JadwalController::class, 'index'])->name('viewJadwal');
 Route::delete("/deleteMahasiswa/{idStudent}", [BulkInsertStudentController::class, 'delete'])->name('deleteMahasiswa');
 
-Route::get('/routes', [App\Http\Controllers\RBACController::class, 'getAllRoutes'])->name('routes');
+Route::get('/routes', [RBACController::class, 'getAllRoutes'])->name('routes');
 Route::get("/", [AuthController::class, 'loginView'])->name('login');
 Route::get("/processLogin", [AuthController::class, 'login'])->name('processLogin');
 Route::get("/logout", [AuthController::class, 'logout'])->name('logout');
@@ -57,24 +57,16 @@ Route::prefix('rbac')->group(function () {
 
 Route::prefix('mahasiswa')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('mahasiswa.dashboard');
-
     Route::get('/daftarPraktikum', [DaftarPraktikumController::class, 'getSubject'])->name('mahasiswa.daftarPraktikum');
-
     Route::get('/getClass/{course}', [DaftarPraktikumController::class, 'getClass'])->name('mahasiswa.getClass');
-
     Route::post('/addStudentPracticum', [DaftarPraktikumController::class, 'addClass'])->name('mahasiswa.addPracticum');
-
     Route::get('/viewKelas', [ViewPraktikumController::class, 'index'])->name('mahasiswa.viewKelasPraktikum');
-
     Route::delete('deletePracticum/{idPracticum}', [DaftarPraktikumController::class, 'deletePracticum'])->name('mahasiswa.deletePracticum');
-
     Route::post('validate', [DaftarPraktikumController::class, 'valid'])->name('mahasiswa.validate');
 });
 
 Route::prefix('asisten')->group(function () {
     Route::get('/', [ReportController::class, 'dashboard'])->name('asisten.dashboard');
-    
-
     Route::get('/application-detail', [ReportController::class, 'detailApplication'])->name('reports.detail');
     Route::get('/get-application-report/{subject}/{event}', [ReportController::class, 'getApplicationData'])->name('reports.getApplicationData');
 
@@ -88,17 +80,11 @@ Route::prefix('asisten')->group(function () {
         Route::post('/', [PracticumController::class, 'store'])->name('practicum.store');
         Route::delete('/{id}', [PracticumController::class, 'destroy'])->name('practicum.destroy');
         Route::patch('/{id}', [PracticumController::class, 'update'])->name('practicum.update');
-
-
-
         Route::get('/{id}', [PracticumController::class, 'getClassDetails'])->name('practicum.detail');
-
         Route::get('/{id}/move/{type}/{student_assistant_practicum_id}', [PracticumController::class, 'getMovePraktikumDetails'])->name('practicum.move');
-
         Route::get('/{id}/addassistant', function ($id) {
             return Inertia::render('Assistant/AddAssistant', ['id' => $id]);
         })->name('practicum.addAssistant');
-
         Route::get('/{id}/addmahasiswa', function ($id) {
             return Inertia::render('Assistant/AddMahasiswa', ['id' => $id]);
         })->name('practicum.addStudent');
