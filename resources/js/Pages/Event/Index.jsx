@@ -113,42 +113,17 @@ export default function Index({ events }) {
         }
     };
 
-    function changeStatus(event, context) {
-        let selectedEvent = events.data[event.value];
-
-        let raw = events.data.map((currentEvent) =>
-            currentEvent.id === selectedEvent.id
-                ? { ...currentEvent, access: event.checked }
-                : currentEvent
-        );
-
-        let filtered = [...context.filteredData].map((currentEvent) =>
-            currentEvent.id === selectedEvent.id
-                ? { ...currentEvent, access: event.checked }
-                : currentEvent
-        );
-
-        axios
-            .post(route("event.changeStatus", selectedEvent.id), {
-                status: event.checked ? 1 : 0,
-            })
-            .then((response) => {
-                if (response.data.success) {
-                    // Update the event status in the local state
-                    selectedEvent.status = event.checked ? 1 : 0;
-                    context.updateData(raw, filtered);
-                    showAlert("Event status updated!", "green");
-                } else {
-                    showAlert("Something went wrong!", "red");
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-                showAlert("Something went wrong!", "red");
-            });
-    }
+    const changeStatus = (index, context) => {
+        eventReducer(events, {
+            type: "status",
+            index: index,
+            context: context,
+        });
+    };
 
     function eventReducer(events, action) {
+        console.log(action.type);
+        console.log(action);
         if (action.type == "add") {
             axios
                 .post(route("event.add"), data)
@@ -211,12 +186,44 @@ export default function Index({ events }) {
                     console.log(err);
                     showAlert("Something went wrong!", "red");
                 });
+            // return events;
+        } else if (action.type == "status") {
+            let selectedEvent = event.data.find(
+                (h) => h.id === action.index.value
+            );
+
+            axios
+                .post(route("event.changeStatus", selectedEvent.id), {
+                    status: action.index.checked ? 1 : 0,
+                })
+                .then((response) => {
+                    if (response.data.success) {
+                        // Update the event status in the local state
+                        selectedEvent.status = action.index.checked ? 1 : 0;
+                        let allEvents = [...event.data].map((event) =>
+                            event.id === action.index.value
+                                ? { ...event, access: action.index.checked }
+                                : event
+                        );
+                        setEvent(allEvents);
+                        // context.updateData(raw, filtered);
+                        showAlert("Event status updated!", "green");
+                    } else {
+                        showAlert("Something went wrong!", "red");
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    showAlert("Something went wrong!", "red");
+                });
+            // return events;
         } else {
             throw Error("Unknown action type");
         }
     }
 
     const renderBody = (event, index, context) => {
+        console.log(context.perPage);
         // if no data found
         if (event.empty) {
             return (
@@ -252,6 +259,7 @@ export default function Index({ events }) {
                     column !== "Action" ? (
                         column !== "Status" ? (
                             <TableCell>
+                                {/* {context.perPage} */}
                                 {edit ===
                                 index +
                                     context.perPage *
@@ -308,16 +316,10 @@ export default function Index({ events }) {
                             <TableCell>
                                 <Switch
                                     onChange={(e) => {
-                                        const newCheckedStates = [
-                                            ...isSwitchChecked,
-                                        ];
-                                        newCheckedStates[index] =
-                                            e.target.checked;
-                                        setIsSwitchChecked(newCheckedStates);
                                         changeStatus(e.target, context);
                                     }}
-                                    value={index}
-                                    checked={isSwitchChecked[index]}
+                                    value={event.id}
+                                    checked={event.status === 1}
                                 />
                             </TableCell>
                         )
@@ -429,162 +431,164 @@ export default function Index({ events }) {
                 </Alert>
             )}
 
-            <Breadcrumbs className="mb-2">
-                <a href={route("dashboard")} className="opacity-60">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                    >
-                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                    </svg>
-                </a>
-                <a href={route("event.all")}>Manage Events</a>
-            </Breadcrumbs>
+            <div className="px-6">
+                <Breadcrumbs className="mb-5">
+                    <a href={route("asisten.dashboard")} className="opacity-60">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                        >
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                        </svg>
+                    </a>
+                    <a href={route("event.all")}>Manage Events</a>
+                </Breadcrumbs>
 
-            <DataTable
-                className="w-full"
-                rawData={events.data}
-                columns={["Name", "Start Date", "End Date", "Status", "Action"]}
-                changeStatus={changeStatus}
-            >
-                <DataTableContext.Consumer>
-                    {(context) => (
-                        <>
-                            <Card className="max-w-full z-1 md:py-0 overflow-auto">
-                                <TableHeader title="Available Events">
-                                    <Button onClick={handleOpen}>
-                                        Add New Event
-                                    </Button>
-                                </TableHeader>
-
-                                <TableBody className="relative">
-                                    <TableBody.Head />
-                                    <TableBody.Content>
-                                        {context.paginatedData.map(
-                                            (event, index) =>
-                                                renderBody(
-                                                    event,
-                                                    index,
-                                                    context
-                                                )
-                                        )}
-                                    </TableBody.Content>
-                                </TableBody>
-
-                                <TableFooter />
-                            </Card>
-
-                            {/* Add room modal */}
-                            <Dialog
-                                size="xs"
-                                open={open}
-                                handler={handleOpen}
-                                className="bg-transparent shadow-none"
-                            >
-                                <Card className="mx-auto w-full max-w-[24rem]">
-                                    <CardBody className="flex flex-col gap-4">
-                                        <Typography
-                                            variant="h4"
-                                            color="blue-gray"
-                                        >
+                <DataTable
+                    className="w-full"
+                    rawData={events.data}
+                    columns={['#', "Name", "Start Date", "End Date", "Status", "Action"]}
+                    // changeStatus={changeStatus}
+                >
+                    <DataTableContext.Consumer>
+                        {(context) => (
+                            <>
+                                <Card className="max-w-full z-1 md:py-0 overflow-auto border border-gray-200">
+                                    <TableHeader title="Available Events">
+                                        <Button onClick={handleOpen}>
                                             Add New Event
-                                        </Typography>
-
-                                        <Typography variant="h6">
-                                            Name
-                                        </Typography>
-                                        <Input
-                                            label="Name"
-                                            name="name"
-                                            size="lg"
-                                            value={data.name}
-                                            onChange={(e) =>
-                                                setData({
-                                                    ...data,
-                                                    name: e.target.value,
-                                                })
-                                            }
-                                            error={error?.name}
-                                            success={error?.name}
-                                        />
-                                        {error?.name && (
-                                            <Typography color="red">
-                                                {error.name}
-                                            </Typography>
-                                        )}
-
-                                        <Typography variant="h6">
-                                            Start Date
-                                        </Typography>
-                                        <Input
-                                            label="start date"
-                                            name="startdate"
-                                            size="lg"
-                                            type="date"
-                                            value={data.startdate}
-                                            onChange={(e) =>
-                                                setData({
-                                                    ...data,
-                                                    startdate: e.target.value,
-                                                })
-                                            }
-                                            error={error?.startdate}
-                                            success={error?.startdate}
-                                        />
-                                        {error?.startdate && (
-                                            <Typography color="red">
-                                                {error.startdate}
-                                            </Typography>
-                                        )}
-
-                                        <Typography variant="h6">
-                                            End Date
-                                        </Typography>
-                                        <Input
-                                            label="End Date"
-                                            name="enddate"
-                                            size="lg"
-                                            type="date"
-                                            value={data.enddate}
-                                            onChange={(e) =>
-                                                setData({
-                                                    ...data,
-                                                    enddate: e.target.value,
-                                                })
-                                            }
-                                            error={error?.enddate}
-                                            success={error?.enddate}
-                                        />
-                                        {error?.enddate && (
-                                            <Typography color="red">
-                                                {error.enddate}
-                                            </Typography>
-                                        )}
-                                    </CardBody>
-                                    <CardFooter className="pt-0 flex gap-3">
-                                        <Button
-                                            variant="filled"
-                                            className="w-1/2"
-                                            onClick={() => handleAdd(context)}
-                                        >
-                                            Add
                                         </Button>
-                                        <Button
-                                            variant="text"
-                                            className="w-1/2"
-                                            onClick={() => setOpen(false)}
-                                        >
-                                            Cancel
-                                        </Button>
-                                    </CardFooter>
+                                    </TableHeader>
+
+                                    <TableBody className="relative">
+                                        <TableBody.Head />
+                                        <TableBody.Content>
+                                            {context.paginatedData.map(
+                                                (event, index) =>
+                                                    renderBody(
+                                                        event,
+                                                        index,
+                                                        context
+                                                    )
+                                            )}
+                                        </TableBody.Content>
+                                    </TableBody>
+
+                                    <TableFooter />
                                 </Card>
-                            </Dialog>
-                        </>
-                    )}
-                </DataTableContext.Consumer>
-            </DataTable>
+
+                                {/* Add room modal */}
+                                <Dialog
+                                    size="xs"
+                                    open={open}
+                                    handler={handleOpen}
+                                    className="bg-transparent shadow-none"
+                                >
+                                    <Card className="mx-auto w-full max-w-[24rem]">
+                                        <CardBody className="flex flex-col gap-4">
+                                            <Typography
+                                                variant="h4"
+                                                color="blue-gray"
+                                            >
+                                                Add New Event
+                                            </Typography>
+
+                                            <Typography variant="h6">
+                                                Name
+                                            </Typography>
+                                            <Input
+                                                label="Name"
+                                                name="name"
+                                                size="lg"
+                                                value={data.name}
+                                                onChange={(e) =>
+                                                    setData({
+                                                        ...data,
+                                                        name: e.target.value,
+                                                    })
+                                                }
+                                                error={error?.name}
+                                                success={error?.name}
+                                            />
+                                            {error?.name && (
+                                                <Typography color="red">
+                                                    {error.name}
+                                                </Typography>
+                                            )}
+
+                                            <Typography variant="h6">
+                                                Start Date
+                                            </Typography>
+                                            <Input
+                                                label="start date"
+                                                name="startdate"
+                                                size="lg"
+                                                type="date"
+                                                value={data.startdate}
+                                                onChange={(e) =>
+                                                    setData({
+                                                        ...data,
+                                                        startdate: e.target.value,
+                                                    })
+                                                }
+                                                error={error?.startdate}
+                                                success={error?.startdate}
+                                            />
+                                            {error?.startdate && (
+                                                <Typography color="red">
+                                                    {error.startdate}
+                                                </Typography>
+                                            )}
+
+                                            <Typography variant="h6">
+                                                End Date
+                                            </Typography>
+                                            <Input
+                                                label="End Date"
+                                                name="enddate"
+                                                size="lg"
+                                                type="date"
+                                                value={data.enddate}
+                                                onChange={(e) =>
+                                                    setData({
+                                                        ...data,
+                                                        enddate: e.target.value,
+                                                    })
+                                                }
+                                                error={error?.enddate}
+                                                success={error?.enddate}
+                                            />
+                                            {error?.enddate && (
+                                                <Typography color="red">
+                                                    {error.enddate}
+                                                </Typography>
+                                            )}
+                                        </CardBody>
+                                        <CardFooter className="pt-0 flex gap-3">
+                                            <Button
+                                                variant="filled"
+                                                className="w-1/2"
+                                                onClick={() => handleAdd(context)}
+                                            >
+                                                Add
+                                            </Button>
+                                            <Button
+                                                variant="text"
+                                                className="w-1/2"
+                                                onClick={() => setOpen(false)}
+                                            >
+                                                Cancel
+                                            </Button>
+                                        </CardFooter>
+                                    </Card>
+                                </Dialog>
+                            </>
+                        )}
+                    </DataTableContext.Consumer>
+                </DataTable>
+            </div>
         </SidebarUser>
     );
 }

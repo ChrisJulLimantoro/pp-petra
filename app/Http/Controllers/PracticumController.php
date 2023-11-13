@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
@@ -9,6 +11,7 @@ use Ramsey\Collection\Set;
 
 class PracticumController extends Controller
 {
+
     public function index()
     {
         $res = Http::withHeader('Accept', 'application/json')
@@ -189,5 +192,40 @@ class PracticumController extends Controller
 
         return Inertia::render('Assistant/AddAssistant', ['data' => $data, 'id' => $id]);
 
+    //     return;
+    // }
+    public function viewPracticum(){
+        $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        $dataPracticum = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/practicum-karen'), true);
+        // dd($dataPracticum);
+        $data = [];
+
+        foreach ($dataPracticum['data'] as $dp){
+
+            $parts = explode("-", $dp['time']);
+
+            $startHour = substr_replace($parts[0], '.', -2, 0);
+            $endHour = substr_replace($parts[1], '.', -2, 0);
+
+            $time = $startHour . " - " . $endHour;
+
+            $data[] = [
+                "hari" => $days[$dp['day']-1],
+                "jam" => $time,
+                "mata_kuliah_praktikum" => $dp['name'],
+                "kelas" => $dp['code'],
+                "jumlah_asisten" => $dp['assistants'],
+                "kuota" => $dp['quota'],
+            ];
+        }
+        
+        $dataA = array_slice($data,0,1);
+        $dataL = array_slice($data,1);
+        
+        // dd($dataA);
+        return Inertia::render('Asisten/viewKelas', [
+            'dataLowongan' => $dataL,
+            'dataAjar' => $dataA,
+        ]);
     }
 }

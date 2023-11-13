@@ -16,7 +16,7 @@ export default class AssignRoutes extends Component {
         alert: {isOpen: false, color: 'gray', message: ''},
     }
 
-    TABLE_HEAD = ["URI", "Name", "Method", "Access"];
+    TABLE_HEAD = ["#", "URI", "Name", "Method", "Access"];
     static contextType = DataTableContext;
 
     findRoutes(r, context, first = false) {
@@ -145,7 +145,7 @@ export default class AssignRoutes extends Component {
         }
         
         return (
-            <tr key={index.uri ?? value}>
+            <tr key={index.id ?? value}>
                 <TableCell>
                     <Typography
                         variant="small"
@@ -241,63 +241,65 @@ export default class AssignRoutes extends Component {
                         </Alert>
                     )}
 
-                    <Breadcrumbs className="mb-2">
-                        <a href={route('dashboard')} className="opacity-60">
-                            <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            >
-                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                            </svg>
-                        </a>
-                        <a href="#" className="opacity-60">
-                            <span>RBAC</span>
-                        </a>
-                        <a href={route('rbac.assignRoutes')}>Assign Routes</a>
-                    </Breadcrumbs>
-                    
-                    <DataTable
-                        className="w-full overflow-hidden" 
-                        rawData={this.findRoutes(this.props.roles.data[0].name, null, true)}
-                        columns={this.TABLE_HEAD}
-                    >
-                        <DataTableContext.Consumer>
-                            {(context) => (
-                                <Card className="w-full z-[1]">
-                                    <TableHeader 
-                                        title="Assign Routes to Role"
-                                    >
-                                        <div className="flex w-20 justify-center md:justify-start z-20">
-                                            <Select 
-                                                variant="outlined" 
-                                                label="Select Role"
-                                                value={this.state.role.name ?? ''}
-                                                onChange = {(r) => this.findRoutes(r, context)}
-                                                className="relative z-99"
-                                            >
-                                                {this.props.roles?.data?.map((role, index) => (
-                                                    <Option key={role.name ?? index} value={role.name}>
-                                                        {role.name}
-                                                    </Option>
-                                                ))}
-                                            </Select>
-                                        </div>
-                                    </TableHeader>
+                    <div className="px-6 h-full">
+                        <Breadcrumbs className="mb-5">
+                            <a href={route('asisten.dashboard')} className="opacity-60">
+                                <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                                >
+                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                                </svg>
+                            </a>
+                            <a href="#" className="opacity-60">
+                                <span>RBAC</span>
+                            </a>
+                            <a href={route('rbac.assignRoutes')}>Assign Routes</a>
+                        </Breadcrumbs>
+                        
+                        <DataTable
+                            className="w-full h-full overflow-hidden" 
+                            rawData={this.findRoutes(this.props.roles.data[0].name, null, true)}
+                            columns={this.TABLE_HEAD}
+                        >
+                            <DataTableContext.Consumer>
+                                {(context) => (
+                                    <Card className="w-full z-[1] border border-gray-200">
+                                        <TableHeader 
+                                            title="Assign Routes to Role"
+                                        >
+                                            <div className="flex justify-center md:justify-start z-20">
+                                                <Select 
+                                                    variant="outlined" 
+                                                    label="Select Role"
+                                                    value={this.state.role.name ?? ''}
+                                                    onChange = {(r) => this.findRoutes(r, context)}
+                                                    className="relative z-99"
+                                                >
+                                                    {this.props.roles?.data?.map((role, index) => (
+                                                        <Option key={role.name ?? index} value={role.name}>
+                                                            {role.name}
+                                                        </Option>
+                                                    ))}
+                                                </Select>
+                                            </div>
+                                        </TableHeader>
 
-                                    <TableBody className={"relative " + this.props.className}>
-                                        <TableBody.Head />
-                                        <TableBody.Content>
-                                            {context.paginatedData?.map((e, value) => this.renderBody(e, value, context))} 
-                                        </TableBody.Content>
-                                    </TableBody>
-        
-                                    <TableFooter />
-                                </Card>
-                            )}
-                        </DataTableContext.Consumer>
-                    </DataTable>
+                                        <TableBody className={"relative " + this.props.className}>
+                                            <TableBody.Head />
+                                            <TableBody.Content>
+                                                {context.paginatedData?.map((e, value) => this.renderBody(e, value, context))} 
+                                            </TableBody.Content>
+                                        </TableBody>
+            
+                                        <TableFooter />
+                                    </Card>
+                                )}
+                            </DataTableContext.Consumer>
+                        </DataTable>
+                    </div>
                 </SidebarUser>
             </>
         );
