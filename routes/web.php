@@ -13,7 +13,6 @@ use App\Http\Controllers\RBACRoleAssignmentController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\DashboardController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BulkInsertStudentController;
 use App\Http\Controllers\JadwalController;
