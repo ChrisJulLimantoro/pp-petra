@@ -43,14 +43,20 @@ class BulkInsertStudentController extends Controller
     public function insert(Request $request)
     {
         $prs = $request->file('file');
+        $prs = $request->file('file');
         
+        if($prs->getClientOriginalExtension() != 'csv'){
+            return response()->json(['success' => false,'data' => 'File must be in .csv format']);
+        }
         if($prs->getClientOriginalExtension() != 'csv'){
             return response()->json(['success' => false,'data' => 'File must be in .csv format']);
         }
         $handle = fopen($prs,'r');
         if($handle !== false){
             $headers = fgetcsv($handle, 0, ';');
+            $headers = fgetcsv($handle, 0, ';');
             foreach($headers as $h){
+                $column[] = strtolower($h);
                 $column[] = strtolower($h);
             }
             $save = [];
