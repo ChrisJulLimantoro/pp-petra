@@ -24,7 +24,7 @@ export default function DetailsTitle(props) {
             </Typography>
                     
             <Typography variant="h4" color="gray" className="mb-2">
-                Praktikum {matkul} ({pararel})
+                {matkul} ({pararel})
             </Typography>
             <p className="mb-2"> Jadwal : {hari}, {jam_start} - {jam_end}</p>         
             <p className='mb-4'> Ruangan : {ruangan} </p>         

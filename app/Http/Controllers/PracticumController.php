@@ -162,13 +162,7 @@ class PracticumController extends Controller
                 ->get(config('app')['API_URL'] . '/subjects' . '/' . $data['practicum']['subject_id']);
 
             $data2 = $res2->json('data');
-
-            $res3 = Http::withHeader('Accept', 'application/json')
-                ->withToken(session('token'))
-                ->get(config('app')['API_URL'] . '/assistants' . '/' . $data['assistant_id']);
-
-            $data3 = $res3->json('data');
-        } else if ($type == 'Mahasiswa') {
+        } elseif ($type == 'Mahasiswa') {
             $res = Http::withHeader('Accept', 'application/json')
                 ->withToken(session('token'))
                 ->get(config('app')['API_URL'] . '/student-practicums' . '/' . $student_assistant_practicum_id);
@@ -180,24 +174,20 @@ class PracticumController extends Controller
                 ->get(config('app')['API_URL'] . '/subjects' . '/' . $data['practicum']['subject_id']);
 
             $data2 = $res2->json('data');
-
-            $res3 = Http::withHeader('Accept', 'application/json')
-                ->withToken(session('token'))
-                ->get(config('app')['API_URL'] . '/students' . '/' . $data['student_id']);
-
-            $data3 = $res3->json('data');
         }
 
-        return Inertia::render('Assistant/Move', ['id' => $id, 'type' => $type, 'data' => $data, 'data2' => $data2, 'data3' => $data3]);
+        return Inertia::render('Assistant/Move', ['id' => $id, 'type' => $type, 'data' => $data, 'data2' => $data2]);
     }
 
-    // on progress
-    // public function getMoveAsisten($id)
-    // {
-    //     $res = Http::withHeader('Accept', 'application/json')
-    //             ->withToken(session('token'))
-    //             ->get(config('app')['API_URL'] . '/assistant-practicums' . '/' . $id);
+    public function addAssistant($id)
+    {
+        $res = Http::withHeader('Accept', 'application/json')
+            ->withToken(session('token'))
+            ->get(config('app')['API_URL'] . '/practicums' . '/' . $id);
 
-    //     return;
-    // }
+        $data = $res->json('data');
+
+        return Inertia::render('Assistant/AddAssistant', ['data' => $data, 'id' => $id]);
+
+    }
 }

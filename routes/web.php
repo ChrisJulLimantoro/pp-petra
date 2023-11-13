@@ -98,9 +98,12 @@ Route::prefix('asisten')->group(function () {
 
         Route::get('/{id}/move/{type}/{student_assistant_practicum_id}', [PracticumController::class, 'getMovePraktikumDetails'])->name('practicum.move');
 
-        Route::get('/{id}/addassistant', function ($id) {
-            return Inertia::render('Assistant/AddAssistant', ['id' => $id]);
-        })->name('practicum.addAssistant');
+        Route::get('/{id}/addassistant', [PracticumController::class, 'addAssistant'])->name('practicum.addAssistant');
+
+
+        // Route::get('/{id}/addassistant', function ($id) {
+        //     return Inertia::render('Assistant/AddAssistant', ['id' => $id]);
+        // })->name('practicum.addAssistant');
 
         Route::get('/{id}/addmahasiswa', function ($id) {
             return Inertia::render('Assistant/AddMahasiswa', ['id' => $id]);
