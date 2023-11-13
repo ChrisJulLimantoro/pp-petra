@@ -262,118 +262,120 @@ export default function ManageRole({ roles }) {
                 </Alert>
             )}
 
-            <Breadcrumbs className="mb-2">
-                <a href={route('dashboard')} className="opacity-60">
-                    <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    >
-                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                    </svg>
-                </a>
-                <a href="#" className="opacity-60">
-                    <span>RBAC</span>
-                </a>
-                <a href={route('rbac.manageRole')}>Add New Role</a>
-            </Breadcrumbs>
+            <div className="px-6">
+                <Breadcrumbs className="mb-5">
+                    <a href={route('asisten.dashboard')} className="opacity-60">
+                        <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        >
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                        </svg>
+                    </a>
+                    <a href="#" className="opacity-60">
+                        <span>RBAC</span>
+                    </a>
+                    <a href={route('rbac.manageRole')}>Add New Role</a>
+                </Breadcrumbs>
 
-            <DataTable
-                className="w-full" 
-                rawData={roles.data} 
-                columns={['#', 'Name', 'Slug', 'Action']}
-            >
-                <DataTableContext.Consumer>
-                    {(context) => (
-                        <>
-                            <Card className="max-w-full z-1 md:py-0 overflow-auto">
-                                <TableHeader title="Roles Avaliable">
-                                    <Button onClick={handleOpen}>Add New Role</Button>
-                                </TableHeader>
+                <DataTable
+                    className="w-full" 
+                    rawData={roles.data} 
+                    columns={['#', 'Name', 'Slug', 'Action']}
+                >
+                    <DataTableContext.Consumer>
+                        {(context) => (
+                            <>
+                                <Card className="max-w-full z-1 md:py-0 overflow-auto border border-gray-200">
+                                    <TableHeader title="Roles Avaliable">
+                                        <Button onClick={handleOpen}>Add New Role</Button>
+                                    </TableHeader>
 
-                                <TableBody className="relative">
-                                    <TableBody.Head />
-                                    <TableBody.Content>
-                                        {context.paginatedData.map((role, index) => renderBody(role, index, context))}
-                                    </TableBody.Content>
-                                </TableBody>
+                                    <TableBody className="relative">
+                                        <TableBody.Head />
+                                        <TableBody.Content>
+                                            {context.paginatedData.map((role, index) => renderBody(role, index, context))}
+                                        </TableBody.Content>
+                                    </TableBody>
 
-                                <TableFooter />
-                            </Card>
-
-                            {/* Add role modal */}
-                            <Dialog
-                                size="xs"
-                                open={open}
-                                handler={handleOpen}
-                                className="bg-transparent shadow-none"
-                            >
-                                <Card className="mx-auto w-full max-w-[24rem]">
-                                    <CardBody className="flex flex-col gap-4">
-                                        <Typography variant="h4" color="blue-gray">
-                                            Add New Role
-                                        </Typography>
-
-                                        <Typography variant="h6">
-                                            Role Name
-                                        </Typography>
-                                        <Input 
-                                            label="Name" 
-                                            name="name"
-                                            size="lg" 
-                                            value={data.name} 
-                                            onChange={(e) => setData({...data, name: e.target.value})} 
-                                            error={error?.name}
-                                            success={error?.name}
-                                        />
-                                        {error?.name && <Typography color="red">{error.name}</Typography>}
-
-                                        <Typography variant="h6">
-                                            Role Slug
-                                        </Typography>
-                                        <Input 
-                                            label="Slug" 
-                                            name="slug"
-                                            size="lg" 
-                                            value={data.slug} 
-                                            onChange={(e) => setData({...data, slug: e.target.value})} 
-                                            error={error?.slug}
-                                            success={error?.slug}
-                                        />
-                                        {error?.slug && <Typography color="red">{error.slug}</Typography>}
-                                    </CardBody>
-                                    <CardFooter className="pt-0 flex gap-3">
-                                        <Button variant="filled" color="black" className="w-1/2"onClick={() => handleAdd(context)}>Add</Button>
-                                        <Button variant="text" color="black" className="w-1/2" onClick={() => setOpen(false)}>Cancel</Button>
-                                    </CardFooter>
+                                    <TableFooter />
                                 </Card>
-                            </Dialog>
 
-                            {/* Delete role modal */}
-                            <Dialog
-                                size="xs"
-                                open={open2}
-                                handler={handleOpen2}
-                                className="bg-transparent shadow-none"
-                            >
-                                <Card className="mx-auto w-full max-w-[24rem]">
-                                    <CardBody className="flex flex-col gap-4">
-                                        <Typography className="mb-2" variant="h5">
-                                            {"Delete " + roles.data[del].name + " role?"}
-                                        </Typography>
-                                            
-                                    </CardBody>
-                                    <CardFooter className="pt-0 flex gap-3">
-                                        <Button variant="filled" color="red" className="w-1/2" onClick={() => handleDelete(del, context)}>Delete</Button>
-                                        <Button variant="text" color="black" className="w-1/2" onClick={() => setOpen2(false)}>Cancel</Button>
-                                    </CardFooter>
-                                </Card>
-                            </Dialog>
-                        </>
-                    )}
-                </DataTableContext.Consumer>
-            </DataTable>
+                                {/* Add role modal */}
+                                <Dialog
+                                    size="xs"
+                                    open={open}
+                                    handler={handleOpen}
+                                    className="bg-transparent shadow-none"
+                                >
+                                    <Card className="mx-auto w-full max-w-[24rem]">
+                                        <CardBody className="flex flex-col gap-4">
+                                            <Typography variant="h4" color="blue-gray">
+                                                Add New Role
+                                            </Typography>
+
+                                            <Typography variant="h6">
+                                                Role Name
+                                            </Typography>
+                                            <Input 
+                                                label="Name" 
+                                                name="name"
+                                                size="lg" 
+                                                value={data.name} 
+                                                onChange={(e) => setData({...data, name: e.target.value})} 
+                                                error={error?.name}
+                                                success={error?.name}
+                                            />
+                                            {error?.name && <Typography color="red">{error.name}</Typography>}
+
+                                            <Typography variant="h6">
+                                                Role Slug
+                                            </Typography>
+                                            <Input 
+                                                label="Slug" 
+                                                name="slug"
+                                                size="lg" 
+                                                value={data.slug} 
+                                                onChange={(e) => setData({...data, slug: e.target.value})} 
+                                                error={error?.slug}
+                                                success={error?.slug}
+                                            />
+                                            {error?.slug && <Typography color="red">{error.slug}</Typography>}
+                                        </CardBody>
+                                        <CardFooter className="pt-0 flex gap-3">
+                                            <Button variant="filled" className="w-1/2"onClick={() => handleAdd(context)}>Add</Button>
+                                            <Button variant="text" className="w-1/2" onClick={() => setOpen(false)}>Cancel</Button>
+                                        </CardFooter>
+                                    </Card>
+                                </Dialog>
+
+                                {/* Delete role modal */}
+                                <Dialog
+                                    size="xs"
+                                    open={open2}
+                                    handler={handleOpen2}
+                                    className="bg-transparent shadow-none"
+                                >
+                                    <Card className="mx-auto w-full max-w-[24rem]">
+                                        <CardBody className="flex flex-col gap-4">
+                                            <Typography className="mb-2" variant="h5">
+                                                {"Delete " + roles.data[del].name + " role?"}
+                                            </Typography>
+                                                
+                                        </CardBody>
+                                        <CardFooter className="pt-0 flex gap-3">
+                                            <Button variant="filled" color="red" className="w-1/2" onClick={() => handleDelete(del, context)}>Delete</Button>
+                                            <Button variant="text" className="w-1/2" onClick={() => setOpen2(false)}>Cancel</Button>
+                                        </CardFooter>
+                                    </Card>
+                                </Dialog>
+                            </>
+                        )}
+                    </DataTableContext.Consumer>
+                </DataTable>
+            </div>
         </SidebarUser>
     );
 }

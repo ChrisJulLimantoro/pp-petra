@@ -17,15 +17,14 @@ import Swal from "sweetalert2";
 import { TrashIcon } from "@heroicons/react/24/outline";
 
 
-export default function Dashboard({ auth, matkul, id, practicumID, dataTable, ValidateStatus }) {
-    console.log("Val"+ValidateStatus)
+export default function Dashboard({ auth, matkul, id, practicumID, dataTable, ValidateStatus, Event }) {
     let [course, setCourse] = useState('');
     let [selected1Options, setSelected1Options ]= useState([]);
     let [selected2Options, setSelected2Options ]= useState([]);
     const [class1Options, setClass1Options] = useState([]);
     const [class2Options, setClass2Options] = useState([]);
     let [pracID, setPracID]= useState(null);
-    console.log(ValidateStatus);
+    const [showLoader, setShowLoader] = useState(false);
     const alertRef = useRef();
     const alertGagal= useRef();
     useEffect(() => {
@@ -38,7 +37,6 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable, Va
                 setPracID(practicumID);
             })
             .catch(error => {
-                console.log(error);
 
             });
         }
@@ -58,11 +56,8 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable, Va
     ];
 
     const data = dataTable;
-    // console.log(dataTable);
     const renderBody = (data, index, context, practicumID) => {
         // if no data found
-        console.log(data);
-        console.log(practicumID)
         if (data.empty) {
             return (
                 <tr key={"notFound"}>
@@ -83,7 +78,7 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable, Va
             <tr key={practicumID} id={practicumID[index]}>
                 {columnssss.map((column) => (
                     column === "#" ? (
-                        <TableCell>
+                    <TableCell>
                     <Typography
                         variant="small"
                         color="blue-gray"
@@ -97,7 +92,6 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable, Va
                     ) : 
                     
                     <TableCell key={column}>
-                        {console.log("validate:"+ValidateStatus)}
                         {column === "Status" && ValidateStatus === false ? (
                          <Tooltip content="Delete" placement="top">
                              <TrashIcon 
@@ -109,9 +103,6 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable, Va
                          </Tooltip>
                         ) : (
                             <Typography variant="small" color="blue-gray" className="font-normal">
-                                {
-                                console.log(column.toLowerCase().replaceAll(" ", "_"),data[column.toLowerCase().replaceAll(" ", "_")])
-                                }
                                 {
                                 data[column.toLowerCase().replaceAll(" ", "_")]
                                 }
@@ -134,37 +125,42 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable, Va
             confirmButtonText: 'Yes'
           }).then((result) => {
             if (result.isConfirmed) {
+                setShowLoader(true);
                 axios.post(route('mahasiswa.validate'))
                 .then((response) => {
                     if (response.data.success) {
-                        console.log(response)
                         alertRef.current?.show(
                             "Berhasil Validate, Silahkan cek email!",
                             "green",
-                            2000 
+                            10000 
                         );
-                        // window.location.href= route("mahasiswa.daftarPraktikum");
                         
                     }
                     else {
-                        console.log(response);
                         alertGagal.current?.show(
                             response.data.error_message,
                             "red",
-                            2000
+                            10000
                         );
                     }
                 })
                 .catch((error) => {
-                    console.log(error)
                     alertGagal.current?.show(
                         "Gagal Validasi",
                         "red",
-                        2000
+                        10000
                     );
                 })
+                .finally(() => {
+                    setTimeout(() => {
+                      setShowLoader(false);
+                    }, 3000);
+                    setTimeout(function() {
+                        window.location.reload();
+                    },4000)
+                });
             }
-            // window.location.reload();
+            
           })
         
     }
@@ -183,17 +179,15 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable, Va
                 axios.delete(route('mahasiswa.deletePracticum', deleteID))
                 .then((response) => {
                     if (response.data.success) {
-                        console.log(response)
                         alertRef.current?.show(
                             "Berhasil menghapus",
                             "green",
                             2000 
                         );
-                        // window.location.href= route("mahasiswa.daftarPraktikum");
+                       
                         
                     }
                     else {
-                        console.log(response)
                         alertGagal.current?.show(
                             "Gagal Menghapussss",
                             "red",
@@ -202,7 +196,6 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable, Va
                     }
                 })
                 .catch((error) => {
-                    console.log(error)
                     alertGagal.current?.show(
                         "Gagal Menghapus",
                         "red",
@@ -210,7 +203,9 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable, Va
                     );
                 })
             }
-            // window.location.reload();
+            setTimeout(function() {
+                window.location.reload();
+            },2000)
           })
         
     }
@@ -230,6 +225,57 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable, Va
     .btn{
         width: 10vw;
     }
+
+    .page-loader{
+        width: 100%;
+        height: 130vh;
+        position: absolute;
+        background: #272727;
+        z-index: 1000;
+        .txt{
+          color: #666;
+          text-align: center;
+          top: 25%;
+          position: relative;
+          text-transform: uppercase;
+          letter-spacing: 0.3rem;
+          font-weight: bold;
+          line-height: 1.5;
+        }
+      }
+      
+      /* SPINNER ANIMATION */
+      .spinner {
+        position: relative;
+        top: 20%;
+        width: 80px;
+        height: 80px;
+        margin: 0 auto;
+        background-color: #fff;
+      
+        border-radius: 100%;  
+        -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
+        animation: sk-scaleout 1.0s infinite ease-in-out;
+      }
+      
+      @-webkit-keyframes sk-scaleout {
+        0% { -webkit-transform: scale(0) }
+        100% {
+          -webkit-transform: scale(1.0);
+          opacity: 0;
+        }
+      }
+      
+      @keyframes sk-scaleout {
+        0% { 
+          -webkit-transform: scale(0);
+          transform: scale(0);
+        } 100% {
+          -webkit-transform: scale(1.0);
+          transform: scale(1.0);
+          opacity: 0;
+        }
+      }
     
   `;
 
@@ -282,7 +328,6 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable, Va
             axios.post(route('mahasiswa.addPracticum'), data)
             .then((response) => {
                 if (response.data.success) {
-                    console.log(response)
                     alertRef.current?.show(
                         "Berhasil mendaftar",
                         "green",
@@ -290,22 +335,24 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable, Va
                     );
                 }
                 else {
-                    console.log(response)
                     alertGagal.current?.show(
                         "Gagal Mendaftar",
                         "red",
                         2000
                     );
                 }
+               
             })
             .catch((error) => {
-                console.log(error)
                 alertGagal.current?.show(
                     "Gagal Mendaftar",
                     "red",
                     2000
                 );
             })
+            setTimeout(function() {
+                window.location.reload();
+            },2000)
         }
       })
     }
@@ -317,6 +364,14 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable, Va
                 <title>SAOCP-Daftar Praktikum</title>
                 <style>{styles}</style>
             </Head>
+
+            {showLoader && <div className="page-loader">
+                <div className="spinner"></div>
+                <div className="txt">
+                    Please Wait...
+                    <br />
+                </div>
+            </div>}
             <NotificationAlert 
                 ref={alertRef}
                 className="w-[20rem] fixed top-6 right-10 py-4 z-10"
@@ -408,7 +463,7 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable, Va
                                 {(context) => (
                                     <Card className="w-full z-[1]">
                                         <TableHeader
-                                            title="Daftar Praktikum"
+                                            title={Event}
                                             perPage={context.perPage.toString()}
                                             changePerPage={(e) =>
                                                 context.changePerPage(e)
