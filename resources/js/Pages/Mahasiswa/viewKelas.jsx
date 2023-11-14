@@ -6,8 +6,7 @@ import { Button, Card, Breadcrumbs } from "@material-tailwind/react";
 import TableBody from "@/Components/DataTable/TableBody";
 import TableFooter from "@/Components/DataTable/TableFooter";
 
-
-export default function viewKelas({dataTable}){
+export default function viewKelas({ dataTable, routes }) {
     const columns = [
         "#",
         "Hari",
@@ -15,28 +14,31 @@ export default function viewKelas({dataTable}){
         "Mata Kuliah Praktikum",
         "Kelas",
         "Lab",
-        "Ruang"
+        "Ruang",
     ];
     const data = dataTable;
-    
-    return(
-        <SidebarUser>
+
+    return (
+        <SidebarUser routes={routes}>
             <div className="px-6">
                 <Breadcrumbs className="mb-5">
-                    <a href={route('mahasiswa.dashboard')} className="opacity-60">
+                    <a
+                        href={route("mahasiswa.dashboard")}
+                        className="opacity-60"
+                    >
                         <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
                         >
-                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
                         </svg>
                     </a>
                     <a href="#" className="opacity-60">
                         <span>Mahasiswa</span>
                     </a>
-                    <a href='#'>Lihat Kelas Praktikum</a>
+                    <a href="#">Lihat Kelas Praktikum</a>
                 </Breadcrumbs>
 
                 <DataTable rawData={data} columns={columns}>
@@ -53,5 +55,5 @@ export default function viewKelas({dataTable}){
                 </DataTable>
             </div>
         </SidebarUser>
-    )
+    );
 }

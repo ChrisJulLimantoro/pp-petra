@@ -124,4 +124,4 @@ Route::middleware('cekRole')-> group(function() {
 
 Route::get("/", [AuthController::class, 'loginView'])->name('login');
 Route::get("/processLogin", [AuthController::class, 'login'])->name('processLogin');
-Route::get("/logout", [AuthController::class, 'logout'])->name('Log Out');
+Route::get("/logout", [AuthController::class, 'logout'])->name('LogOut');

@@ -198,7 +198,7 @@ class BulkInsertStudentController extends Controller
         return $response;
     }
 
-    public function viewPrs($student_id)
+    public function viewPrs($student_id,Request $request)
     {
         $prs = json_decode(Http::withHeader('Accept','application/json')
         ->withToken(session('token'))
@@ -243,6 +243,7 @@ class BulkInsertStudentController extends Controller
             'prs' => $schedule,
             'name' => $prs['name'],
             'nrp' => $prs['nrp'],
+            'routes' => $request->routes ?? [],
         ]);
     }
 }

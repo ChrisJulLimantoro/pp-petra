@@ -15,7 +15,7 @@ export default function Practicum(props) {
                 }
                 `}</style>
             </Head>
-            <SidebarUser>
+            <SidebarUser routes={props.routes}>
                 <div className="pt-10 h-72 overflow-y-auto h-full max-w-[1100px]">
                     <h1 className="font-medium text-2xl mb-4">Input Kelas</h1>
                     <hr style={{ borderTopWidth: "3px" }} className="mb-8" />

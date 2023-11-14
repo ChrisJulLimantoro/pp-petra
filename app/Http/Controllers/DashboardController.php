@@ -10,7 +10,7 @@ use Illuminate\Http\Response;
 
 class DashboardController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
         if (!in_array('user', session('roles'))) {
             return redirect('/asisten');
         }
@@ -27,7 +27,8 @@ class DashboardController extends Controller
             ]);
         }
         return Inertia::render('Mahasiswa/Dashboard', [
-            'dataTable' => $return['data']
+            'dataTable' => $return['data'],
+            'routes' => $request->routes ?? [],
         ]);
     }
 }

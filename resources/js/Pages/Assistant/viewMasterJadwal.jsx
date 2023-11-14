@@ -26,7 +26,7 @@ import { useRef } from "react";
 import Swal from "sweetalert2";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 
-export default function viewMahasiswa({ dataTable }) {
+export default function viewMahasiswa({ dataTable, routes }) {
     const [fileData, setFileData] = useState([]); // File data to be sent to the server
     const [formData, setFormData] = useState({
         kodeMataKuliah: "",
@@ -526,7 +526,7 @@ export default function viewMahasiswa({ dataTable }) {
                 defaultColor="red"
                 defaultShowTime={4000}
             />
-            <SidebarUser>
+            <SidebarUser routes={routes}>
                 <form onSubmit={handleSubmit} className="mr-20">
                     <div className="mb-4 grid grid-cols-2 gap-4">
                         <div className="ml-44">

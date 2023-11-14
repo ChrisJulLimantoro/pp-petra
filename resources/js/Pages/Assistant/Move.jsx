@@ -5,7 +5,7 @@ import SelectKelasBaru from "@/Components/Assistant/Select/SelectKelasBaru";
 import ConfirmationButton from "@/Components/Assistant/Button/ConfirmationButton";
 
 export default function Move(props) {
-    const { id, type, data, data2, data3 } = props;
+    const { id, type, data, data2, data3, routes } = props;
     //  console.log(data);
     console.log(data3);
 
@@ -34,7 +34,7 @@ export default function Move(props) {
             return "Invalid time format";
         }
     }
-    
+
     function extractNrp(email) {
         // Find the position of '@' symbol in the email
         const atIndex = email.indexOf("@");
@@ -70,7 +70,7 @@ export default function Move(props) {
 
             <div className="grid grid-cols-7 gap-1">
                 <div className="col-span-2">
-                    <SidebarUser></SidebarUser>
+                    <SidebarUser routes={routes}></SidebarUser>
                 </div>
                 <div className="mt-10 w-full h-72 col-span-4">
                     <div className="judul">
@@ -88,7 +88,11 @@ export default function Move(props) {
                     </div>
 
                     <form action="">
-                        <SelectKelasBaru title="Kelas Parallel" datas={datas} current_practicum_id={id} />
+                        <SelectKelasBaru
+                            title="Kelas Parallel"
+                            datas={datas}
+                            current_practicum_id={id}
+                        />
                     </form>
 
                     <div className="mt-10">

@@ -10,7 +10,7 @@ use Illuminate\Http\Response;
 
 class DaftarPraktikumController extends Controller
 {
-    public function getSubject()
+    public function getSubject(Request $request)
     {
         $url = env('API_URL') . "/students/" . session('user_id') . "/available-schedules/" . session('event_id');
         // dd($url);
@@ -121,7 +121,8 @@ class DaftarPraktikumController extends Controller
             'dataTable' => $dataTable,
             'practicumID' => $pracID,
             'ValidateStatus' => session('is_validate'),
-            'Event' => session('event_name')
+            'Event' => session('event_name'),
+            'routes' => $request->routes ?? [],
         ]);
     }
 

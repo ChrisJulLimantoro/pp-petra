@@ -41,7 +41,7 @@ export default function ManageAssistant(props) {
                 }
                 `}</style>
             </Head>
-            <SidebarUser>
+            <SidebarUser routes={props.routes}>
                 <main className="">
                     <h1 className="font-medium text-2xl mb-4">
                         Manage Asisten
@@ -337,7 +337,7 @@ const AddAssistantDialog = forwardRef((props, ref) => {
         // return;
         const res = await axios.post(route("assistant.store"), {
             room_id: formData.get("room_id"),
-            email: nrp === '' ? '' : formData.get("email"),
+            email: nrp === "" ? "" : formData.get("email"),
             name: formData.get("name"),
         });
 

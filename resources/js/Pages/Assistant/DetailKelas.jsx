@@ -4,7 +4,7 @@ import LabelTable from "@/Components/Assistant/Labels/LabelTable";
 import DetailsTitle from "@/Components/Assistant/Title/DetailsTitle";
 import TableWithEditDeleteButton from "@/Components/Assistant/Table/TableWithEditDeleteButton";
 
-export default function DetailKelas(props) {
+export default function DetailKelas({ props, routes }) {
     const { data } = props;
     console.log(data);
     const hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
@@ -67,7 +67,7 @@ export default function DetailKelas(props) {
             </Head>
             <div className="grid grid-cols-7 gap-1">
                 <div className="col-span-2">
-                    <SidebarUser></SidebarUser>
+                    <SidebarUser routes={routes}></SidebarUser>
                 </div>
 
                 <div className="mt-10 w-full h-72 col-span-4">

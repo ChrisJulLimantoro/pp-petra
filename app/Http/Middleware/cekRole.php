@@ -18,6 +18,10 @@ class cekRole
     {
         $name = $request->route()->getName();
         $method = $request->getMethod();
+        if(in_array('super-admin',session('roles'))){
+            $request->routes = 'all';
+            return $next($request);
+        }
         $cek = json_decode(Http::withToken(session('token'))->post(env('API_URL').'/rbac/cek-role',['route'=>$name,'method'=>$method,'user_id'=>session('user_id')]));
         if($cek){
             if ($method === 'GET') {

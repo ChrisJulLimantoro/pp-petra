@@ -40,7 +40,7 @@ class ReportController extends Controller
         ]);
     }
 
-    public function detailApplication() {
+    public function detailApplication(Request $request) {
         $subjects = json_decode(
             Http::withHeaders(['Accept' => 'application/json'])
             ->withToken(session('token'))
@@ -68,6 +68,7 @@ class ReportController extends Controller
             'subjects' => $subjects,
             'events' => $events,
             'initialReport' => $initialReport,
+            'routes' => $request->routes ?? []
         ]);
     }
 

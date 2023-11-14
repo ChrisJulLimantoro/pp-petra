@@ -32,15 +32,18 @@ class RBACController extends Controller
         return $routes;
     }
 
-    public function getAllViews(){
-        return Inertia::render('RBAC/Views');
+    public function getAllViews(Request $request){
+        return Inertia::render('RBAC/Views', [
+            'routes' => $request->routes ?? [],
+        ]);
     }
 
-    public function manageRole(){
+    public function manageRole(Request $request){
         $roles = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/roles'), true);
 
         return Inertia::render('RBAC/ManageRole', [
-            'roles' => $roles
+            'roles' => $roles,
+            'routes' => $request->routes ?? [],
         ]);
     }
 
@@ -74,9 +77,10 @@ class RBACController extends Controller
         return $response;
     }
 
-    public function assignRoutesView(){
+    public function assignRoutesView(Request $request){
         $data['roles'] = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/roles'), true);
         $data['routes'] = $this->getAllRoutes();
+        $data['userRoutes'] = $request->routes ?? [];
 
         return Inertia::render('RBAC/AssignRoutes', $data);
     }
@@ -102,7 +106,7 @@ class RBACController extends Controller
         return $response;
     }
 
-    public function assignRoleView() {
+    public function assignRoleView(Request $request) {
         $response = Http::withToken(session('token'))
             ->get(sprintf('%s/users', env('API_URL')));
         $users = $response->json();
@@ -113,7 +117,7 @@ class RBACController extends Controller
 
         return Inertia::render(
             'RBAC/AssignRole', 
-            ['users' => $users['data'], 'allRoles' => $roles['data']]
+            ['users' => $users['data'], 'allRoles' => $roles['data'],'routes' => $request->routes ?? []]
         );
     }
 

@@ -25,7 +25,7 @@ import {
     CalendarDaysIcon,
     TableCellsIcon,
     UserGroupIcon,
-    UserCircleIcon
+    UserCircleIcon,
 } from "@heroicons/react/24/solid";
 import {
     ChevronRightIcon,
@@ -36,9 +36,15 @@ import {
 import prodiImg from "../../../public/assets/prodi.jpeg";
 import { Link, Head } from "@inertiajs/react";
 
-export default function MultiLevelSidebar({ children, routes, className = "" }) {
+export default function MultiLevelSidebar({
+    children,
+    routes,
+    className = "",
+}) {
     const [open, setOpen] = useState(-1);
-    const [sidebarState, setSidebarState] = useState(window.innerWidth < 577 ? 0 : window.innerWidth < 1024 ? 1 : 2);
+    const [sidebarState, setSidebarState] = useState(
+        window.innerWidth < 577 ? 0 : window.innerWidth < 1024 ? 1 : 2
+    );
     const [isMobile, setIsMobile] = useState(window.innerWidth < 577);
     const [open2, setOpen2] = useState(false);
     const openDrawer = () => setOpen2(true);
@@ -51,33 +57,64 @@ export default function MultiLevelSidebar({ children, routes, className = "" }) 
         setIsMobile(window.innerWidth < 577);
     });
 
-    const icons = {
-        'Dashboard' : <PresentationChartBarIcon className="h-5 w-5" />,
-        'Praktikum' : <ComputerDesktopIcon className="h-5 w-5" />,
-        'Praktikum.Daftar Praktikum' : <Square2StackIcon strokeWidth={3} className="h-3 w-5" />,
-        'Praktikum.View Kelas Praktikum' : <EyeIcon strokeWidth={3} className="h-3 w-5" />,
-        'Praktikum.Manage Praktikum' : <TableCellsIcon className="h-5 w-5" />,
-        'Mahasiswa' : <UserCircleIcon className="h-5 w-5" />,
-        'Mahasiswa.Manage Mahasiswa' : <UserGroupIcon className="h-5 w-5" />,
-        'Mahasiswa.View Jadwal' : <CalendarDaysIcon className="h-5 w-5" />,
-        'Asisten' : <UserPlusIcon className="h-5 w-5" />,
-        'Asisten.Manage Asisten' : <UserGroupIcon className="h-5 w-5" />,
-        'Asisten.View Jadwal Ajar' : <CalendarDaysIcon className="h-5 w-5" />,
-        'Ruangan' : <MapPinIcon className="h-5 w-5" />,
-        'Event' : <CalendarDaysIcon className="h-5 w-5" />,
-        'RBAC' : <KeyIcon className="h-5 w-5" />,
-        'RBAC.Manage Role' : <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />,
-        'RBAC.Add User to Role' : <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />,
-        'RBAC.Add Routes to Role' : <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />,
-        'Logout' : <PowerIcon className="h-5 w-5" />
+    // console.log(typeof routes);
+    if (routes == "all") {
+        routes = {
+            Dashboard: "Dashboard",
+            Praktikum: [
+                "Praktikum.Daftar Praktikum",
+                "Praktikum.View Kelas Praktikum",
+                "Praktikum.Manage Praktikum",
+            ],
+            Mahasiswa: ["Mahasiswa.Manage Mahasiswa", "Mahasiswa.View Jadwal"],
+            Asisten: ["Asisten.Manage Asisten", "Asisten.View Jadwal Ajar"],
+            Ruangan: "Ruangan",
+            Event: "Event",
+            RBAC: [
+                "RBAC.Manage Role",
+                "RBAC.Add User to Role",
+                "RBAC.Add Routes to Role",
+            ],
+            LogOut: "LogOut",
+        };
     }
+    const icons = {
+        Dashboard: <PresentationChartBarIcon className="h-5 w-5" />,
+        Praktikum: <ComputerDesktopIcon className="h-5 w-5" />,
+        "Praktikum.Daftar Praktikum": (
+            <Square2StackIcon strokeWidth={3} className="h-3 w-5" />
+        ),
+        "Praktikum.View Kelas Praktikum": (
+            <EyeIcon strokeWidth={3} className="h-3 w-5" />
+        ),
+        "Praktikum.Manage Praktikum": <TableCellsIcon className="h-5 w-5" />,
+        Mahasiswa: <UserCircleIcon className="h-5 w-5" />,
+        "Mahasiswa.Manage Mahasiswa": <UserGroupIcon className="h-5 w-5" />,
+        "Mahasiswa.View Jadwal": <CalendarDaysIcon className="h-5 w-5" />,
+        Asisten: <UserPlusIcon className="h-5 w-5" />,
+        "Asisten.Manage Asisten": <UserGroupIcon className="h-5 w-5" />,
+        "Asisten.View Jadwal Ajar": <CalendarDaysIcon className="h-5 w-5" />,
+        Ruangan: <MapPinIcon className="h-5 w-5" />,
+        Event: <CalendarDaysIcon className="h-5 w-5" />,
+        RBAC: <KeyIcon className="h-5 w-5" />,
+        "RBAC.Manage Role": (
+            <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+        ),
+        "RBAC.Add User to Role": (
+            <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+        ),
+        "RBAC.Add Routes to Role": (
+            <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+        ),
+        LogOut: <PowerIcon className="h-5 w-5" />,
+    };
 
     const mobileOpenedStyle = "w-1/2 p-5";
     const desktopMinimizedStyle = "pl-[80px] w-screen p-3";
     const desktopFullStyle = "w-4/5 p-7";
 
     const handleOpen = (value) => {
-        console.log(value)
+        console.log(value);
         setOpen(open === value ? 0 : value);
     };
 
@@ -86,6 +123,7 @@ export default function MultiLevelSidebar({ children, routes, className = "" }) 
         setOpen(0);
     };
 
+    console.log(routes);
     const openedSidebar = () => {
         return (
             <Card
@@ -124,12 +162,17 @@ export default function MultiLevelSidebar({ children, routes, className = "" }) 
                                         <ChevronDownIcon
                                             strokeWidth={2.5}
                                             className={`mx-auto h-4 w-4 transition-transform ${
-                                                open === index ? "rotate-180" : ""
+                                                open === index
+                                                    ? "rotate-180"
+                                                    : ""
                                             }`}
                                         />
                                     }
                                 >
-                                    <ListItem className="p-0" selected={open === index}>
+                                    <ListItem
+                                        className="p-0"
+                                        selected={open === index}
+                                    >
                                         <AccordionHeader
                                             onClick={() => handleOpen(index)}
                                             className="border-b-0 p-3"
@@ -155,7 +198,7 @@ export default function MultiLevelSidebar({ children, routes, className = "" }) 
                                                             <ListItemPrefix>
                                                                 {icons[r]}
                                                             </ListItemPrefix>
-                                                            {r.split('.')[1]}
+                                                            {r.split(".")[1]}
                                                         </ListItem>
                                                     </Link>
                                                 );
@@ -163,9 +206,8 @@ export default function MultiLevelSidebar({ children, routes, className = "" }) 
                                         </List>
                                     </AccordionBody>
                                 </Accordion>
-                            )
-                        }
-                        else if (rute != 'Dashboard' && rute != "Log Out") {
+                            );
+                        } else if (rute != "Dashboard" && rute != "LogOut") {
                             return (
                                 <Link href={route(rute)}>
                                     <ListItem className="w-full">
@@ -175,11 +217,11 @@ export default function MultiLevelSidebar({ children, routes, className = "" }) 
                                         {rute}
                                     </ListItem>
                                 </Link>
-                            )
+                            );
                         }
                     })}
 
-                    <Link href={route('Log Out')}>
+                    <Link href={route("LogOut")}>
                         <ListItem className="w-full">
                             <ListItemPrefix>
                                 <PowerIcon className="w-5 h-5" />
@@ -212,12 +254,15 @@ export default function MultiLevelSidebar({ children, routes, className = "" }) 
                     </Link>
 
                     {Object.keys(routes).map((rute) => {
-                        if (rute != 'Dashboard' && rute != "Log Out") {
+                        if (rute != "Dashboard" && rute != "LogOut") {
                             return (
-                                <ListItem className="w-fit p-3" onClick={() => setSidebarState(2)}>
+                                <ListItem
+                                    className="w-fit p-3"
+                                    onClick={() => setSidebarState(2)}
+                                >
                                     {icons[rute]}
                                 </ListItem>
-                            )
+                            );
                         }
                     })}
 
@@ -233,7 +278,11 @@ export default function MultiLevelSidebar({ children, routes, className = "" }) 
 
     const mobileSidebarBtn = () => {
         return (
-            <IconButton variant="text" className="mx-4 mb-3" onClick={openDrawer}>
+            <IconButton
+                variant="text"
+                className="mx-4 mb-3"
+                onClick={openDrawer}
+            >
                 <Bars3BottomLeftIcon className="w-5 h-5" />
             </IconButton>
         );
@@ -277,36 +326,46 @@ export default function MultiLevelSidebar({ children, routes, className = "" }) 
                             ? mobileOpenedStyle
                             : sidebarState === 2
                             ? desktopFullStyle
-                            : "w-screen p-5") + " transition-all duration-300 bg-white"
+                            : "w-screen p-5") +
+                        " transition-all duration-300 bg-white"
                     }
                 >
-
                     {sidebarState === 0 ? mobileSidebarBtn() : null}
                     {children}
 
-                    {sidebarState === 0 && 
-                        <Drawer 
-                            open={open2} 
-                            onClose={closeDrawer} 
-                            className="p-4" 
-                            overlayProps={{ className:'fixed backdrop-blur-none' }}
-                         >
+                    {sidebarState === 0 && (
+                        <Drawer
+                            open={open2}
+                            onClose={closeDrawer}
+                            className="p-4"
+                            overlayProps={{
+                                className: "fixed backdrop-blur-none",
+                            }}
+                        >
                             <div className="px-6 flex items-center justify-between">
-                                <img src={prodiImg} alt="Logo Prodi" className="w-20" />
-                                <IconButton variant="text" color="blue-gray" onClick={closeDrawer}>
+                                <img
+                                    src={prodiImg}
+                                    alt="Logo Prodi"
+                                    className="w-20"
+                                />
+                                <IconButton
+                                    variant="text"
+                                    color="blue-gray"
+                                    onClick={closeDrawer}
+                                >
                                     <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={2}
-                                    stroke="currentColor"
-                                    className="h-5 w-5"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={2}
+                                        stroke="currentColor"
+                                        className="h-5 w-5"
                                     >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M6 18L18 6M6 6l12 12"
+                                        />
                                     </svg>
                                 </IconButton>
                             </div>
@@ -317,7 +376,9 @@ export default function MultiLevelSidebar({ children, routes, className = "" }) 
                                         <ListItemPrefix>
                                             <PresentationChartBarIcon
                                                 className="h-5 w-5"
-                                                onClick={() => setSidebarState(1)}
+                                                onClick={() =>
+                                                    setSidebarState(1)
+                                                }
                                             />
                                         </ListItemPrefix>
                                         Dashboard
@@ -334,14 +395,21 @@ export default function MultiLevelSidebar({ children, routes, className = "" }) 
                                                     <ChevronDownIcon
                                                         strokeWidth={2.5}
                                                         className={`mx-auto h-4 w-4 transition-transform ${
-                                                            open === index ? "rotate-180" : ""
+                                                            open === index
+                                                                ? "rotate-180"
+                                                                : ""
                                                         }`}
                                                     />
                                                 }
                                             >
-                                                <ListItem className="p-0" selected={open === index}>
+                                                <ListItem
+                                                    className="p-0"
+                                                    selected={open === index}
+                                                >
                                                     <AccordionHeader
-                                                        onClick={() => handleOpen(index)}
+                                                        onClick={() =>
+                                                            handleOpen(index)
+                                                        }
                                                         className="border-b-0 p-3"
                                                     >
                                                         <ListItemPrefix>
@@ -357,25 +425,44 @@ export default function MultiLevelSidebar({ children, routes, className = "" }) 
                                                 </ListItem>
 
                                                 <AccordionBody className="py-1">
-                                                    <List className="p-0" key={rute}>
-                                                        {routes[rute].map((r) => {
-                                                            return (
-                                                                <Link href={route(r)}>
-                                                                    <ListItem className="mx-5">
-                                                                        <ListItemPrefix>
-                                                                            {icons[r]}
-                                                                        </ListItemPrefix>
-                                                                        {r.split('.')[1]}
-                                                                    </ListItem>
-                                                                </Link>
-                                                            );
-                                                        })}
+                                                    <List
+                                                        className="p-0"
+                                                        key={rute}
+                                                    >
+                                                        {routes[rute].map(
+                                                            (r) => {
+                                                                return (
+                                                                    <Link
+                                                                        href={route(
+                                                                            r
+                                                                        )}
+                                                                    >
+                                                                        <ListItem className="mx-5">
+                                                                            <ListItemPrefix>
+                                                                                {
+                                                                                    icons[
+                                                                                        r
+                                                                                    ]
+                                                                                }
+                                                                            </ListItemPrefix>
+                                                                            {
+                                                                                r.split(
+                                                                                    "."
+                                                                                )[1]
+                                                                            }
+                                                                        </ListItem>
+                                                                    </Link>
+                                                                );
+                                                            }
+                                                        )}
                                                     </List>
                                                 </AccordionBody>
                                             </Accordion>
-                                        )
-                                    }
-                                    else if (rute != 'Dashboard' && rute != "Log Out") {
+                                        );
+                                    } else if (
+                                        rute != "Dashboard" &&
+                                        rute != "LogOut"
+                                    ) {
                                         return (
                                             <Link href={route(rute)}>
                                                 <ListItem className="w-full">
@@ -385,11 +472,11 @@ export default function MultiLevelSidebar({ children, routes, className = "" }) 
                                                     {rute}
                                                 </ListItem>
                                             </Link>
-                                        )
+                                        );
                                     }
                                 })}
 
-                                <Link href={route('Log Out')}>
+                                <Link href={route("LogOut")}>
                                     <ListItem className="w-full">
                                         <ListItemPrefix>
                                             <PowerIcon className="w-5 h-5" />
@@ -399,7 +486,7 @@ export default function MultiLevelSidebar({ children, routes, className = "" }) 
                                 </Link>
                             </List>
                         </Drawer>
-                    }
+                    )}
                 </div>
             </div>
         </>

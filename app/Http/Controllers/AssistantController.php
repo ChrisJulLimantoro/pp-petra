@@ -9,7 +9,7 @@ use Inertia\Inertia;
 
 class AssistantController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $res = Http::withToken(session('token'))
             ->get(env('API_URL') . '/assistants');
@@ -17,7 +17,10 @@ class AssistantController extends Controller
         $assistants = $res->json('data');
 
         $props['assistants'] = $assistants;
-        return Inertia::render('ManageAssistant', $props);
+        return Inertia::render('ManageAssistant', [
+            'assistants' => $assistants,
+            'routes' => $request->routes ?? [],
+        ]);
     }
 
     public function delete(Request $request)
