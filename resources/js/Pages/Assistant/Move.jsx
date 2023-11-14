@@ -7,7 +7,7 @@ import ConfirmationButton from "@/Components/Assistant/Button/ConfirmationButton
 export default function Move(props) {
     const { id, type, data, data2, routes } = props;
     //  console.log(data);
-    console.log(data3);
+    // console.log(data3);
 
     const hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 

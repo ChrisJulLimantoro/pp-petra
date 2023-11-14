@@ -10,7 +10,7 @@ export default function MoveTitle(props) {
                     <a href="#" className="opacity-60">
                         Asisten
                     </a>
-                    <a href={route('practicum.index')} className="opacity-60">
+                    <a href={route('Praktikum.Manage Praktikum')} className="opacity-60">
                         Kelas Asisten
                     </a>
                     <a href={route('practicum.detail', practicum_id)} className="opacity-60">
