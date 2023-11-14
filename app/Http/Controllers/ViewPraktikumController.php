@@ -10,7 +10,7 @@ use Illuminate\Http\Response;
 
 class ViewPraktikumController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $data = json_decode(Http::withToken(session('token'))->get(env('API_URL') . "/students/" . session('user_id') . "/available-schedules/" . session('event_id')), true);
         $data = $data['data'];
@@ -64,7 +64,8 @@ class ViewPraktikumController extends Controller
 
         // dd($return['data']);
         return Inertia::render('Mahasiswa/viewKelas', [
-            'dataTable' => $return['data']
+            'dataTable' => $return['data'],
+            'routes' => $request->routes ?? []
         ]);
     }
 }
