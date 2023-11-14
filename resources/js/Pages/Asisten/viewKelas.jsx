@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext } from "react";
 import { Head } from "@inertiajs/react";
 import SidebarUser from "@/Layouts/SidebarUser";
-import {Card, Typography } from "@material-tailwind/react";
+import { Card, Typography } from "@material-tailwind/react";
 import DataTable from "@/Components/DataTable/DataTable";
 import TableHeader from "@/Components/DataTable/TableHeader";
 import TableBody from "@/Components/DataTable/TableBody";
@@ -13,7 +13,7 @@ import DialogSuccess from "@/Components/DialogSuccess";
 import DialogAsk from "@/Components/DialogAsk";
 
 export const viewKelasContext = createContext();
-export default function viewKelas({ auth, dataAjar, dataLowongan}) {
+export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
     function processData(dataLowongan, context) {
         return dataLowongan.map((item) => ({
             ...item,
@@ -229,7 +229,7 @@ export default function viewKelas({ auth, dataAjar, dataLowongan}) {
             </Head>
             <div className="grid grid-cols-3">
                 <div className="flex-none col-span-1">
-                    <SidebarUser></SidebarUser>
+                    <SidebarUser routes={routes}></SidebarUser>
                 </div>
                 <div className="flex flex-wrap max-w-min">
                     {/* Table Ajar */}

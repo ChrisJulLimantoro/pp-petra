@@ -16,7 +16,7 @@ import { useRef } from "react";
 import Swal from "sweetalert2";
 import { TrashIcon } from "@heroicons/react/24/outline";
 
-export default function viewMahasiswa({ dataTable }) {
+export default function viewMahasiswa({ dataTable, routes }) {
     const styles = `
 
     html{
@@ -25,8 +25,8 @@ export default function viewMahasiswa({ dataTable }) {
     input[type="file"] {
         color: transparent;
         display: none;
-      }
-  
+    }
+
     /* Tambahkan teks placeholder kustom */
     `;
     const columnssss = [
@@ -40,7 +40,7 @@ export default function viewMahasiswa({ dataTable }) {
         "Action",
     ];
     const data = dataTable;
-    console.log(data);
+
     const renderBody = (data, index, context) => {
         // if no data found
         if (data.empty) {
@@ -219,12 +219,21 @@ export default function viewMahasiswa({ dataTable }) {
                     .post(route("uploadMahasiswa"), form_data)
                     .then((result) => {
                         if (result.data.success) {
-                            // Handle sukses
+                            Swal.fire({
+                                icon: "success",
+                                title: "Success",
+                                text: "File berhasil diupload",
+                            });
                         } else {
-                            // Handle kegagalan
+                            Swal.fire({
+                                icon: "error",
+                                title: "Oops...",
+                                text: result.data.error_msg,
+                            });
                         }
                     })
                     .catch((error) => {
+                        console.log(error)
                         // Handle error
                     });
             }
@@ -248,7 +257,7 @@ export default function viewMahasiswa({ dataTable }) {
                 defaultColor="red"
                 defaultShowTime={4000}
             />
-            <SidebarUser>
+            <SidebarUser routes={routes}>
                 <DataTable rawData={data} columns={columnssss}>
                     <DataTableContext.Consumer>
                         {(context) => (
