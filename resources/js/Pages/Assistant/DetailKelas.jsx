@@ -4,8 +4,8 @@ import LabelTable from "@/Components/Assistant/Labels/LabelTable";
 import DetailsTitle from "@/Components/Assistant/Title/DetailsTitle";
 import TableWithEditDeleteButton from "@/Components/Assistant/Table/TableWithEditDeleteButton";
 
-export default function DetailKelas({ props, routes }) {
-    const { data } = props;
+export default function DetailKelas(props) {
+    const { data, routes } = props;
     // console.log(data);
     const hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
@@ -42,7 +42,7 @@ export default function DetailKelas({ props, routes }) {
 
         return username;
     }
-
+    
     function getJurusan(input) {
         switch (input) {
             case 's':
@@ -91,7 +91,6 @@ export default function DetailKelas({ props, routes }) {
             </Head>
             <div className="grid grid-cols-7 gap-1">
                 <div className="col-span-2">
-                    <SidebarUser routes={routes}></SidebarUser>
                 </div>
 
                 <div className="mt-10 w-full h-72 col-span-4">

@@ -184,7 +184,7 @@ class PracticumController extends Controller
         return Inertia::render('Assistant/Move', ['id' => $id, 'type' => $type, 'data' => $data, 'data2' => $data2, 'routes' => $request->routes ?? []]);
     }
 
-    public function addAssistant($id)
+    public function addAssistant(Request $request, $id)
     {
         $res = Http::withHeader('Accept', 'application/json')
             ->withToken(session('token'))
@@ -192,7 +192,7 @@ class PracticumController extends Controller
 
         $data = $res->json('data');
 
-        return Inertia::render('Assistant/AddAssistant', ['data' => $data, 'id' => $id]);
+        return Inertia::render('Assistant/AddAssistant', ['data' => $data, 'id' => $id, 'routes' => $request->routes ?? []]);
 
     //     return;
     }

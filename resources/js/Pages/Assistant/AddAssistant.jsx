@@ -7,7 +7,7 @@ import LabelAdd from "@/Components/Assistant/Labels/LabelAdd";
 import TableNoButton from "@/Components/Assistant/Table/TableNoButton";
 
 export default function AddAssistant(props) {
-    const { id, data } = props;
+    const { id, data, routes } = props;
 
     const hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
@@ -120,7 +120,7 @@ export default function AddAssistant(props) {
             </Head>
             <div className="grid grid-cols-7 gap-1">
                 <div className="col-span-2">
-                    <SidebarUser />
+                    <SidebarUser routes={routes}></SidebarUser>
                 </div>
                 <div className="mt-10 w-full h-72 col-span-4">
                     <div className="judul">
@@ -130,7 +130,9 @@ export default function AddAssistant(props) {
                             pararel={data.code}
                             hari={hari[data.day - 1]}
                             jam_start={formatTime(data.time)}
-                            jam_end={formatTime(data.time + data.subject.duration*100)}
+                            jam_end={formatTime(
+                                data.time + data.subject.duration * 100
+                            )}
                             ruangan={data.room.name}
                             practicum_id={id}
                         />
