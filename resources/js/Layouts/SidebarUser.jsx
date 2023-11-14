@@ -114,7 +114,7 @@ export default function MultiLevelSidebar({
     const desktopFullStyle = "w-4/5 p-7";
 
     const handleOpen = (value) => {
-        console.log(value);
+        // console.log(value);
         setOpen(open === value ? 0 : value);
     };
 
@@ -123,7 +123,7 @@ export default function MultiLevelSidebar({
         setOpen(0);
     };
 
-    console.log(routes);
+    // console.log(routes);
     const openedSidebar = () => {
         return (
             <Card
