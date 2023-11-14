@@ -191,9 +191,8 @@ class PracticumController extends Controller
         $data = $res->json('data');
 
         return Inertia::render('Assistant/AddAssistant', ['data' => $data, 'id' => $id]);
-
-    //     return;
-    // }
+    }
+    
     public function viewPracticum(){
         $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
         $dataPracticum = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/practicum-karen'), true);
