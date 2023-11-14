@@ -78,7 +78,13 @@ class RBACController extends Controller
     }
 
     public function assignRoutesView(Request $request){
-        $data['roles'] = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/roles'), true);
+        $roles = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/roles'), true)['data'];
+        // super admin auto all access
+        foreach($roles as $role){
+            if($role['slug'] != 'super-admin'){
+                $data['roles']['data'][] = $role;
+            }
+        }
         $data['routes'] = $this->getAllRoutes();
         $data['userRoutes'] = $request->routes ?? [];
 
