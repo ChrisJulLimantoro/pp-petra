@@ -8,7 +8,7 @@ import LabelAddMhsTable from "@/Components/Assistant/Labels/LabelAddMhsTable";
 import TableWithDeleteButton from "@/Components/Assistant/Table/TableWithDeleteButton";
 
 export default function AddMahasiswa(props) {
-    const { id } = props;
+    const { id, routes } = props;
     const head_mhs_ajax = ["Nama", "NRP", "Jurusan"];
     const data_mhs_ajax = [
         {
@@ -72,11 +72,9 @@ export default function AddMahasiswa(props) {
             <Head>
                 <title>SAOCP-Add Mahasiswa</title>
             </Head>
-            <div className="grid grid-cols-7 gap-1">
-                <div className="col-span-2">
-                    <SidebarUser />
-                </div>
-                <div className="mt-10 w-full h-72 col-span-4">
+
+            <SidebarUser routes={routes}>
+                <div className="mt-10 px-5 w-full md:w-5/6">
                     <div className="title">
                         <div className="judul">
                             <AddTitle
@@ -118,7 +116,7 @@ export default function AddMahasiswa(props) {
                         </div>
                     </div>
                 </div>
-            </div>
+            </SidebarUser>
         </>
     );
 }

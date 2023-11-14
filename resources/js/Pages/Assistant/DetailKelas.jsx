@@ -42,20 +42,19 @@ export default function DetailKelas(props) {
 
         return username;
     }
-    
+
     function getJurusan(input) {
         switch (input) {
-            case 's':
-                return 'Sistem Informasi Bisnis';
-            case 'i':
-                return 'Informatika';
-            case 'd':
-                return 'Data Science & analytics';
+            case "s":
+                return "Sistem Informasi Bisnis";
+            case "i":
+                return "Informatika";
+            case "d":
+                return "Data Science & analytics";
             default:
-                return 'Invalid input. Please provide s, i, or d.';
+                return "Invalid input. Please provide s, i, or d.";
         }
     }
-
 
     const head_student = ["Nama", "NRP", "Jurusan", "Action"];
     const head_assistant = ["Nama", "NRP", "Action"];
@@ -89,11 +88,8 @@ export default function DetailKelas(props) {
             <Head>
                 <title>SAOCP-Detail Kelas</title>
             </Head>
-            <div className="grid grid-cols-7 gap-1">
-                <div className="col-span-2">
-                </div>
-
-                <div className="mt-10 w-full h-72 col-span-4">
+            <SidebarUser routes={routes}>
+                <div className="mt-10 px-5 w-full md:w-5/6">
                     <div className="judul">
                         <DetailsTitle
                             matkul={data.name}
@@ -137,7 +133,7 @@ export default function DetailKelas(props) {
                     </div>
                     <div className="mt-10"></div>
                 </div>
-            </div>
+            </SidebarUser>
         </>
     );
 }

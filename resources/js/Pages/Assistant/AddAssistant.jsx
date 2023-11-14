@@ -118,11 +118,8 @@ export default function AddAssistant(props) {
             <Head>
                 <title>SAOCP-Tambah Asisten</title>
             </Head>
-            <div className="grid grid-cols-7 gap-1">
-                <div className="col-span-2">
-                    <SidebarUser routes={routes}></SidebarUser>
-                </div>
-                <div className="mt-10 w-full h-72 col-span-4">
+            <SidebarUser routes={routes}>
+                <div className="mt-10 px-5 w-full md:w-5/6">
                     <div className="judul">
                         <AddTitle
                             type="Asisten"
@@ -137,7 +134,6 @@ export default function AddAssistant(props) {
                             practicum_id={id}
                         />
                     </div>
-
                     <div className="tabel-asisten">
                         <LabelAdd type="Asisten" slot_used="3" total_slot="4" />
                         <TableNoButton
@@ -145,7 +141,6 @@ export default function AddAssistant(props) {
                             TABLE_ROWS={assistants_data}
                         />
                     </div>
-
                     <div className="tabel-add mt-10">
                         <LabelTableAdd type="Asisten" total_available="10" />
                         <TableWithAddButton
@@ -154,7 +149,7 @@ export default function AddAssistant(props) {
                         />
                     </div>
                 </div>
-            </div>
+            </SidebarUser>
         </>
     );
 }

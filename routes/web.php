@@ -88,10 +88,11 @@ Route::middleware('cekRole')-> group(function() {
             Route::patch('/{id}', [PracticumController::class, 'update'])->name('practicum.update');
             Route::get('/{id}', [PracticumController::class, 'getClassDetails'])->name('practicum.detail');
             Route::get('/{id}/move/{type}/{student_assistant_practicum_id}', [PracticumController::class, 'getMovePraktikumDetails'])->name('practicum.move');
-            Route::get('/{id}/addassistant', [PracticumController::class, 'addAssistant'])->name('practicum.addAssistant');
-            Route::get('/{id}/addmahasiswa', function ($id) {
-                return Inertia::render('Assistant/AddMahasiswa', ['id' => $id]);
-            })->name('practicum.addStudent');
+            Route::get('/{id}/addassistant', [PracticumController::class, 'viewAddAssistant'])->name('practicum.addAssistant');
+            // Route::get('/{id}/addmahasiswa', function ($id) {
+            //     return Inertia::render('Assistant/AddMahasiswa', ['id' => $id]);
+            // })->name('practicum.addStudent');
+            Route::get('/{id}/addmahasiswa', [PracticumController::class, 'viewAddStudent'])->name('practicum.addStudent');
         });
     });
 

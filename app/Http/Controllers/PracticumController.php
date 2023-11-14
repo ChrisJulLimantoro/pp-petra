@@ -184,7 +184,7 @@ class PracticumController extends Controller
         return Inertia::render('Assistant/Move', ['id' => $id, 'type' => $type, 'data' => $data, 'data2' => $data2, 'routes' => $request->routes ?? []]);
     }
 
-    public function addAssistant(Request $request, $id)
+    public function viewAddAssistant(Request $request, $id)
     {
         $res = Http::withHeader('Accept', 'application/json')
             ->withToken(session('token'))
@@ -194,8 +194,20 @@ class PracticumController extends Controller
 
         return Inertia::render('Assistant/AddAssistant', ['data' => $data, 'id' => $id, 'routes' => $request->routes ?? []]);
 
-    //     return;
     }
+
+    public function viewAddStudent(Request $request, $id)
+    {
+        $res = Http::withHeader('Accept', 'application/json')
+            ->withToken(session('token'))
+            ->get(config('app')['API_URL'] . '/practicums' . '/' . $id);
+
+        $data = $res->json('data');
+
+        return Inertia::render('Assistant/AddMahasiswa', ['data' => $data, 'id' => $id, 'routes' => $request->routes ?? []]);
+
+    }
+
     public function viewPracticum(Request $request){
         $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
         $dataPracticum = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/practicum-karen'), true);

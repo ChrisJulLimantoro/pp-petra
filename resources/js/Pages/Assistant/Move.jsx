@@ -69,11 +69,8 @@ export default function Move(props) {
                 <title>{"SAOCP - Move " + type}</title>
             </Head>
 
-            <div className="grid grid-cols-7 gap-1">
-                <div className="col-span-2">
-                    <SidebarUser routes={routes}></SidebarUser>
-                </div>
-                <div className="mt-10 w-full h-72 col-span-4">
+            <SidebarUser routes={routes}>
+            <div className="mt-10 px-5 w-full md:w-5/6">
                     <div className="judul">
                         <MoveTitle
                             type={type}
@@ -111,7 +108,7 @@ export default function Move(props) {
                         <ConfirmationButton>Update Kelas</ConfirmationButton>
                     </div>
                 </div>
-            </div>
+            </SidebarUser>
         </>
     );
 }
