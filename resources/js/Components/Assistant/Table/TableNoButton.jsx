@@ -25,7 +25,7 @@ export default function TableNoButton(props) {
                 </tr>
                 </thead>
                 <tbody >
-                {TABLE_ROWS.map(({ nama, nrp }, index) => {
+                {TABLE_ROWS.map(({ nama, nrp, jurusan }, index) => {
                     const isLast = index === TABLE_ROWS.length - 1;
                     const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
         
@@ -51,6 +51,17 @@ export default function TableNoButton(props) {
                             </Typography>
                         </td>
 
+                        {jurusan && (
+                            <td className={classes}>
+                                <Typography
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal"
+                                >
+                                    {jurusan}
+                                </Typography>
+                            </td>
+                        )}
                     </tr>
                     );
                 })}

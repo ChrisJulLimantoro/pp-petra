@@ -6,7 +6,7 @@ export default function DetailsTitle(props) {
 
     return (
         <div>
-            <Breadcrumbs fullWidth className="mb-5">
+            <Breadcrumbs fullWidth className="mb-5"> 
                     <a href="#" className="opacity-60">
                         Asisten
                     </a>

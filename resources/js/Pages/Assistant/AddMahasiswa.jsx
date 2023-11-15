@@ -1,4 +1,5 @@
 import { Head } from "@inertiajs/react";
+import React from "react";
 import SidebarUser from "@/Layouts/SidebarUser";
 import AddTitle from "@/Components/Assistant/Title/AddTitle";
 import InputNRP from "@/Components/Inputs/InputNRP";
@@ -9,6 +10,9 @@ import TableWithDeleteButton from "@/Components/Assistant/Table/TableWithDeleteB
 
 export default function AddMahasiswa(props) {
     const { id, routes } = props;
+    const [newStudents, setTableRows] = React.useState([]);
+    const [nrp, setNrp] = React.useState("");
+
     const head_mhs_ajax = ["Nama", "NRP", "Jurusan"];
     const data_mhs_ajax = [
         {
@@ -19,53 +23,6 @@ export default function AddMahasiswa(props) {
     ];
 
     const head_mhs = ["Nama", "NRP", "Jurusan", "Action"];
-    const data_mhs = [
-        {
-            nama: "Mia Amalia",
-            nrp: "234567890",
-            jurusan: "Informatika",
-        },
-        {
-            nama: "Reza Irawan",
-            nrp: "345678901",
-            jurusan: "Data Science",
-        },
-        {
-            nama: "Amelia Putri",
-            nrp: "456789012",
-            jurusan: "Sistem Informasi Bisnis",
-        },
-        {
-            nama: "Dimas Pratama",
-            nrp: "567890123",
-            jurusan: "Informatika",
-        },
-        {
-            nama: "Rini Wulandari",
-            nrp: "678901234",
-            jurusan: "Data Science",
-        },
-        {
-            nama: "Fajar Ramadhan",
-            nrp: "789012345",
-            jurusan: "Sistem Informasi Bisnis",
-        },
-        {
-            nama: "Aditya Pratama",
-            nrp: "890123456",
-            jurusan: "Informatika",
-        },
-        {
-            nama: "Dewi Lestari",
-            nrp: "901234567",
-            jurusan: "Data Science",
-        },
-        {
-            nama: "Rangga Permadi",
-            nrp: "012345678",
-            jurusan: "Sistem Informasi Bisnis",
-        },
-    ];
 
     return (
         <>
@@ -89,7 +46,11 @@ export default function AddMahasiswa(props) {
                             />
                         </div>
                         <div className="input-nrp">
-                            <InputNRP />
+                            <InputNRP
+                                newStudents={newStudents}
+                                nrp={nrp}
+                                setNrp={setNrp}
+                            />
                         </div>
 
                         <div className="table-ajax">
@@ -108,10 +69,11 @@ export default function AddMahasiswa(props) {
                         </div>
 
                         <div className="list-add mt-10">
-                            <LabelAddMhsTable total="10" />
+                            <LabelAddMhsTable total={newStudents.length} />
                             <TableWithDeleteButton
                                 TABLE_HEAD={head_mhs}
-                                TABLE_ROWS={data_mhs}
+                                TABLE_ROWS={newStudents}
+                                setTableRows={setTableRows}
                             />
                         </div>
                     </div>
