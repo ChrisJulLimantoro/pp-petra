@@ -41,6 +41,7 @@ export default function MultiLevelSidebar({
     routes,
     className = "",
 }) {
+    const url = window.location.pathname.substring(6);
     const [open, setOpen] = useState(-1);
     const [sidebarState, setSidebarState] = useState(
         window.innerWidth < 577 ? 0 : window.innerWidth < 1024 ? 1 : 2
@@ -78,33 +79,98 @@ export default function MultiLevelSidebar({
             LogOut: "LogOut",
         };
     }
+
     const icons = {
-        Dashboard: <PresentationChartBarIcon className="h-5 w-5" />,
-        Praktikum: <ComputerDesktopIcon className="h-5 w-5" />,
+        Dashboard: (
+            <PresentationChartBarIcon 
+                className="h-5 w-5" 
+                fill={url === route("Dashboard", null, false) || url === route('asisten.dashboard', null, false) ? '#3b82f6' : '#455a64'} />
+        ),
+        Praktikum: (
+            <ComputerDesktopIcon 
+                className="h-5 w-5" 
+                fill={url.match('praktikum/.*') ? '#3b82f6' : '#455a64'} />
+        ),
         "Praktikum.Daftar Praktikum": (
-            <Square2StackIcon strokeWidth={3} className="h-3 w-5" />
+            <Square2StackIcon 
+                strokeWidth={3} 
+                fill={url === route("Praktikum.Daftar Praktikum") ? '#3b82f6' : '#455a64'} 
+                className="h-3 w-5" />
         ),
         "Praktikum.View Kelas Praktikum": (
-            <EyeIcon strokeWidth={3} className="h-3 w-5" />
+            <EyeIcon 
+                strokeWidth={3} 
+                fill = {url === route("Praktikum.View Kelas Praktikum", null, false) ? '#3b82f6' : '#455a64'}
+                className="h-3 w-5" 
+            />
         ),
-        "Praktikum.Manage Praktikum": <TableCellsIcon className="h-5 w-5" />,
-        Mahasiswa: <UserCircleIcon className="h-5 w-5" />,
-        "Mahasiswa.Manage Mahasiswa": <UserGroupIcon className="h-5 w-5" />,
-        "Mahasiswa.View Jadwal": <CalendarDaysIcon className="h-5 w-5" />,
-        Asisten: <UserPlusIcon className="h-5 w-5" />,
-        "Asisten.Manage Asisten": <UserGroupIcon className="h-5 w-5" />,
-        "Asisten.View Jadwal Ajar": <CalendarDaysIcon className="h-5 w-5" />,
-        Ruangan: <MapPinIcon className="h-5 w-5" />,
-        Event: <CalendarDaysIcon className="h-5 w-5" />,
-        RBAC: <KeyIcon className="h-5 w-5" />,
+        "Praktikum.Manage Praktikum": (
+            <TableCellsIcon 
+                className="h-5 w-5" 
+                fill={url === route('Praktikum.Manage Praktikum', null, false) ? '#3b82f6' : '#455a64'} />
+        ),
+        Mahasiswa: (
+            <UserCircleIcon 
+                className="h-5 w-5" 
+                fill={url.match("mahasiswa/.*") ? '#3b82f6' : '#455a64'} />
+        ),
+        "Mahasiswa.Manage Mahasiswa": (
+            <UserGroupIcon 
+                className="h-5 w-5" 
+                fill={url === route('Mahasiswa.Manage Mahasiswa', null, false) ? '#3b82f6' : '#455a64'} />
+        ),
+        "Mahasiswa.View Jadwal": (
+            <CalendarDaysIcon 
+                className="h-5 w-5" 
+                fill={url === route('Mahasiswa.View Jadwal', null, false) ? '#3b82f6' : '#455a64'} />
+        ),
+        Asisten: (
+            <UserPlusIcon 
+                className="h-5 w-5" 
+                fill={url.match('asisten/.*') ? '#3b82f6' : '#455a64'}/>
+        ),
+        "Asisten.Manage Asisten": (
+            <UserGroupIcon 
+                className="h-5 w-5" 
+                fill={url === route('Asisten.Manage Asisten', null, false) ? '#3b82f6' : '#455a64'} />
+        ),
+        "Asisten.View Jadwal Ajar": (
+            <CalendarDaysIcon 
+                className="h-5 w-5"
+                fill={url === route('Asisten.View Jadwal Ajar', null, false) ? '#3b82f6' : '#455a64'} />
+        ),
+        Ruangan: (
+            <MapPinIcon 
+                className="h-5 w-5"
+                fill={url.match('room.*') ? '#3b82f6' : '#455a64'} />
+        ),
+        Event: (
+            <CalendarDaysIcon 
+                className="h-5 w-5"
+                fill={url.match('event.*') ? '#3b82f6' : '#455a64'} />
+        ),
+        RBAC: (
+            <KeyIcon 
+                className="h-5 w-5"
+                fill={url.match('rbac/.*') ? '#3b82f6' : '#455a64'} />
+        ),
         "RBAC.Manage Role": (
-            <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+            <ChevronRightIcon 
+                strokeWidth={3}
+                stroke={url === route("RBAC.Manage Role", null, false) ? '#3b82f6' : '#455a64'} 
+                className="h-3 w-5" />
         ),
         "RBAC.Add User to Role": (
-            <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+            <ChevronRightIcon 
+                strokeWidth={3} 
+                stroke={url === route("RBAC.Add User to Role", null, false) ? '#3b82f6' : '#455a64'} 
+                className="h-3 w-5" />
         ),
         "RBAC.Add Routes to Role": (
-            <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+            <ChevronRightIcon 
+                strokeWidth={3}
+                stroke={url === route("RBAC.Add Routes to Role", null, false) ? '#3b82f6' : '#455a64'}
+                className="h-3 w-5" />
         ),
         LogOut: <PowerIcon className="h-5 w-5" />,
     };
@@ -143,12 +209,11 @@ export default function MultiLevelSidebar({
                     <Link href={route("Dashboard")}>
                         <ListItem className="w-full">
                             <ListItemPrefix>
-                                <PresentationChartBarIcon
-                                    className="h-5 w-5"
-                                    onClick={() => setSidebarState(1)}
-                                />
+                                {icons.Dashboard}
                             </ListItemPrefix>
-                            Dashboard
+                            <span className={url === route('Dashboard', null, false) || url === route('asisten.dashboard', null, false) ? 'text-blue-500' : ''}>
+                                Dashboard
+                            </span>
                         </ListItem>
                     </Link>
 
@@ -161,6 +226,7 @@ export default function MultiLevelSidebar({
                                     icon={
                                         <ChevronDownIcon
                                             strokeWidth={2.5}
+                                            color={url.split('/')[1].toLowerCase() === rute.toLowerCase() && url.split('/').length > 2 ? '#3b82f6' : '#455a64'}
                                             className={`mx-auto h-4 w-4 transition-transform ${
                                                 open === index
                                                     ? "rotate-180"
@@ -181,8 +247,8 @@ export default function MultiLevelSidebar({
                                                 {icons[rute]}
                                             </ListItemPrefix>
                                             <Typography
-                                                color="blue-gray"
-                                                className="mr-auto font-normal"
+                                                color={url.split('/')[1].toLowerCase() === rute.toLowerCase() && url.split('/').length > 2 ? 'blue' : 'blue-gray'}
+                                                className={"mr-auto font-normal"}
                                             >
                                                 {rute}
                                             </Typography>
@@ -198,7 +264,9 @@ export default function MultiLevelSidebar({
                                                             <ListItemPrefix>
                                                                 {icons[r]}
                                                             </ListItemPrefix>
-                                                            {r.split(".")[1]}
+                                                            <span className={url === route(r, null, false) ? 'text-blue-500' : 'text-blue-gray-900'}>
+                                                                {r.split(".")[1]}
+                                                            </span>
                                                         </ListItem>
                                                     </Link>
                                                 );
@@ -214,7 +282,9 @@ export default function MultiLevelSidebar({
                                         <ListItemPrefix>
                                             {icons[rute]}
                                         </ListItemPrefix>
-                                        {rute}
+                                        <span className={url === route(rute, null, false) ? 'text-blue-500' : 'text-blue-gray-900'}>
+                                            {rute}
+                                        </span>
                                     </ListItem>
                                 </Link>
                             );
@@ -249,7 +319,7 @@ export default function MultiLevelSidebar({
                 <List>
                     <Link href={route("Dashboard")}>
                         <ListItem className="w-fit p-3">
-                            <PresentationChartBarIcon className="h-5 w-5" />
+                            {icons['Dashboard']}
                         </ListItem>
                     </Link>
 
@@ -266,7 +336,7 @@ export default function MultiLevelSidebar({
                         }
                     })}
 
-                    <Link href={route("Dashboard")}>
+                    <Link href={route("LogOut")}>
                         <ListItem className="w-fit p-3">
                             <PowerIcon className="h-5 w-5" />
                         </ListItem>
@@ -331,6 +401,7 @@ export default function MultiLevelSidebar({
                     }
                 >
                     {sidebarState === 0 ? mobileSidebarBtn() : null}
+
                     {children}
 
                     {sidebarState === 0 && (
@@ -374,14 +445,11 @@ export default function MultiLevelSidebar({
                                 <Link href={route("Dashboard")}>
                                     <ListItem className="w-full">
                                         <ListItemPrefix>
-                                            <PresentationChartBarIcon
-                                                className="h-5 w-5"
-                                                onClick={() =>
-                                                    setSidebarState(1)
-                                                }
-                                            />
+                                            {icons['Dashboard']}
                                         </ListItemPrefix>
-                                        Dashboard
+                                            <span className={url === route('Dashboard', null, false) || url === route('asisten.dashboard', null, false) ? 'text-blue-500' : ''}>
+                                                Dashboard
+                                            </span>
                                     </ListItem>
                                 </Link>
 
@@ -394,6 +462,7 @@ export default function MultiLevelSidebar({
                                                 icon={
                                                     <ChevronDownIcon
                                                         strokeWidth={2.5}
+                                                        color={url.split('/')[1].toLowerCase() === rute.toLowerCase() && url.split('/').length > 2 ? '#3b82f6' : '#455a64'}
                                                         className={`mx-auto h-4 w-4 transition-transform ${
                                                             open === index
                                                                 ? "rotate-180"
@@ -416,7 +485,7 @@ export default function MultiLevelSidebar({
                                                             {icons[rute]}
                                                         </ListItemPrefix>
                                                         <Typography
-                                                            color="blue-gray"
+                                                            color={url.split('/')[1].toLowerCase() === rute.toLowerCase() && url.split('/').length > 2 ? 'blue' : 'blue-gray'}
                                                             className="mr-auto font-normal"
                                                         >
                                                             {rute}
@@ -433,23 +502,15 @@ export default function MultiLevelSidebar({
                                                             (r) => {
                                                                 return (
                                                                     <Link
-                                                                        href={route(
-                                                                            r
-                                                                        )}
+                                                                        href={route(r)}
                                                                     >
                                                                         <ListItem className="mx-5">
                                                                             <ListItemPrefix>
-                                                                                {
-                                                                                    icons[
-                                                                                        r
-                                                                                    ]
-                                                                                }
+                                                                                {icons[r]}
                                                                             </ListItemPrefix>
-                                                                            {
-                                                                                r.split(
-                                                                                    "."
-                                                                                )[1]
-                                                                            }
+                                                                                <span className={url === route(r, null, false) ? 'text-blue-500' : 'text-blue-gray-900'}>
+                                                                                    {r.split(".")[1]}
+                                                                                </span>
                                                                         </ListItem>
                                                                     </Link>
                                                                 );
@@ -469,7 +530,9 @@ export default function MultiLevelSidebar({
                                                     <ListItemPrefix>
                                                         {icons[rute]}
                                                     </ListItemPrefix>
-                                                    {rute}
+                                                        <span className={url === route(rute, null, false) ? 'text-blue-500' : 'text-blue-gray-900'}>
+                                                            {rute}
+                                                        </span>
                                                 </ListItem>
                                             </Link>
                                         );

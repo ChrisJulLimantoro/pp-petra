@@ -32,18 +32,18 @@ use Inertia\Inertia;
 Route::middleware('cekRole')-> group(function() {
     Route::get('/mahasiswa', [DashboardController::class, 'index'])->name('Dashboard');
     Route::get('/asisten', [ReportController::class, 'dashboard'])->name('asisten.dashboard');
-    Route::get("/manage-mahasiswa", [BulkInsertStudentController::class, 'index'])->name('Mahasiswa.Manage Mahasiswa');
-    Route::get("/viewJadwal", [JadwalController::class, 'index'])->name('Mahasiswa.View Jadwal');
-    Route::get('/daftarPraktikum', [DaftarPraktikumController::class, 'getSubject'])->name('Praktikum.Daftar Praktikum');
-    Route::get('/viewKelas', [ViewPraktikumController::class, 'index'])->name('Praktikum.View Kelas Praktikum');
-    Route::get('/praktikum', [PracticumController::class, 'index'])->name('Praktikum.Manage Praktikum');
-    Route::get('/viewAjar', [PracticumController::class, 'viewPracticum'])->name('Asisten.View Jadwal Ajar');
-    Route::get('/manage-asisten', [AssistantController::class, 'index'])->name('Asisten.Manage Asisten');
+    Route::get("/mahasiswa/manage-mahasiswa", [BulkInsertStudentController::class, 'index'])->name('Mahasiswa.Manage Mahasiswa');
+    Route::get("/mahasiswa/viewJadwal", [JadwalController::class, 'index'])->name('Mahasiswa.View Jadwal');
+    Route::get('/praktikum/daftarPraktikum', [DaftarPraktikumController::class, 'getSubject'])->name('Praktikum.Daftar Praktikum');
+    Route::get('/praktikum/viewKelas', [ViewPraktikumController::class, 'index'])->name('Praktikum.View Kelas Praktikum');
+    Route::get('/praktikum/manage-praktikum', [PracticumController::class, 'index'])->name('Praktikum.Manage Praktikum');
+    Route::get('/asisten/viewAjar', [PracticumController::class, 'viewPracticum'])->name('Asisten.View Jadwal Ajar');
+    Route::get('/asisten/manage-asisten', [AssistantController::class, 'index'])->name('Asisten.Manage Asisten');
     Route::get('/room', [RoomController::class, 'index'])->name('Ruangan');
     Route::get('/event', [EventController::class, 'index'])->name('Event');
-    Route::get('/manageRole', [RBACController::class, 'manageRole'])->name('RBAC.Manage Role');
-    Route::get('/assignRole', [RBACController::class, 'assignRoleView'])->name('RBAC.Add User to Role');
-    Route::get('/assignRoutes', [RBACController::class, 'assignRoutesView'])->name('RBAC.Add Routes to Role');
+    Route::get('/rbac/manageRole', [RBACController::class, 'manageRole'])->name('RBAC.Manage Role');
+    Route::get('/rbac/assignRole', [RBACController::class, 'assignRoleView'])->name('RBAC.Add User to Role');
+    Route::get('/rbac/assignRoutes', [RBACController::class, 'assignRoutesView'])->name('RBAC.Add Routes to Role');
 
     Route::get("/viewPRS/{student_id}", [BulkInsertStudentController::class, 'viewPrs'])->name('viewPRS');
     Route::post("/uploadMahasiswa", [BulkInsertStudentController::class, 'insert'])->name('uploadMahasiswa');
