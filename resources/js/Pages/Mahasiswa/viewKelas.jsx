@@ -23,7 +23,7 @@ export default function viewKelas({ dataTable, routes }) {
             <div className="px-6">
                 <Breadcrumbs className="mb-5">
                     <a
-                        href={route("mahasiswa.dashboard")}
+                        href={route("Dashboard")}
                         className="opacity-60"
                     >
                         <svg

@@ -56,17 +56,16 @@ export default class AssignRoutes extends Component {
     }
 
     changeAccess(e, context) {
-        console.log(context);
         // toggle switch
         let allRoutes = [...this.props.routes].map((route) =>
-            route.uri === e.value ? { ...route, access: e.checked } : route
+            route.name === e.value ? { ...route, access: e.checked } : route
         );
         let routes = [...context.filteredData].map((route) =>
-            route.uri === e.value ? { ...route, access: e.checked } : route
+            route.name === e.value ? { ...route, access: e.checked } : route
         );
 
         // find changed route
-        let routeChanged = routes.find((route) => route.uri === e.value);
+        let routeChanged = routes.find((route) => route.name === e.value);
 
         // update state
         context.updateData(allRoutes, routes);
@@ -87,12 +86,12 @@ export default class AssignRoutes extends Component {
                     } else {
                         // revert changes
                         allRoutes = [...context.rawData].map((route) =>
-                            route.uri === e.value
+                            route.name === e.value
                                 ? { ...route, access: !e.checked }
                                 : route
                         );
                         routes = [...context.filteredData].map((route) =>
-                            route.uri === e.value
+                            route.name === e.value
                                 ? { ...route, access: !e.checked }
                                 : route
                         );
@@ -104,12 +103,12 @@ export default class AssignRoutes extends Component {
                 .catch(() => {
                     // revert changes
                     allRoutes = [...context.rawData].map((route) =>
-                        route.uri === e.value
+                        route.name === e.value
                             ? { ...route, access: !e.checked }
                             : route
                     );
                     routes = [...context.filteredData].map((route) =>
-                        route.uri === e.value
+                        route.name === e.value
                             ? { ...route, access: !e.checked }
                             : route
                     );
@@ -134,19 +133,19 @@ export default class AssignRoutes extends Component {
                     if (response.data.success) {
                         this.state.role.role_routes =
                             this.state.role.role_routes.filter(
-                                (route) => route.route !== e.value
+                                (route) => {route.name !== e.value}
                             );
                         context.updateData(allRoutes, routes);
                         this.showAlert("Data successfully updated!", "gray");
                     } else {
                         // revert changes
                         allRoutes = [...context.rawData].map((route) =>
-                            route.uri === e.value
+                            route.name === e.value
                                 ? { ...route, access: !e.checked }
                                 : route
                         );
                         routes = [...context.filteredData].map((route) =>
-                            route.uri === e.value
+                            route.name === e.value
                                 ? { ...route, access: !e.checked }
                                 : route
                         );
@@ -158,12 +157,12 @@ export default class AssignRoutes extends Component {
                 .catch(() => {
                     // revert changes
                     allRoutes = [...context.rawData].map((route) =>
-                        route.uri === e.value
+                        route.name === e.value
                             ? { ...route, access: !e.checked }
                             : route
                     );
                     routes = [...context.filteredData].map((route) =>
-                        route.uri === e.value
+                        route.name === e.value
                             ? { ...route, access: !e.checked }
                             : route
                     );
@@ -179,7 +178,7 @@ export default class AssignRoutes extends Component {
             alert: { isOpen: true, color: color, message: message },
         });
 
-        console.log(this.state.alert);
+        // console.log(this.state.alert);
         setTimeout(() => {
             this.setState({ alert: { ...this.state.alert, isOpen: false } });
         }, 1000);
@@ -244,7 +243,7 @@ export default class AssignRoutes extends Component {
                 <TableCell>
                     <Switch
                         onChange={(e) => this.changeAccess(e.target, context)}
-                        value={index.uri || ""}
+                        value={index.name || ""}
                         checked={index.access}
                     />
                 </TableCell>
