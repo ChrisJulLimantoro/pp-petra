@@ -227,17 +227,12 @@ export default function viewKelas({ auth, dataAjar, dataLowongan}) {
             <Head>
                 <title>SAOCP-Daftar Ajar Praktikum</title>
             </Head>
-            <div className="grid grid-cols-3">
-                <div className="flex-none col-span-1">
+            <div className="flex grid grid-cols-3">
+                <div className="flex-none col-span-1 z-40">
                     <SidebarUser></SidebarUser>
                 </div>
-                <div className="flex flex-wrap max-w-min">
-                    {/* Table Ajar */}
-                    <div
-                        // className="col-span-1 flex-auto lg:ml-[-11vw] mt-5"
-                        className="col-span-1 flex-auto lg:mt-5"
-                        //style={{ width: "70vw" }}
-                    >
+                <div className="flex-wrap w-64 sm:w-full 2xl:w-max">
+                    <div>
                         <DataTable
                             rawData={ajar}
                             columns={kolomAjar}
@@ -268,14 +263,7 @@ export default function viewKelas({ auth, dataAjar, dataLowongan}) {
                             </DataTableContext.Consumer>
                         </DataTable>
                     </div>
-
-                    {/* Table Lowongan */}
-                    <div
-                        // className=" col-span-1 flex-auto lg:ml-[-11vw] mt-5"
-                        className="col-span-1 flex-auto lg:mt-5"
-
-                        // style={{ width: "70vw" }}
-                    >
+                    <div>
                         <DataTable
                             rawData={lowongan}
                             columns={kolomLowongan}
