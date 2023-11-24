@@ -5,7 +5,7 @@ import SelectKelasBaru from "@/Components/Assistant/Select/SelectKelasBaru";
 import ConfirmationButton from "@/Components/Assistant/Button/ConfirmationButton";
 
 export default function Move(props) {
-    const { id, type, data, data2, data3 } = props;
+    const { id, type, data, data2, routes } = props;
     //  console.log(data);
     console.log(data3);
 
@@ -34,7 +34,7 @@ export default function Move(props) {
             return "Invalid time format";
         }
     }
-    
+
     function extractNrp(email) {
         // Find the position of '@' symbol in the email
         const atIndex = email.indexOf("@");
@@ -55,9 +55,10 @@ export default function Move(props) {
                 ", " +
                 formatTime(item.time) +
                 " - " +
-                formatTime(item.time),
+                formatTime(item.time + item.subject.duration * 100),
         });
     });
+    console.log(datas);
 
     //ngesort kelas berdasarkan kode
     datas.sort((a, b) => (a.code > b.code ? 1 : -1));
@@ -70,25 +71,40 @@ export default function Move(props) {
 
             <div className="grid grid-cols-7 gap-1">
                 <div className="col-span-2">
-                    <SidebarUser></SidebarUser>
+                    <SidebarUser routes={routes}></SidebarUser>
                 </div>
                 <div className="mt-10 w-full h-72 col-span-4">
                     <div className="judul">
                         <MoveTitle
                             type={type}
-                            nama={data3.user.name}
-                            nrp={extractNrp(data3.user.email)}
+                            nama={
+                                type === "Asisten"
+                                    ? data.assistant.user.name
+                                    : data.student.user.name
+                            }
+                            nrp={
+                                type === "Asisten"
+                                    ? extractNrp(data.assistant.user.email)
+                                    : extractNrp(data.student.user.email)
+                            }
                             practicum_id={id}
                             mata_kuliah={data.practicum.name}
                             kelas_paralel={data.practicum.code}
                             hari={hari[data.practicum.day - 1]}
                             jam_start={formatTime(data.practicum.time)}
-                            jam_end={formatTime(data.practicum.time)}
+                            jam_end={formatTime(
+                                data.practicum.time +
+                                    data.practicum.subject.duration * 100
+                            )}
                         />
                     </div>
 
                     <form action="">
-                        <SelectKelasBaru title="Kelas Parallel" datas={datas} current_practicum_id={id} />
+                        <SelectKelasBaru
+                            title="Kelas Parallel"
+                            datas={datas}
+                            current_practicum_id={id}
+                        />
                     </form>
 
                     <div className="mt-10">

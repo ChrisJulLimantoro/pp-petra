@@ -28,7 +28,7 @@ import {
     XMarkIcon,
 } from "@heroicons/react/24/outline";
 
-export default function Index({ events }) {
+export default function Index({ events, routes }) {
     const columns = ["Name", "Start date", "End Date", "Status", "Action"];
 
     const [event, setEvent] = useReducer(eventReducer, events);
@@ -411,7 +411,7 @@ export default function Index({ events }) {
     };
 
     return (
-        <SidebarUser>
+        <SidebarUser routes={routes}>
             <Head>
                 <title>Add Event</title>
             </Head>
@@ -443,13 +443,20 @@ export default function Index({ events }) {
                             <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
                         </svg>
                     </a>
-                    <a href={route("event.all")}>Manage Events</a>
+                    <a href={route("Event")}>Manage Events</a>
                 </Breadcrumbs>
 
                 <DataTable
                     className="w-full"
                     rawData={events.data}
-                    columns={['#', "Name", "Start Date", "End Date", "Status", "Action"]}
+                    columns={[
+                        "#",
+                        "Name",
+                        "Start Date",
+                        "End Date",
+                        "Status",
+                        "Action",
+                    ]}
                     // changeStatus={changeStatus}
                 >
                     <DataTableContext.Consumer>
@@ -530,7 +537,8 @@ export default function Index({ events }) {
                                                 onChange={(e) =>
                                                     setData({
                                                         ...data,
-                                                        startdate: e.target.value,
+                                                        startdate:
+                                                            e.target.value,
                                                     })
                                                 }
                                                 error={error?.startdate}
@@ -570,7 +578,9 @@ export default function Index({ events }) {
                                             <Button
                                                 variant="filled"
                                                 className="w-1/2"
-                                                onClick={() => handleAdd(context)}
+                                                onClick={() =>
+                                                    handleAdd(context)
+                                                }
                                             >
                                                 Add
                                             </Button>

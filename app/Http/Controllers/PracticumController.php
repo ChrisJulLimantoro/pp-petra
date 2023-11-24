@@ -12,7 +12,7 @@ use Ramsey\Collection\Set;
 class PracticumController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
         $res = Http::withHeader('Accept', 'application/json')
             ->withToken(session('token'))
@@ -72,7 +72,9 @@ class PracticumController extends Controller
         $props['subjects'] = $subjects->toArray();
         $props['rooms'] = $rooms;
         $props['practicums'] = $practicums;
+        $props['routes'] = $request->routes ?? [];
 
+        // dd($props);
         return Inertia::render('Assistant/Practicum', $props);
     }
 
@@ -140,7 +142,7 @@ class PracticumController extends Controller
         return redirect()->back()->with('message', $res->json());
     }
 
-    public function getClassDetails($id)
+    public function getClassDetails(Request $request,$id)
     {
         $res = Http::withHeader('Accept', 'application/json')
             ->withToken(session('token'))
@@ -148,10 +150,10 @@ class PracticumController extends Controller
 
         $data = $res->json('data');
 
-        return Inertia::render('Assistant/DetailKelas', ['data' => $data]);
+        return Inertia::render('Assistant/DetailKelas', ['data' => $data, 'routes' => $request->routes ?? []]);
     }
 
-    public function getMovePraktikumDetails($id, $type, $student_assistant_practicum_id)
+    public function getMovePraktikumDetails(Request $request,$id, $type, $student_assistant_practicum_id)
     {
         if ($type == 'Asisten') {
             $res = Http::withHeader('Accept', 'application/json')
@@ -165,13 +167,7 @@ class PracticumController extends Controller
                 ->get(config('app')['API_URL'] . '/subjects' . '/' . $data['practicum']['subject_id']);
 
             $data2 = $res2->json('data');
-
-            $res3 = Http::withHeader('Accept', 'application/json')
-                ->withToken(session('token'))
-                ->get(config('app')['API_URL'] . '/assistants' . '/' . $data['assistant_id']);
-
-            $data3 = $res3->json('data');
-        } else if ($type == 'Mahasiswa') {
+        } elseif ($type == 'Mahasiswa') {
             $res = Http::withHeader('Accept', 'application/json')
                 ->withToken(session('token'))
                 ->get(config('app')['API_URL'] . '/student-practicums' . '/' . $student_assistant_practicum_id);
@@ -183,27 +179,24 @@ class PracticumController extends Controller
                 ->get(config('app')['API_URL'] . '/subjects' . '/' . $data['practicum']['subject_id']);
 
             $data2 = $res2->json('data');
-
-            $res3 = Http::withHeader('Accept', 'application/json')
-                ->withToken(session('token'))
-                ->get(config('app')['API_URL'] . '/students' . '/' . $data['student_id']);
-
-            $data3 = $res3->json('data');
         }
 
-        return Inertia::render('Assistant/Move', ['id' => $id, 'type' => $type, 'data' => $data, 'data2' => $data2, 'data3' => $data3]);
+        return Inertia::render('Assistant/Move', ['id' => $id, 'type' => $type, 'data' => $data, 'data2' => $data2, 'routes' => $request->routes ?? []]);
     }
 
-    // on progress
-    // public function getMoveAsisten($id)
-    // {
-    //     $res = Http::withHeader('Accept', 'application/json')
-    //             ->withToken(session('token'))
-    //             ->get(config('app')['API_URL'] . '/assistant-practicums' . '/' . $id);
+    public function addAssistant($id)
+    {
+        $res = Http::withHeader('Accept', 'application/json')
+            ->withToken(session('token'))
+            ->get(config('app')['API_URL'] . '/practicums' . '/' . $id);
+
+        $data = $res->json('data');
+
+        return Inertia::render('Assistant/AddAssistant', ['data' => $data, 'id' => $id]);
 
     //     return;
-    // }
-    public function viewPracticum(){
+    }
+    public function viewPracticum(Request $request){
         $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
         $dataPracticum = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/practicum-karen'), true);
         // dd($dataPracticum);
@@ -235,6 +228,7 @@ class PracticumController extends Controller
         return Inertia::render('Asisten/viewKelas', [
             'dataLowongan' => $dataL,
             'dataAjar' => $dataA,
+            'routes' => $request->routes ?? []
         ]);
     }
 }

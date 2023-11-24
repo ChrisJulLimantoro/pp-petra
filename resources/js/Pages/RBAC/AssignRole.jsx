@@ -14,11 +14,12 @@ export default function AssignRole({
     status,
     users,
     allRoles,
+    routes,
 }) {
     const [selectedUser, setSelectedUser] = useState(null);
 
     return (
-        <SidebarUser>
+        <SidebarUser routes={routes}>
             <Head>
                 <title>Assign Role</title>
                 <style>
@@ -70,9 +71,7 @@ export default function AssignRole({
                 </section>
                 <section className="">
                     <RoleSearchProvider allRoles={allRoles}>
-                        <RolesSection
-                            selectedUser={selectedUser}
-                        />
+                        <RolesSection selectedUser={selectedUser} />
                     </RoleSearchProvider>
                 </section>
             </div>
