@@ -227,75 +227,82 @@ export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
             <Head>
                 <title>SAOCP-Daftar Ajar Praktikum</title>
             </Head>
-            <div className="flex grid grid-cols-3">
+
+            <SidebarUser className="p-6"routes={routes}>
+                <div className="px-6">
+                    <DataTable
+                        rawData={ajar}
+                        columns={kolomAjar}
+                        title={titleAjar}
+                    >
+                        <DataTableContext.Consumer>
+                            {(context) => (
+                            <Card className="max-w-full z-1 md:py-0 overflow-x-hidden border border-gray-200 mb-6">
+                                    <TableHeader title={titleAjar} />
+
+                                    <TableBody className={"relative "}>
+                                        <TableBody.Head />
+                                        <TableBody.Content>
+                                            {context.paginatedData.map(
+                                                (item, index) =>
+                                                    renderDataAjar(
+                                                        item,
+                                                        index,
+                                                        context
+                                                    )
+                                            )}
+                                        </TableBody.Content>
+                                    </TableBody>
+
+                                    <TableFooter />
+                                </Card>
+                            )}
+                        </DataTableContext.Consumer>
+                    </DataTable>
+
+                    <DataTable
+                        rawData={lowongan}
+                        columns={kolomLowongan}
+                        title={titleLowongan}
+                    >
+                        <DataTableContext.Consumer>
+                            {(context) => (
+                                <Card className="max-w-full z-1 md:py-0 overflow-x-hidden border border-gray-200 mb-6">
+                                    <TableHeader title={titleLowongan} />
+
+                                    <TableBody className={"relative "}>
+                                        <TableBody.Head />
+                                        <TableBody.Content>
+                                            {context.paginatedData.map(
+                                                (item, index) =>
+                                                    renderDataLowongan(
+                                                        item,
+                                                        index,
+                                                        context
+                                                    )
+                                            )}
+                                        </TableBody.Content>
+                                    </TableBody>
+
+                                    <TableFooter />
+                                </Card>
+                            )}
+                        </DataTableContext.Consumer>
+                    </DataTable>
+                </div>
+            </SidebarUser>
+            {/* <div className="flex grid grid-cols-3">
                 <div className="flex-none col-span-1 z-40">
-                    <SidebarUser routes={routes}></SidebarUser>
                 </div>
                 <div className="flex-wrap w-64 sm:w-full 2xl:w-max">
                     <div>
-                        <DataTable
-                            rawData={ajar}
-                            columns={kolomAjar}
-                            title={titleAjar}
-                        >
-                            <DataTableContext.Consumer>
-                                {(context) => (
-                                    <Card className="w-full z-[1]">
-                                        <TableHeader title={titleAjar} />
-
-                                        <TableBody className={"relative "}>
-                                            <TableBody.Head />
-                                            <TableBody.Content>
-                                                {context.paginatedData.map(
-                                                    (item, index) =>
-                                                        renderDataAjar(
-                                                            item,
-                                                            index,
-                                                            context
-                                                        )
-                                                )}
-                                            </TableBody.Content>
-                                        </TableBody>
-
-                                        <TableFooter />
-                                    </Card>
-                                )}
-                            </DataTableContext.Consumer>
-                        </DataTable>
+                        
                     </div>
                     <div>
-                        <DataTable
-                            rawData={lowongan}
-                            columns={kolomLowongan}
-                            title={titleLowongan}
-                        >
-                            <DataTableContext.Consumer>
-                                {(context) => (
-                                    <Card className="w-full z-[1]">
-                                        <TableHeader title={titleLowongan} />
-
-                                        <TableBody className={"relative "}>
-                                            <TableBody.Head />
-                                            <TableBody.Content>
-                                                {context.paginatedData.map(
-                                                    (item, index) =>
-                                                        renderDataLowongan(
-                                                            item,
-                                                            index,
-                                                            context
-                                                        )
-                                                )}
-                                            </TableBody.Content>
-                                        </TableBody>
-
-                                        <TableFooter />
-                                    </Card>
-                                )}
-                            </DataTableContext.Consumer>
-                        </DataTable>
+                        
                     </div>
                 </div>
-            </div>
+            </div> */}
         </viewKelasContext.Provider>
     );
 }
