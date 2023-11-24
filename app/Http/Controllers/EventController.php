@@ -8,11 +8,12 @@ use Inertia\Inertia;
 
 class EventController extends Controller
 {
-    public function index() {
+    public function index(Request $request) {
         $event = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/events'), true);
         // dd($event);
         return Inertia::render('Event/Index', [
-            'events' => $event
+            'events' => $event,
+            'routes' => $request->routes ?? [],
         ]);
     }
 

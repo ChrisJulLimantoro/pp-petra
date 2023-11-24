@@ -8,11 +8,12 @@ use Inertia\Inertia;
 
 class RoomController extends Controller
 {
-    public function index() {
+    public function index(Request $request) {
         $rooms = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/rooms'), true);
 
         return Inertia::render('Room/Index', [
-            'rooms' => $rooms
+            'rooms' => $rooms,
+            'routes' => $request->routes ?? []
         ]);
     }
 

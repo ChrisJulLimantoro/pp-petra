@@ -1,31 +1,63 @@
-import { Head } from '@inertiajs/react';
+import { Head } from "@inertiajs/react";
 import SidebarUser from "@/Layouts/SidebarUser";
-import AddTitle from '@/Components/Assistant/Title/AddTitle';
-import LabelTableAdd from '@/Components/Assistant/Labels/LabelTableAdd';
-import TableWithAddButton from '@/Components/Assistant/Table/TableWithAddButton';
-import LabelAdd from '@/Components/Assistant/Labels/LabelAdd';
-import TableNoButton from '@/Components/Assistant/Table/TableNoButton';
+import AddTitle from "@/Components/Assistant/Title/AddTitle";
+import LabelTableAdd from "@/Components/Assistant/Labels/LabelTableAdd";
+import TableWithAddButton from "@/Components/Assistant/Table/TableWithAddButton";
+import LabelAdd from "@/Components/Assistant/Labels/LabelAdd";
+import TableNoButton from "@/Components/Assistant/Table/TableNoButton";
 
-export default function AddAssistant({ auth }) {
-    const head_asisten = ["Nama", "NRP", "Jurusan"];
-    const data_asisten = [
-        {
-            nama: "John Michael",
-            nrp: "123456789",
-            jurusan: "Informatika",
-        },
-        {
-            nama: "Alexa Liras",
-            nrp: "987654321",
-            jurusan: "Teknik Mesin",
-        },
-        {
-            nama: "Laurent Perrier",
-            nrp: "0987654321",
-            jurusan: "Akuntansi",
-        },
-          
-      ];
+export default function AddAssistant(props) {
+    const { id, data } = props;
+
+    const hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+
+    function formatTime(time) {
+        time = String(time);
+        if (
+            typeof time === "string" &&
+            (time.length === 3 || time.length === 4)
+        ) {
+            let hours, minutes;
+
+            if (time.length === 3) {
+                // For "730" format
+                hours = time.slice(0, 1);
+                minutes = time.slice(1);
+            } else if (time.length === 4) {
+                // For "1630" format
+                hours = time.slice(0, 2);
+                minutes = time.slice(2);
+            }
+
+            return `${hours.padStart(2, "0")}:${minutes}`;
+        } else {
+            return "Invalid time format";
+        }
+    }
+
+    function extractNrp(email) {
+        // Find the position of '@' symbol in the email
+        const atIndex = email.indexOf("@");
+
+        // Extract the substring before the '@' symbol
+        const username = email.slice(0, atIndex).toUpperCase();
+
+        return username;
+    }
+
+    console.log(data);
+    const head_asisten = ["Nama", "NRP"];
+    const assistants_data = [];
+
+    data.assistant_practicum.map((item) => {
+        const assistant = {
+            id: data.id,
+            nama: item.assistant.user.name,
+            nrp: extractNrp(item.assistant.user.email),
+            student_assistant_practicum_id: item.id,
+        };
+        assistants_data.push(assistant);
+    });
 
     const head_asisten_avail = ["Nama", "NRP", "Jurusan", "Action"];
     const data_asisten_avail = [
@@ -78,9 +110,8 @@ export default function AddAssistant({ auth }) {
             nama: "Jack Anderson",
             nrp: "101010101",
             jurusan: "Informatika",
-        }
+        },
     ];
-    
 
     return (
         <>
@@ -88,30 +119,40 @@ export default function AddAssistant({ auth }) {
                 <title>SAOCP-Tambah Asisten</title>
             </Head>
             <div className="grid grid-cols-7 gap-1">
-                <div className='col-span-2'>
-                    <SidebarUser/>
+                <div className="col-span-2">
+                    <SidebarUser />
                 </div>
                 <div className="mt-10 w-full h-72 col-span-4">
-                    <div className='judul'>
-                        <AddTitle type="Asisten" matkul="Pemrograman Berorientasi Objek" 
-                            pararel="A" hari="Senin" jam_start="08.00" jam_end="10.00" ruangan="P.202" />    
+                    <div className="judul">
+                        <AddTitle
+                            type="Asisten"
+                            matkul={data.name}
+                            pararel={data.code}
+                            hari={hari[data.day - 1]}
+                            jam_start={formatTime(data.time)}
+                            jam_end={formatTime(data.time + data.subject.duration*100)}
+                            ruangan={data.room.name}
+                            practicum_id={id}
+                        />
                     </div>
 
                     <div className="tabel-asisten">
                         <LabelAdd type="Asisten" slot_used="3" total_slot="4" />
-                        <TableNoButton TABLE_HEAD={head_asisten} TABLE_ROWS={data_asisten}/>
+                        <TableNoButton
+                            TABLE_HEAD={head_asisten}
+                            TABLE_ROWS={assistants_data}
+                        />
                     </div>
 
-                    <div className='tabel-add mt-10'>
-                        <LabelTableAdd type="Asisten" total_available="10"/>
-                        <TableWithAddButton TABLE_HEAD={head_asisten_avail} TABLE_ROWS={data_asisten_avail}/>
+                    <div className="tabel-add mt-10">
+                        <LabelTableAdd type="Asisten" total_available="10" />
+                        <TableWithAddButton
+                            TABLE_HEAD={head_asisten_avail}
+                            TABLE_ROWS={data_asisten_avail}
+                        />
                     </div>
-                    
                 </div>
-                
             </div>
-            
-           
         </>
     );
 }
