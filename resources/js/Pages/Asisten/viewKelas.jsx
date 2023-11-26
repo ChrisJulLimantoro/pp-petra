@@ -230,7 +230,7 @@ export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
             <div>
                 <SidebarUser routes={routes}>
                     <div className="flex flex-wrap place-content-center">
-                        <div className="w-10/12">
+                        <div className="w-11/12">
                             <DataTable
                                 className="w-full overflow-hidden"
                                 rawData={ajar}
@@ -239,7 +239,7 @@ export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
                             >
                                 <DataTableContext.Consumer>
                                     {(context) => (
-                                        <Card className="w-full z-[1]">
+                                        <Card className="max-w-full z-1 md:py-0 overflow-x-hidden border border-gray-200 mb-6">
                                             <TableHeader title={titleAjar} />
 
                                             <TableBody className={"relative "}>
@@ -262,7 +262,7 @@ export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
                                 </DataTableContext.Consumer>
                             </DataTable>
                         </div>
-                        <div className="pt-6 w-10/12">
+                        <div className="pt-6 w-11/12">
                             <DataTable
                                 className="overflow-hidden"
                                 rawData={lowongan}
@@ -271,7 +271,7 @@ export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
                             >
                                 <DataTableContext.Consumer>
                                     {(context) => (
-                                        <Card className="w-full z-[1]">
+                                        <Card className="max-w-full z-1 md:py-0 overflow-x-hidden border border-gray-200 mb-6">
                                             <TableHeader
                                                 title={titleLowongan}
                                             />
