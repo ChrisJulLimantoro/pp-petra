@@ -107,6 +107,7 @@ export default function Result(props) {
                     if (data[subject] === undefined) {
                         data[subject] = {};
                     }
+                    if (!result.generated) return;
 
                     if (Object.hasOwn(data[subject], result.student_id)) {
                         if (data[subject][result.student_id].accepted) return;

@@ -26,6 +26,7 @@ export function ResultDatatable(props) {
                 name: studentResult.student.user.name,
                 accepted: studentResult.accepted,
                 class: studentResult.practicum.code,
+                class_id: studentResult.practicum.id,
             };
 
             return r;
@@ -127,11 +128,11 @@ export function ResultDatatable(props) {
                                     );
                                 }) }
                             </Select> */}
-                            <select className="ms-3 me-6" data-old-value={(studentPracticum !== undefined) ? studentPracticum.id : ''} onChange={(e) => {assignStudent(e, e.target.value, studentResult.user_id)}}>
-                                <option value="-" selected={!studentResult.accepted} disabled>-</option>
+                            <select value={studentResult.accepted ? studentResult.class_id : '-'} className="ms-3 me-6" data-old-value={(studentPracticum !== undefined) ? studentPracticum.id : ''} onChange={(e) => {assignStudent(e, e.target.value, studentResult.user_id)}}>
+                                <option value="-" disabled>-</option>
                                 {practicums.map((p) => {
                                     return (
-                                        <option key={p.id} value={p.id} selected={(studentResult.accepted && studentPracticum !== undefined && studentPracticum.id == p.id)}>
+                                        <option key={p.id} value={p.id}>
                                             {p.code}
                                         </option>
                                     );

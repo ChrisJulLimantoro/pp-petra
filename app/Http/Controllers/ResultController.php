@@ -23,6 +23,12 @@ class ResultController extends Controller
         $res = Http::withToken(session('token'))
             ->get(env('API_URL') . '/student-practicums/by-event/' . $event_id);
         $data = $res->json('data');
+
+        $data = array_map(function ($result) {
+            $result['generated'] = $result['accepted'] !== 0;
+            return $result;
+        }, $data);
+
         return response()->json($data);
     }
 
