@@ -6,21 +6,42 @@ import InputNRP from "@/Components/Inputs/InputNRP";
 import { Typography } from "@material-tailwind/react";
 import TableNoButton from "@/Components/Assistant/Table/TableNoButton";
 import LabelAddMhsTable from "@/Components/Assistant/Labels/LabelAddMhsTable";
+import TableAjaxMahasiswa from "@/Components/Assistant/Table/TableAjaxMahasiswa";
 import TableWithDeleteButton from "@/Components/Assistant/Table/TableWithDeleteButton";
 
 export default function AddMahasiswa(props) {
-    const { id, routes } = props;
-    const [newStudents, setTableRows] = React.useState([]);
+    const { id, routes, data } = props;
+    const [newStudents, setNewStudents] = React.useState([]);
     const [nrp, setNrp] = React.useState("");
+    const [newStud, setNewStud] = React.useState("");
 
-    const head_mhs_ajax = ["Nama", "NRP", "Jurusan"];
-    const data_mhs_ajax = [
-        {
-            nama: "-",
-            nrp: "-",
-            jurusan: "-",
-        },
-    ];
+    const hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+
+
+    function formatTime(time) {
+        time = String(time);
+        if (
+            typeof time === "string" &&
+            (time.length === 3 || time.length === 4)
+        ) {
+            let hours, minutes;
+
+            if (time.length === 3) {
+                // For "730" format
+                hours = time.slice(0, 1);
+                minutes = time.slice(1);
+            } else if (time.length === 4) {
+                // For "1630" format
+                hours = time.slice(0, 2);
+                minutes = time.slice(2);
+            }
+
+            return `${hours.padStart(2, "0")}:${minutes}`;
+        } else {
+            return "Invalid time format";
+        }
+    }
+
 
     const head_mhs = ["Nama", "NRP", "Jurusan", "Action"];
 
@@ -36,19 +57,25 @@ export default function AddMahasiswa(props) {
                         <div className="judul">
                             <AddTitle
                                 type="Mahasiswa"
-                                matkul="Pemrograman Berorientasi Objek"
-                                pararel="A"
-                                hari="Senin"
-                                jam_start="08.00"
-                                jam_end="10.00"
-                                ruangan="P.202"
+                                matkul={data.name}
+                                pararel={data.code}
+                                hari={hari[data.day - 1]}
+                                jam_start={formatTime(data.time)}
+                                jam_end={formatTime(
+                                    data.time + data.subject.duration * 100
+                                )}
+                                ruangan={data.room.name}
                                 practicum_id={id}
                             />
                         </div>
                         <div className="input-nrp">
                             <InputNRP
+                                newStud={newStud}
+                                setNewStud={setNewStud}
                                 newStudents={newStudents}
+                                setNewStudents={setNewStudents}
                                 nrp={nrp}
+                                id = {id}
                                 setNrp={setNrp}
                             />
                         </div>
@@ -61,19 +88,18 @@ export default function AddMahasiswa(props) {
                             >
                                 Detail Mahasiswa
                             </Typography>
-                            <TableNoButton
-                                TABLE_HEAD={head_mhs_ajax}
-                                TABLE_ROWS={data_mhs_ajax}
+                            <TableAjaxMahasiswa
+                                TABLE_ROWS={newStud}
                             />
                             <br />
                         </div>
 
                         <div className="list-add mt-10">
-                            <LabelAddMhsTable total={newStudents.length} />
+                            <LabelAddMhsTable total={newStudents.length} data={newStudents} practicum_id={id} />
                             <TableWithDeleteButton
                                 TABLE_HEAD={head_mhs}
                                 TABLE_ROWS={newStudents}
-                                setTableRows={setTableRows}
+                                setNewStudents={setNewStudents}
                             />
                         </div>
                     </div>

@@ -3,12 +3,12 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 
 
 export default function TableWithDeleteButton(props) {
-    const {TABLE_HEAD, TABLE_ROWS, setTableRows} = props;
+    const {TABLE_HEAD, TABLE_ROWS, setNewStudents} = props;
 
     const handleDeleteRow = (index) => {
         const newTableRows = [...TABLE_ROWS];
         newTableRows.splice(index, 1);
-        setTableRows(newTableRows);
+        setNewStudents(newTableRows);
     };
 
     return (

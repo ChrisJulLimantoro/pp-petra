@@ -6,7 +6,7 @@ import TableWithEditDeleteButton from "@/Components/Assistant/Table/TableWithEdi
 
 export default function DetailKelas(props) {
     const { data, routes } = props;
-    // console.log(data);
+    console.log(data);
     const hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
     function formatTime(time) {
@@ -90,6 +90,7 @@ export default function DetailKelas(props) {
             </Head>
             <SidebarUser routes={routes}>
                 <div className="mt-10 px-5 w-full md:w-5/6">
+                    
                     <div className="judul">
                         <DetailsTitle
                             matkul={data.name}

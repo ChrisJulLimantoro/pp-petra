@@ -87,12 +87,14 @@ Route::middleware('cekRole')-> group(function() {
             Route::delete('/{id}', [PracticumController::class, 'destroy'])->name('practicum.destroy');
             Route::patch('/{id}', [PracticumController::class, 'update'])->name('practicum.update');
             Route::get('/{id}', [PracticumController::class, 'getClassDetails'])->name('practicum.detail');
+            Route::post('/{id}', [PracticumController::class, 'deleteMhsAsistenPraktikum'])->name('studentAssistantPracticum.delete');
             Route::get('/{id}/move/{type}/{student_assistant_practicum_id}', [PracticumController::class, 'getMovePraktikumDetails'])->name('practicum.move');
+            Route::post('/{id}/move/{type}/{student_assistant_practicum_id}', [PracticumController::class, 'moveStudentAsistantPracticum'])->name('practicum.move_student_assistant');
             Route::get('/{id}/addassistant', [PracticumController::class, 'viewAddAssistant'])->name('practicum.addAssistant');
-            // Route::get('/{id}/addmahasiswa', function ($id) {
-            //     return Inertia::render('Assistant/AddMahasiswa', ['id' => $id]);
-            // })->name('practicum.addStudent');
+            Route::post('/{id}/addassistant', [PracticumController::class, 'insertAssistantPracticum'])->name('practicum.insertAssistant');
             Route::get('/{id}/addmahasiswa', [PracticumController::class, 'viewAddStudent'])->name('practicum.addStudent');
+            Route::post('/{id}/addmahasiswa', [PracticumController::class, 'insertStudentpracticum'])->name('practicum.insertStudent');
+            Route::get('/addmahasiswa/{nrp}', [PracticumController::class, 'ajaxDetailStudent'])->name('practicum.detailStudent');
         });
     });
 

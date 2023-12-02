@@ -142,7 +142,7 @@ class PracticumController extends Controller
         return redirect()->back()->with('message', $res->json());
     }
 
-    public function getClassDetails(Request $request,$id)
+    public function getClassDetails(Request $request, $id)
     {
         $res = Http::withHeader('Accept', 'application/json')
             ->withToken(session('token'))
@@ -153,7 +153,7 @@ class PracticumController extends Controller
         return Inertia::render('Assistant/DetailKelas', ['data' => $data, 'routes' => $request->routes ?? []]);
     }
 
-    public function getMovePraktikumDetails(Request $request,$id, $type, $student_assistant_practicum_id)
+    public function getMovePraktikumDetails(Request $request, $id, $type, $student_assistant_practicum_id)
     {
         if ($type == 'Asisten') {
             $res = Http::withHeader('Accept', 'application/json')
@@ -192,8 +192,13 @@ class PracticumController extends Controller
 
         $data = $res->json('data');
 
-        return Inertia::render('Assistant/AddAssistant', ['data' => $data, 'id' => $id, 'routes' => $request->routes ?? []]);
+        $res2 = Http::withHeader('Accept', 'application/json')
+            ->withToken(session('token'))
+            ->get(config('app')['API_URL'] . '/assistants');
 
+        $data2 = $res2->json('data');
+
+        return Inertia::render('Assistant/AddAssistant', ['data' => $data, 'data2' => $data2, 'id' => $id, 'routes' => $request->routes ?? []]);
     }
 
     public function viewAddStudent(Request $request, $id)
@@ -205,16 +210,16 @@ class PracticumController extends Controller
         $data = $res->json('data');
 
         return Inertia::render('Assistant/AddMahasiswa', ['data' => $data, 'id' => $id, 'routes' => $request->routes ?? []]);
-
     }
 
-    public function viewPracticum(Request $request){
+    public function viewPracticum(Request $request)
+    {
         $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
         $dataPracticum = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/practicum-karen'), true);
         // dd($dataPracticum);
         $data = [];
 
-        foreach ($dataPracticum['data'] as $dp){
+        foreach ($dataPracticum['data'] as $dp) {
 
             $parts = explode("-", $dp['time']);
 
@@ -224,7 +229,7 @@ class PracticumController extends Controller
             $time = $startHour . " - " . $endHour;
 
             $data[] = [
-                "hari" => $days[$dp['day']-1],
+                "hari" => $days[$dp['day'] - 1],
                 "jam" => $time,
                 "mata_kuliah_praktikum" => $dp['name'],
                 "kelas" => $dp['code'],
@@ -232,15 +237,240 @@ class PracticumController extends Controller
                 "kuota" => $dp['quota'],
             ];
         }
-        
-        $dataA = array_slice($data,0,1);
-        $dataL = array_slice($data,1);
-        
+
+        $dataA = array_slice($data, 0, 1);
+        $dataL = array_slice($data, 1);
+
         // dd($dataA);
         return Inertia::render('Asisten/viewKelas', [
             'dataLowongan' => $dataL,
             'dataAjar' => $dataA,
             'routes' => $request->routes ?? []
         ]);
+    }
+
+    public function deleteMhsAsistenPraktikum(Request $request)
+    {
+        $type = $request->type;
+        $student_assistant_practicum_id = $request->student_assistant_practicum_id;
+
+        if ($type == 'Asisten') {
+            $res = Http::withHeader('Accept', 'application/json')
+                ->withToken(session('token'))
+                ->delete(config('app')['API_URL'] . '/assistant-practicums' . '/' . $student_assistant_practicum_id);
+        } elseif ($type == 'Mahasiswa') {
+            $res = Http::withHeader('Accept', 'application/json')
+                ->withToken(session('token'))
+                ->delete(config('app')['API_URL'] . '/student-practicums' . '/' . $student_assistant_practicum_id);
+        }
+
+        $success = $res["success"];
+        if ($success) {
+            $data = [
+                'success' => true,
+                'message' => 'Berhasil Menghapus!',
+            ];
+        } else {
+            $data = [
+                'success' => false,
+                'message' => 'Gagal menghapus!',
+            ];
+        }
+
+        return response()->json($data, 201);
+    }
+
+    public function insertAssistantPracticum(Request $request)
+    {
+        $slot_used = $request->slot_used;
+        $total_slot = $request->total_slot;
+
+        if ($slot_used < $total_slot) {
+            $res = Http::withHeader('Accept', 'application/json')
+                ->withToken(session('token'))
+                ->post(config('app')['API_URL'] . '/assistant-practicums', [
+                    'assistant_id' => $request->assistant_id,
+                    'practicum_id' => $request->practicum_id,
+                ]);
+            $success = $res["success"];
+
+            if ($success) {
+                $data = [
+                    'success' => true,
+                    'message' => 'Berhasil menambahkan asisten praktikum!',
+                ];
+            } else {
+                $data = [
+                    'success' => false,
+                    'message' => 'Gagal menambahkan asisten praktikum!',
+                ];
+            }
+        } else {
+
+            $data = [
+                'success' => false,
+                'message' => 'Kuota sudah penuh!',
+            ];
+        }
+
+        return response()->json($data, 201);
+    }
+
+    public function ajaxDetailStudent(Request $request, $nrp)
+    {
+
+        $res = Http::withHeader('Accept', 'application/json')
+            ->withToken(session('token'))
+            ->get(config('app')['API_URL'] . "/students-nrp/" . $nrp);
+
+        $data = $res->json('data');
+        return response()->json($data, 201);
+    }
+
+    public function insertStudentPracticum(Request $request)
+    {
+        $students = json_decode($request->data, true);
+        $practicum_id = $request->practicum_id;
+
+        if (!$students) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada mahasiswa yang ditambahkan!',
+            ], 201);
+        }
+
+        $validation = Http::withHeader('Accept', 'application/json')
+            ->withToken(session('token'))
+            ->get(config('app')['API_URL'] . "/practicums/" . $practicum_id);
+
+        $valid = $validation->json('data');
+
+        # check apakah mahasiswa sudah terdaftar pada kelas praktikum
+        foreach ($valid["student_practicum"] as $val) {
+            foreach ($students as $student) {
+                if ($val["student_id"] == $student["id"]) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $val["student"]["user"]["name"] . ' sudah terdaftar pada kelas praktikum!',
+                    ], 201);
+                }
+            }
+        }
+
+        # insert mahasiswa ke kelas praktikum
+        foreach ($students as $student) {
+            $res = Http::withHeader('Accept', 'application/json')
+                ->withToken(session('token'))
+                ->post(config('app')['API_URL'] . '/student-practicums-manual', [
+                    'student_id' => $student['id'],
+                    'practicum_id' => $practicum_id,
+                ]);
+        }
+
+        $success = $res["success"];
+
+        if ($success) {
+            $data = [
+                'success' => true,
+                'message' => 'Berhasil menambahkan mahasiswa praktikum!',
+            ];
+        } else {
+            $data = [
+                'success' => false,
+                'message' => 'Gagal menambahkan mahasiswa praktikum!',
+            ];
+        }
+
+        return response()->json($data, 201);
+    }
+
+    public function moveStudentAsistantPracticum(Request $request)
+    {
+        $target_practicum_id = $request->target_practicum_id;
+        $type = $request->tipe;
+        $student_assistant_id = $request->student_assistant_id;
+        $student_assistant_practicum_id = $request->student_assistant_practicum_id;
+
+        if ($type == 'Asisten') {
+            # check apakah asisten sudah terdaftar pada kelas praktikum
+            $validation = Http::withHeader('Accept', 'application/json')
+                ->withToken(session('token'))
+                ->get(config('app')['API_URL'] . "/practicums/" . $target_practicum_id);
+
+            $valid = $validation->json('data');
+
+            foreach ($valid["assistant_practicum"] as $val) {
+                if ($val["assistant_id"] == $student_assistant_id) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Asisten sudah terdaftar pada kelas praktikum tersebut!',
+                    ], 201);
+                }
+            }
+
+            #delete asisten dari kelas praktikum
+            $res = Http::withHeader('Accept', 'application/json')
+                ->withToken(session('token'))
+                ->delete(config('app')['API_URL'] . '/assistant-practicums' . '/' . $student_assistant_practicum_id);
+
+            $success = $res["success"];
+            if ($success) {
+                #insert asisten ke kelas praktikum
+                $res = Http::withHeader('Accept', 'application/json')
+                    ->withToken(session('token'))
+                    ->post(config('app')['API_URL'] . '/assistant-practicums', [
+                        'assistant_id' => $student_assistant_id,
+                        'practicum_id' => $target_practicum_id,
+                    ]);
+
+                $success = $res["success"];
+            }
+        } elseif ($type == 'Mahasiswa') {
+
+            # check apakah mahasiswa sudah terdaftar pada kelas praktikum
+            $validation = Http::withHeader('Accept', 'application/json')
+                ->withToken(session('token'))
+                ->get(config('app')['API_URL'] . "/practicums/" . $target_practicum_id);
+
+            $valid = $validation->json('data');
+
+            foreach ($valid["student_practicum"] as $val) {
+                if ($val["student_id"] == $student_assistant_id) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Mahasiswa sudah terdaftar pada kelas praktikum tersebut!',
+                    ], 201);
+                }
+            }
+
+            #delete mahasiswa dari kelas praktikum
+            $res = Http::withHeader('Accept', 'application/json')
+                ->withToken(session('token'))
+                ->delete(config('app')['API_URL'] . '/student-practicums' . '/' . $student_assistant_practicum_id);
+
+            #insert mahasiswa ke kelas praktikum
+            $res = Http::withHeader('Accept', 'application/json')
+                ->withToken(session('token'))
+                ->post(config('app')['API_URL'] . '/student-practicums-manual', [
+                    'student_id' => $student_assistant_id,
+                    'practicum_id' => $target_practicum_id,
+                ]);
+
+            $success = $res["success"];
+        }
+
+        if ($success) {
+            $data = [
+                'success' => true,
+                'message' => 'Berhasil Memindah!',
+            ];
+        } else {
+            $data = [
+                'success' => false,
+                'message' => 'Gagal Memindah!',
+            ];
+        }
+
+        return response()->json($data, 201);
     }
 }

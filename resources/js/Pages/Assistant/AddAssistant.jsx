@@ -7,7 +7,8 @@ import LabelAdd from "@/Components/Assistant/Labels/LabelAdd";
 import TableNoButton from "@/Components/Assistant/Table/TableNoButton";
 
 export default function AddAssistant(props) {
-    const { id, data, routes } = props;
+    
+    const { id, data, data2, routes } = props;
 
     const hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
@@ -45,7 +46,6 @@ export default function AddAssistant(props) {
         return username;
     }
 
-    console.log(data);
     const head_asisten = ["Nama", "NRP"];
     const assistants_data = [];
 
@@ -59,59 +59,30 @@ export default function AddAssistant(props) {
         assistants_data.push(assistant);
     });
 
-    const head_asisten_avail = ["Nama", "NRP", "Jurusan", "Action"];
-    const data_asisten_avail = [
-        {
-            nama: "Alice Smith",
-            nrp: "111111111",
-            jurusan: "Informatika",
-        },
-        {
-            nama: "Bob Johnson",
-            nrp: "222222222",
-            jurusan: "Sistem Informasi Bisnis",
-        },
-        {
-            nama: "Charlie Brown",
-            nrp: "333333333",
-            jurusan: "Data Science",
-        },
-        {
-            nama: "David Wilson",
-            nrp: "444444444",
-            jurusan: "Informatika",
-        },
-        {
-            nama: "Eve Davis",
-            nrp: "555555555",
-            jurusan: "Sistem Informasi Bisnis",
-        },
-        {
-            nama: "Frank White",
-            nrp: "666666666",
-            jurusan: "Data Science",
-        },
-        {
-            nama: "Grace Miller",
-            nrp: "777777777",
-            jurusan: "Informatika",
-        },
-        {
-            nama: "Hank Jones",
-            nrp: "888888888",
-            jurusan: "Sistem Informasi Bisnis",
-        },
-        {
-            nama: "Ivy Thomas",
-            nrp: "999999999",
-            jurusan: "Data Science",
-        },
-        {
-            nama: "Jack Anderson",
-            nrp: "101010101",
-            jurusan: "Informatika",
-        },
-    ];
+    const data_asisten_avail = [];
+    data2.map((item) => {
+        const allAssistant = {
+            id: item.user.id,
+            nama: item.user.name,
+            nrp: extractNrp(item.user.email),
+        };
+
+        var duplicate = false;
+
+        assistants_data.map((item2) => {
+            if (allAssistant.nrp == item2.nrp) {
+                duplicate = true;
+            }
+        });
+
+        if (duplicate == false) {
+            data_asisten_avail.push(allAssistant);
+        }
+    });
+
+    console.log(data2);
+
+    const head_asisten_avail = ["Nama", "NRP", "Action"];
 
     return (
         <>
@@ -135,17 +106,24 @@ export default function AddAssistant(props) {
                         />
                     </div>
                     <div className="tabel-asisten">
-                        <LabelAdd type="Asisten" slot_used="3" total_slot="4" />
+                        <LabelAdd
+                            type="Asisten"
+                            slot_used={data.assistant_practicum.length}
+                            total_slot={Math.floor(data.quota / 8)}
+                        />
                         <TableNoButton
                             TABLE_HEAD={head_asisten}
                             TABLE_ROWS={assistants_data}
                         />
                     </div>
                     <div className="tabel-add mt-10">
-                        <LabelTableAdd type="Asisten" total_available="10" />
+                        <LabelTableAdd type="Asisten" total_available={data_asisten_avail.length} />
                         <TableWithAddButton
                             TABLE_HEAD={head_asisten_avail}
                             TABLE_ROWS={data_asisten_avail}
+                            practicum_id = {id}
+                            slot_used={data.assistant_practicum.length}
+                            total_slot={Math.floor(data.quota / 8)}
                         />
                     </div>
                 </div>

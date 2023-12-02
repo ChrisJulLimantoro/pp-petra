@@ -1,32 +1,77 @@
 import React, { useState } from "react";
 import { Input, Typography, Button } from "@material-tailwind/react";
+import axios from "axios";
 
 export default function InputNRP(props) {
-    const { title, newStudents, nrp, setNrp } = props;
+    const { title, newStudents, nrp, setNrp, setNewStudents, newStud, setNewStud } = props;
     const [error, setError] = useState("");
+
+    function getJurusan(input) {
+        switch (input) {
+            case "s":
+                return "Sistem Informasi Bisnis";
+            case "i":
+                return "Informatika";
+            case "d":
+                return "Data Science & analytics";
+            default:
+                return "Invalid input. Please provide s, i, or d.";
+        }
+    }
 
     const onChange = ({ target }) => {
         setNrp(target.value);
         if (target.value.length !== 9) {
             setError("NRP must be 9 characters long");
+            setNewStud({"nama": "-", "nrp": "-", "jurusan": "-"});
         } else {
-            setError("");
+            var nrp = target.value;
+            axios.get(route("practicum.detailStudent", nrp)).then((res) => {
+                if (res.data[0]) {
+                    var id = res.data[0].user_id;
+                    var nama = res.data[0].user.name;
+                    var jurusan = getJurusan(res.data[0].program);
+                    setNewStud({
+                        id: id,
+                        nama: nama,
+                        nrp: nrp,
+                        jurusan: jurusan,
+                    });
+
+                    setError("");
+                } else {
+                    setNewStud({"nama": "-", "nrp": "-", "jurusan": "-"});
+                    setError("Data Mahasiswa tidak ditemukan!");
+                }
+            });
         }
     };
 
     const handleClick = () => {
         if (nrp.length !== 9) {
+            setNewStud({"nama": "-", "nrp": "-", "jurusan": "-"});
             setError("NRP must be 9 characters long");
             return;
         }
-        newStudents.push({
-            id: newStudents.length,
-            nama: "Orang Ganteng " + newStudents.length,
-            nrp: nrp,
-            jurusan: "Informatika",
+        
+        var validation = true;
+        newStudents.forEach((element) => {
+            if (element.nrp == newStud.nrp) {
+                validation = false;
+                return;
+            }
         });
-        setNrp("");
-        setError("");
+        if (validation) {
+            setNewStudents((prev) => {
+                return [...prev, newStud];
+            });
+            setNrp("");
+            setError("");
+        } else {
+            setError("Mahasiswa sudah di tambahkan!");
+
+        }
+        setNewStud({"nama": "-", "nrp": "-", "jurusan": "-"});
     };
 
     return (
@@ -39,14 +84,17 @@ export default function InputNRP(props) {
                 <div className="relative flex w-full max-w-[24rem]">
                     <Input
                         type="nrp"
+                        name="nrp"
                         label="Input NRP"
                         value={nrp}
+                        maxLength="9"
                         onChange={onChange}
                         className="pr-20"
                         containerProps={{
                             className: "min-w-0",
                         }}
                         autoFocus
+                        
                     />
                     <Button
                         size="sm"

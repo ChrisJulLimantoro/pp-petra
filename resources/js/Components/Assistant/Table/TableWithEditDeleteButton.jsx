@@ -104,7 +104,7 @@ export default function TableWithEditDeleteButton(props) {
                                                     </Tooltip>
                                                 </IconButton>
                                             </a>
-                                            <ConfirmationIconButton variant="text">
+                                            <ConfirmationIconButton variant="text" nrp={nrp} type={type} student_assistant_practicum_id={student_assistant_practicum_id}>
                                                 <Tooltip
                                                     content="Delete"
                                                     placement="top"
