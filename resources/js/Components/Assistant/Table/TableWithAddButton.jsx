@@ -3,7 +3,7 @@ import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import ConfirmationIconButton from "../Button/ConfirmationIconButton";
 
 export default function TableWithEditDeleteButton(props) {
-    const {TABLE_HEAD, TABLE_ROWS} = props;
+    const {TABLE_HEAD, TABLE_ROWS, practicum_id, slot_used, total_slot} = props;
 
     return (
         <Card className="h-full w-full overflow-scroll">
@@ -27,7 +27,7 @@ export default function TableWithEditDeleteButton(props) {
                 </tr>
                 </thead>
                 <tbody >
-                {TABLE_ROWS.map(({ nama, jurusan, nrp }, index) => {
+                {TABLE_ROWS.map(({ id, nama, jurusan, nrp }, index) => {
                     const isLast = index === TABLE_ROWS.length - 1;
                     const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
         
@@ -53,19 +53,21 @@ export default function TableWithEditDeleteButton(props) {
                             </Typography>
                         </td>
 
-                        <td className={classes}>
-                            <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal"
-                            >
-                                {jurusan}
-                            </Typography>
-                        </td>
+                        {jurusan && (
+                            <td className={classes}>
+                                <Typography
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal"
+                                >
+                                    {jurusan}
+                                </Typography>
+                            </td>
+                        )}
 
                         <td className={classes}>
                             <div className="flex gap-3">
-                                <ConfirmationIconButton variant="text">
+                                <ConfirmationIconButton variant="text" practicum_id={practicum_id} assistant_id={id}  slot_used={slot_used} total_slot={total_slot}>
                                     <Tooltip content="Add" placement="top">
                                         <PlusCircleIcon width={20} cursor={'pointer'} stroke="green"/>
                                     </Tooltip>

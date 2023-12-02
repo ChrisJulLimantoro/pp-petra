@@ -9,7 +9,7 @@ export default function DetailsTitle(props) {
                     <a href="#" className="opacity-60">
                         Asisten
                     </a>
-                    <a href={route('practicum.index')} className="opacity-60">
+                    <a href={route('Praktikum.Manage Praktikum')} className="opacity-60">
                         Kelas Asisten
                     </a>
                     <a href="#">Detail Praktikum</a>

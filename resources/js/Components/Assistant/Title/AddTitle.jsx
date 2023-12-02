@@ -6,11 +6,15 @@ export default function DetailsTitle(props) {
 
     return (
         <div>
-            <Breadcrumbs fullWidth className="mb-5">
-                    <a href="#" className="opacity-60">
-                        Asisten
-                    </a>
-                    <a href={route('practicum.index')} className="opacity-60">
+            <Breadcrumbs fullWidth className="mb-5"> 
+                    {window.innerWidth >= 768 && (
+                        <>
+                            <a href="#" className="opacity-60">
+                                Asisten
+                            </a>
+                        </>
+                    )}
+                    <a href={route('Praktikum.Manage Praktikum')} className="opacity-60">
                         Kelas Asisten
                     </a>
                     <a href={route('practicum.detail', practicum_id)} className="opacity-60">
