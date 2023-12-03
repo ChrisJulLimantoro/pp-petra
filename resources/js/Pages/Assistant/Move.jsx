@@ -3,11 +3,11 @@ import SidebarUser from "@/Layouts/SidebarUser";
 import MoveTitle from "@/Components/Assistant/Title/MoveTitle";
 import SelectKelasBaru from "@/Components/Assistant/Select/SelectKelasBaru";
 import ConfirmationButton from "@/Components/Assistant/Button/ConfirmationButton";
+import React from "react";
 
 export default function Move(props) {
     const { id, type, data, data2, routes } = props;
-    //  console.log(data);
-    console.log(data3);
+    const [target_practicum_id, setTargetPracticumId] = React.useState("");
 
     const hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
@@ -58,7 +58,6 @@ export default function Move(props) {
                 formatTime(item.time + item.subject.duration * 100),
         });
     });
-    console.log(datas);
 
     //ngesort kelas berdasarkan kode
     datas.sort((a, b) => (a.code > b.code ? 1 : -1));
@@ -69,11 +68,8 @@ export default function Move(props) {
                 <title>{"SAOCP - Move " + type}</title>
             </Head>
 
-            <div className="grid grid-cols-7 gap-1">
-                <div className="col-span-2">
-                    <SidebarUser routes={routes}></SidebarUser>
-                </div>
-                <div className="mt-10 w-full h-72 col-span-4">
+            <SidebarUser routes={routes}>
+                <div className="mt-10 px-5 w-full md:w-5/6">
                     <div className="judul">
                         <MoveTitle
                             type={type}
@@ -104,14 +100,28 @@ export default function Move(props) {
                             title="Kelas Parallel"
                             datas={datas}
                             current_practicum_id={id}
+                            target_practicum_id={target_practicum_id}
+                            setTargetPracticumId={setTargetPracticumId}
                         />
                     </form>
 
                     <div className="mt-10">
-                        <ConfirmationButton>Update Kelas</ConfirmationButton>
+                        <ConfirmationButton
+                            practicum_id={id}
+                            target_practicum_id={target_practicum_id}
+                            tipe={type}
+                            student_assistant_id={
+                                type === "Asisten"
+                                    ? data.assistant.user_id
+                                    : data.student.user_id
+                            }
+                            student_assistant_practicum_id={data.id}
+                        >
+                            Update Kelas
+                        </ConfirmationButton>
                     </div>
                 </div>
-            </div>
+            </SidebarUser>
         </>
     );
 }

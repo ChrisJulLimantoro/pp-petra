@@ -1,8 +1,15 @@
 import { Card, Typography, Tooltip, Button} from "@material-tailwind/react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 
+
 export default function TableWithDeleteButton(props) {
-    const {TABLE_HEAD, TABLE_ROWS} = props;
+    const {TABLE_HEAD, TABLE_ROWS, setNewStudents} = props;
+
+    const handleDeleteRow = (index) => {
+        const newTableRows = [...TABLE_ROWS];
+        newTableRows.splice(index, 1);
+        setNewStudents(newTableRows);
+    };
 
     return (
         <Card className="h-full w-full overflow-scroll">
@@ -31,7 +38,7 @@ export default function TableWithDeleteButton(props) {
                     const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
         
                     return (
-                    <tr key={nama} className="hover:bg-gray-100">
+                    <tr key={nrp} className="hover:bg-gray-100">
                         <td className={classes}>
                             <Typography
                                 variant="small"
@@ -65,7 +72,7 @@ export default function TableWithDeleteButton(props) {
                         <td className={classes}>
                             <div className="flex gap-3">
                                 <Tooltip content="Delete" placement="top">
-                                    <TrashIcon width={20} cursor={'pointer'} stroke="red"  />
+                                    <TrashIcon width={20} cursor={'pointer'} stroke="red" onClick={() => handleDeleteRow(index)} />
                                 </Tooltip>
                             </div>
                         </td>

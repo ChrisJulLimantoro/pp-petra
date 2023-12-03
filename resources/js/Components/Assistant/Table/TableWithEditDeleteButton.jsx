@@ -70,38 +70,17 @@ export default function TableWithEditDeleteButton(props) {
                                         </Typography>
                                     </td>
 
-                                    {type === "Mahasiswa" ? (
-                                        <td className={classes}>
-                                        <Typography
-                                            variant="small"
-                                            color="blue-gray"
-                                            className="font-normal"
-                                        >
-                                            {jurusan}
-                                        </Typography>
-                                    </td>
-                                    ) : (
+                                    {jurusan && (
                                         <td className={classes}>
                                             <Typography
                                                 variant="small"
                                                 color="blue-gray"
                                                 className="font-normal"
                                             >
-                                                -
+                                                {jurusan}
                                             </Typography>
                                         </td>
                                     )}
-
-
-                                    {/* <td className={classes}>
-                                        <Typography
-                                            variant="small"
-                                            color="blue-gray"
-                                            className="font-normal"
-                                        >
-                                            {jurusan}
-                                        </Typography>
-                                    </td> */}
 
                                     <td className={classes}>
                                         <div className="flex gap-3">
@@ -125,7 +104,7 @@ export default function TableWithEditDeleteButton(props) {
                                                     </Tooltip>
                                                 </IconButton>
                                             </a>
-                                            <ConfirmationIconButton variant="text">
+                                            <ConfirmationIconButton variant="text" nrp={nrp} type={type} student_assistant_practicum_id={student_assistant_practicum_id}>
                                                 <Tooltip
                                                     content="Delete"
                                                     placement="top"
