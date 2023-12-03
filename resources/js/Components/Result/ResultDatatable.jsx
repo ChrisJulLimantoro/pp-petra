@@ -128,8 +128,8 @@ export function ResultDatatable(props) {
                                     );
                                 }) }
                             </Select> */}
-                            <select value={studentResult.accepted ? studentResult.class_id : '-'} className="ms-3 me-6" data-old-value={(studentPracticum !== undefined) ? studentPracticum.id : ''} onChange={(e) => {assignStudent(e, e.target.value, studentResult.user_id)}}>
-                                <option value="-" disabled>-</option>
+                            <select value={studentResult.accepted ? studentResult.class_id : '-'} style={(!studentResult.accepted) ? {color: 'red'} : {}} className="ms-3 me-6" data-old-value={(studentPracticum !== undefined) ? studentPracticum.id : ''} onChange={(e) => {assignStudent(e, e.target.value, studentResult.user_id)}}>
+                                <option value="-" disabled>Rejected</option>
                                 {practicums.map((p) => {
                                     return (
                                         <option key={p.id} value={p.id}>
