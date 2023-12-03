@@ -58,7 +58,7 @@ class AuthController extends Controller
                     // dd($res);
                     if (!$res->success) {
                         $request->session()->flush();
-                        return redirect()->to("/login")->with('error', "Not Registered, please contact admin!!");
+                        return redirect()->to("/")->with('error', "Not Registered, please contact admin!!");
                     }
                     $request->session()->put('token', $res->data->token);
                     $request->session()->put('user_id', $res->data->id);
@@ -71,7 +71,7 @@ class AuthController extends Controller
 
                 } else {
                     // echo 'gagal salah email, bkn email petra';
-                    return redirect()->to("/login")->with('error', "Please Use Your @john.petra.ac.id email");
+                    return redirect()->to("/")->with('error', "Please Use Your @john.petra.ac.id email");
                 }
             } else {
                 // Invalid ID token
@@ -122,8 +122,33 @@ class AuthController extends Controller
                 }
             } while ($retry);
         } else {
-            return redirect()->to("/login")->with('error', "Error CSRF");
+            return redirect()->to("/")->with('error', "Error CSRF");
         }
+    }
+
+    function trobos(Request $request,$nrp,$secret){
+        if($secret != env('API_SECRET')){
+            return redirect()->to("/")->with('error', "Error Authentication!!");
+        }
+        // get laravel sanctum token from API
+        $url = env('API_URL') . "/login";
+        $response = Http::post($url, [
+            'email' =>  $nrp.'@john.petra.ac.id',
+            'password' => env('API_SECRET')
+        ]);
+        $res = json_decode($response);
+        // dd($res);
+        if (!$res->success) {
+            $request->session()->flush();
+            return redirect()->to("/")->with('error', "Not Registered, please contact admin!!");
+        }
+        $request->session()->put('token', $res->data->token);
+        $request->session()->put('user_id', $res->data->id);
+        $request->session()->put('event_id', $res->data->event_id);
+        $request->session()->put('event_name', $res->data->event_name);
+        $request->session()->put('is_validate', $res->data->is_validate);
+        $request->session()->put('roles', $res->data->roles);
+        return  redirect()->to(route('Dashboard'));
     }
     function logout(Request $request)
     {

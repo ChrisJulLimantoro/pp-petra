@@ -78,10 +78,12 @@ class BulkInsertStudentController extends Controller
                             $tahunNow = intval(substr($data[array_search($h,$column)],0,4));
                             $sem = substr($data[array_search($h,$column)],5,1) == 1 ? ($tahunNow - $tahunMasuk)*2 + 1 : ($tahunNow - $tahunMasuk)*2 + 2;
                             $save[$data[$nrp_index]]['semester'] = $sem;
+                            $save[$data[$nrp_index]][$h] = $data[array_search($h,$column)];
                         }else if($h == 'ipk' || $h == 'ips'){
                             $save[$data[$nrp_index]][$h] = $data[array_search($h,$column)];
                         }
-                        $save[$data[$nrp_index]]['program'] = 'i';
+                            $save[$data[$nrp_index]]['program'] = 'i';
+                        
                     }else{
                         if($h == 'kodemk'){
                             $decode = $save[$data[$nrp_index]]['prs'];
@@ -94,9 +96,9 @@ class BulkInsertStudentController extends Controller
                 }
             }
             fclose($handle);
-            // dd($save);
             $response = Http::withHeaders(['Accept' => 'application/json'])->withToken(session('token'))->post(env('API_URL').'/students-bulk',['data'=>$save]);
             $response = json_decode($response,true);
+            
             if($response['success']){
                 return response()->json(['success' => true,'data' => $save]);
             }else{

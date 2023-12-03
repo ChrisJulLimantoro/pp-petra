@@ -32,6 +32,7 @@ import {
     ChevronDownIcon,
     Bars3BottomLeftIcon,
     XMarkIcon,
+    ClipboardDocumentListIcon,
 } from "@heroicons/react/24/outline";
 import prodiImg from "../../../public/assets/prodi.jpeg";
 import { Link, Head } from "@inertiajs/react";
@@ -69,6 +70,7 @@ export default function MultiLevelSidebar({
             ],
             Mahasiswa: ["Mahasiswa.Manage Mahasiswa", "Mahasiswa.View Jadwal"],
             Asisten: ["Asisten.Manage Asisten", "Asisten.View Jadwal Ajar"],
+            Result: "Result",
             Ruangan: "Ruangan",
             Event: "Event",
             RBAC: [
@@ -143,6 +145,11 @@ export default function MultiLevelSidebar({
             <MapPinIcon 
                 className="h-5 w-5"
                 fill={url.match('room.*') ? '#3b82f6' : '#455a64'} />
+        ),
+        Result: (
+            <ClipboardDocumentListIcon
+                className="h-5 w-5"
+                color={url.match('result.*') ? '#3b82f6' : '#455a64'} />
         ),
         Event: (
             <CalendarDaysIcon 

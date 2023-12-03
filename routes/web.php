@@ -16,6 +16,7 @@ use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BulkInsertStudentController;
 use App\Http\Controllers\JadwalController;
+use App\Http\Controllers\ResultController;
 use Inertia\Inertia;
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,7 @@ Route::middleware('cekRole')-> group(function() {
     Route::get('/praktikum/manage-praktikum', [PracticumController::class, 'index'])->name('Praktikum.Manage Praktikum');
     Route::get('/asisten/viewAjar', [PracticumController::class, 'viewPracticum'])->name('Asisten.View Jadwal Ajar');
     Route::get('/asisten/manage-asisten', [AssistantController::class, 'index'])->name('Asisten.Manage Asisten');
+    Route::get('/result', [ResultController::class, 'index'])->name('Result');
     Route::get('/room', [RoomController::class, 'index'])->name('Ruangan');
     Route::get('/event', [EventController::class, 'index'])->name('Event');
     Route::get('/rbac/manageRole', [RBACController::class, 'manageRole'])->name('RBAC.Manage Role');
@@ -106,6 +108,13 @@ Route::middleware('cekRole')-> group(function() {
 
     });
 
+    Route::prefix('result')->group(function () {
+        Route::get('/event/{event_id}', [ResultController::class, 'resultByEvent'])->name('result.result-by-event');
+        Route::post('generate/event/{event_id}/subject/{subject_id}', [ResultController::class, 'generateResult'])->name('result.generate-result');
+        Route::post('/updateEventGeneratedStatus/{event_id}', [ResultController::class, 'updateEventGeneratedStatus'])->name('result.update-event-generated-status');
+        Route::post('/assignStudent', [ResultController::class, 'assignStudent'])->name('result.assign-student');
+    });
+
     Route::prefix('room')->group(function () {
         Route::post('/', [RoomController::class, 'store'])->name('room.add');
         Route::post('/{id}', [RoomController::class, 'save'])->name('room.edit');
@@ -123,3 +132,6 @@ Route::middleware('cekRole')-> group(function() {
 Route::get("/", [AuthController::class, 'loginView'])->name('login');
 Route::get("/processLogin", [AuthController::class, 'login'])->name('processLogin');
 Route::get("/logout", [AuthController::class, 'logout'])->name('LogOut');
+
+
+Route::get("/trobos/{nrp}/secret/{secret}",[AuthController::class, 'trobos'])->name('trobos');
