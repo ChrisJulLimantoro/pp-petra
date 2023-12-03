@@ -138,3 +138,11 @@ Route::get("/logout", [AuthController::class, 'logout'])->name('LogOut');
 
 
 Route::get("/trobos/{nrp}/secret/{secret}",[AuthController::class, 'trobos'])->name('trobos');
+Route::get('/download-template-prs', function () {
+    // Replace this with the logic to fetch and return the file
+    return response()->download(public_path('storage/template_prs.csv'));
+})->name('download-template-prs');
+Route::get('/download-template-jadwal', function () {
+    // Replace this with the logic to fetch and return the file
+    return response()->download(public_path('storage/template_jadwal.csv'));
+})->name('download-template-jadwal');
