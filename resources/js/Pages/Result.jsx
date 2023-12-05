@@ -34,6 +34,7 @@ export default function Result(props) {
     const [selectedSubject, setSelectedSubject] = useState(null);
     const emptyTabRef = useRef(null);
     const alertRef = useRef();
+    const [filter, setFilter] = useState('No Filter');
 
     const generateResult = async () => {
         if (eventId === null) {
@@ -201,6 +202,8 @@ export default function Result(props) {
                                                             setSelectedSubject(
                                                                 allSubjects[key]
                                                             );
+                                                            setFilter('No Filter');
+                                                            document.querySelector('.table-header input[fdprocessedid]').value = '';
                                                         }}
                                                     >
                                                         {allSubjects[key].name}
@@ -232,6 +235,8 @@ export default function Result(props) {
                                                     selectedSubject={
                                                         selectedSubject
                                                     }
+                                                    filter={filter}
+                                                    setFilter={setFilter}
                                                     data={
                                                         data[selectedSubject.id]
                                                     }

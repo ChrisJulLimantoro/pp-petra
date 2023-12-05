@@ -30,7 +30,9 @@ import {
 export default function ManageRole({ roles, routes }) {
     const columns = ["Name", "Slug", "Action"];
 
-    const role = useRef(roles.data);
+    const role = useRef(roles.data.filter((r) => r.name !== "Super Admin"));
+
+    console.log(role)
 
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
@@ -326,7 +328,7 @@ export default function ManageRole({ roles, routes }) {
 
                 <DataTable
                     className="w-full"
-                    rawData={roles.data}
+                    rawData={role.current}
                     columns={["#", "Name", "Slug", "Action"]}
                 >
                     <DataTableContext.Consumer>

@@ -408,6 +408,17 @@ class PracticumController extends Controller
                 }
             }
 
+            # check apakah slot sudah full
+            $slot_used = $valid["assistant_practicum"];
+            $slot_used = count($slot_used);
+            if ($slot_used >= floor($valid["quota"]/ 8)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Kuota sudah penuh!',
+                ], 201);
+            }
+
+
             #delete asisten dari kelas praktikum
             $res = Http::withHeader('Accept', 'application/json')
                 ->withToken(session('token'))

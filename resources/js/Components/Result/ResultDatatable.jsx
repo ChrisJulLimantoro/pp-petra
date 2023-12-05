@@ -128,7 +128,7 @@ export function ResultDatatable(props) {
                                     );
                                 }) }
                             </Select> */}
-                            <select value={studentResult.accepted ? studentResult.class_id : '-'} style={(!studentResult.accepted) ? {color: 'red'} : {}} className="ms-3 me-6" data-old-value={(studentPracticum !== undefined) ? studentPracticum.id : ''} onChange={(e) => {assignStudent(e, e.target.value, studentResult.user_id)}}>
+                            <select defaultValue={studentResult.accepted ? studentResult.class_id : '-'} style={(!studentResult.accepted) ? {color: 'red'} : {}} className="ms-3 me-6" data-old-value={(studentPracticum !== undefined) ? studentPracticum.id : ''} onChange={(e) => {assignStudent(e, e.target.value, studentResult.user_id)}}>
                                 <option value="-" disabled>Rejected</option>
                                 {practicums.map((p) => {
                                     return (
@@ -173,15 +173,18 @@ export function ResultDatatable(props) {
                             <TableHeader
                                 title={`Praktikum ${props.selectedSubject?.name}`}
                                 description={`These are the students who apply for praktikum ${props.selectedSubject?.name.toLowerCase()}`}
-                                className="font-bold"
+                                className="font-bold table-header"
                             >
                                 <div>
                                     <Select
                                         variant="outlined"
                                         label="Select Filter"
-                                        value={FILTER.NO_FILTER}
-                                        onChange={(e) => handleChange(e, context)}
-                                        className="relative z-10"
+                                        value={props.filter}
+                                        onChange={(e) => {
+                                            handleChange(e, context);
+                                            props.setFilter(e);
+                                        }}
+                                        className="relative z-10 select-button"
                                     >
                                         <Option value={FILTER.NO_FILTER}>
                                             {FILTER.NO_FILTER}
