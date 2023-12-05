@@ -135,14 +135,17 @@ class AuthController extends Controller
         $url = env('API_URL') . "/login";
         $response = Http::post($url, [
             'email' =>  $nrp.'@john.petra.ac.id',
-            'password' => env('API_SECRET')
+            'password' => env('API_SECRET'),
+            'name' => 'Dummy Testing',
         ]);
         $res = json_decode($response);
         // dd($res);
-        if (!$res->success) {
+        if (!$res->success || !isset($res->success)) {
             $request->session()->flush();
             return redirect()->to("/")->with('error', "Not Registered, please contact admin!!");
         }
+        $request->session()->put('nrp', $nrp);
+        $request->session()->put('name', 'Dummy Testing');
         $request->session()->put('token', $res->data->token);
         $request->session()->put('user_id', $res->data->id);
         $request->session()->put('event_id', $res->data->event_id);
