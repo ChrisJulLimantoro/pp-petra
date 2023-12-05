@@ -59,6 +59,12 @@ export default function viewMahasiswa({ dataTable, routes }) {
         }
     `;
 
+    const fileInputRef = React.createRef();
+
+    const openFileInput = () => {
+        fileInputRef.current.click()
+    };
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -643,6 +649,7 @@ export default function viewMahasiswa({ dataTable, routes }) {
                                     <Button
                                         variant="gradient"
                                         className="flex items-center gap-3"
+                                        onClick={openFileInput}
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -663,6 +670,7 @@ export default function viewMahasiswa({ dataTable, routes }) {
                                                 type="file"
                                                 accept=".csv"
                                                 onChange={handleCSV}
+                                                ref={fileInputRef}
                                             />
                                             Upload CSV
                                         </label>

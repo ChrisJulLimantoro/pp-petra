@@ -84,7 +84,7 @@ export default function Dashboard({
         }
 
         return (
-            <tr key={practicumID} id={practicumID[index]}>
+            <tr key={index} id={practicumID[index]}>
                 {columnssss.map((column) =>
                     column === "#" ? (
                         <TableCell>
