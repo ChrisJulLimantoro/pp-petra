@@ -57,6 +57,7 @@ Route::middleware('cekRole')-> group(function() {
     Route::patch("/update/{id}", [JadwalController::class, 'update'])->name('updateMasterJadwal');
 
     Route::prefix('rbac')->group(function () {
+        Route::post('manageRole', [RBACController::class, 'addRole'])->name('rbac.addRole');
         Route::post('/manageRole/{id}', [RBACController::class, 'editRole'])->name('rbac.editRole');
         Route::delete('/manageRole/{id}', [RBACController::class, 'deleteRole'])->name('rbac.deleteRole');
 
