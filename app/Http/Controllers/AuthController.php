@@ -42,7 +42,7 @@ class AuthController extends Controller
                 //check petra mail
                 if (isset($payload['hd']) && str_ends_with($payload['hd'], "petra.ac.id")) {
                     //set session  
-                    $request->session()->put('email', $payload['email']);
+                    $request->session()->put('email', strtolower($payload['email']));
                     $request->session()->put('name', $payload['name']);
                     // session untuk mahasiswa tanpa nrp maka dosen dan admin
                     if (str_ends_with($payload['hd'], "john.petra.ac.id")) {
@@ -51,8 +51,9 @@ class AuthController extends Controller
                     // get laravel sanctum token from API
                     $url = env('API_URL') . "/login";
                     $response = Http::post($url, [
-                        'email' => $payload['email'],
-                        'password' => env('API_SECRET')
+                        'email' => strtolower($payload['email']),
+                        'password' => env('API_SECRET'),
+                        'name' => $payload['name'],
                     ]);
                     $res = json_decode($response);
                     // dd($res);
