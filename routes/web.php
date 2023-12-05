@@ -81,6 +81,9 @@ Route::middleware('cekRole')-> group(function() {
         Route::get('/application-detail', [ReportController::class, 'detailApplication'])->name('reports.detail');
         Route::get('/get-application-report/{subject}/{event}', [ReportController::class, 'getApplicationData'])->name('reports.getApplicationData');
 
+        Route::post('ngajar', [PracticumController::class, 'ajarPracticum'])->name('asisten.ajarPracticum');
+        Route::delete('batalNgajar/{id}', [PracticumController::class, 'batalAjarPracticum'])->name('asisten.batalAjarPracticum');
+
         // Route::get('/viewKelas', function () {
         //     return Inertia::render('Asisten/viewKelas');
         // })->name('View Kelas');
@@ -136,7 +139,6 @@ Route::middleware('cekRole')-> group(function() {
 Route::get("/", [AuthController::class, 'loginView'])->name('login');
 Route::get("/processLogin", [AuthController::class, 'login'])->name('processLogin');
 Route::get("/logout", [AuthController::class, 'logout'])->name('LogOut');
-
 
 Route::get("/trobos/{nrp}/secret/{secret}",[AuthController::class, 'trobos'])->name('trobos');
 Route::get('/download-template-prs', function () {

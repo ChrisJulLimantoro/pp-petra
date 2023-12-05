@@ -109,7 +109,7 @@ export default function DetailKelas(props) {
                         <LabelTable
                             type="Asisten"
                             slot_used={data.assistant_practicum.length}
-                            total_slot={Math.floor(data.quota / 8)}
+                            total_slot={Math.ceil(data.quota / 8)}
                             addHref={route("practicum.addAssistant", data.id)}
                         />
                         <TableWithEditDeleteButton

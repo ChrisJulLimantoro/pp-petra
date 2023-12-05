@@ -18,16 +18,32 @@ export default function DialogSuccess(props) {
 
     const handleOpen2 = () => {
         setOpen(!open);
-        const taken = pageData.lowongan[props.id];
-        taken.jumlah_asisten += 1;
-        const updatedLowongan = pageData.lowongan.filter(
-            (item, index) => index !== props.id
-        );
+        console.log(props.id)
+        const taken = pageData.lowongan.find((item) => item.practicum_id === props.id);
 
-        const updatedAjar = [...pageData.ajar, taken];
+        console.log(taken)
 
-        props.updateDataAjar(updatedAjar);
-        props.updateDataLowongan(updatedLowongan);
+        axios.post(route('asisten.ajarPracticum'), {
+            'practicum_id' : taken.practicum_id,
+        })
+        .then((response) => {
+            if (response.data.success) {
+                taken.jumlah_asisten += 1;
+                taken.id = response.data.data.id;
+                const updatedLowongan = pageData.lowongan.filter(
+                    (item, index) => item.practicum_id !== props.id
+                );
+
+                const updatedAjar = [...pageData.ajar, taken];
+
+                props.updateDataAjar(updatedAjar);
+                props.updateDataLowongan(updatedLowongan);
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            // showAlert("Something went wrong!", "red");
+        });
     };
 
     return (

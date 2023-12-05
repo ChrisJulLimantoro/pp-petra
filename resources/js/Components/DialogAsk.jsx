@@ -25,16 +25,28 @@ export default function DialogAsk(props) {
     const handleDeleteDialogOpen = () => {
         setDeleteDialogOpen(true);
         setAskDialogOpen(false);
-        const taken = pageData.ajar[props.id];
-        taken.jumlah_asisten -= 1;
-        const updatedAjar = pageData.ajar.filter(
-            (item, index) => index !== props.id
-        );
+        const taken = pageData.ajar.find((item) => item.id === props.id);
 
-        const updatedLowongan = [...pageData.lowongan, taken];
+        console.log(taken)
 
-        props.updateDataAjar(updatedAjar);
-        props.updateDataLowongan(updatedLowongan);
+        axios.delete(route('asisten.batalAjarPracticum', taken.id))
+        .then((response) => {
+            if (response.data.success) {
+                taken.jumlah_asisten -= 1;
+                const updatedAjar = pageData.ajar.filter(
+                    (item, index) => item.id !== props.id
+                );
+        
+                const updatedLowongan = [...pageData.lowongan, taken];
+        
+                props.updateDataAjar(updatedAjar);
+                props.updateDataLowongan(updatedLowongan);
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            // showAlert("Something went wrong!", "red");
+        });
     };
 
     const handleDeleteDialogClose = () => {

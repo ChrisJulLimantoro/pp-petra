@@ -35,7 +35,9 @@ export default function Dashboard({
     const [showLoader, setShowLoader] = useState(false);
     const alertRef = useRef();
     const alertGagal = useRef();
+
     useEffect(() => {
+        // console.log(course)
         if (course) {
             axios
                 .get(route("mahasiswa.getClass", course))

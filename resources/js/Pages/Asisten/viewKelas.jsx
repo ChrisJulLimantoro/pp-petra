@@ -49,6 +49,9 @@ export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
 
     const updateDataLowongan = (updatedData) => {
         const processedUpdatedData = processData(updatedData);
+        axios.post('/asisten/ngajar', [
+            'id',
+        ])
         setLowongan(processedUpdatedData);
         console.log("Updating dataLowongan:", dataLowongan);
     };
@@ -93,10 +96,11 @@ export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
                         <TableCell>
                             <DialogAsk
                                 title="Delete"
-                                id={index}
+                                id={item.id}
                                 dialog="MENGAJAR KELAS INI"
                                 updateDataAjar={updateDataAjar}
                                 updateDataLowongan={updateDataLowongan}
+                                user={auth}
                             />
                         </TableCell>
                     ) : (
@@ -172,12 +176,12 @@ export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
                                     context.perPage * (context.currentPage - 1)}
                             </Typography>
                         </TableCell>
-                    ) : kolom === "Action" ? (
+                    ) : kolom === "Action" && item.status !== "FULL" ? (
                         <TableCell>
                             <DialogSuccess
                                 title="Ajar"
                                 dialog="PENDAFTARAN"
-                                id={index}
+                                id={item.practicum_id}
                                 updateDataAjar={updateDataAjar}
                                 updateDataLowongan={updateDataLowongan}
                                 data1={ajar}
