@@ -101,7 +101,16 @@ class PracticumController extends Controller
                 'time' => $request->time,
                 'subject_id' => $subject_id,
             ]);
-        return response()->json($res->json(), $res->status());
+            
+        $responseData = $res->json();
+        $status = $res->status();
+
+        $responseData = (isset($responseData['error_message'])) ? ['errors' => [
+            'day' => [$responseData['error_message']],
+            'time' => [$responseData['error_message']],
+        ]] : $responseData;
+
+        return response()->json($responseData, $status);
     }
 
     public function update(Request $request, $id)
@@ -127,8 +136,16 @@ class PracticumController extends Controller
                 'time' => $request->time,
                 'subject_id' => $request->subject_id,
             ]);
+        
+        $responseData = $res->json();
+        $status = $res->status();
 
-        return response()->json($res->json(), $res->status());
+        $responseData = (isset($responseData['error_message'])) ? ['errors' => [
+            'day' => [$responseData['error_message']],
+            'time' => [$responseData['error_message']],
+        ]] : $responseData;
+
+        return response()->json($responseData, $status);
     }
 
     public function destroy($id)

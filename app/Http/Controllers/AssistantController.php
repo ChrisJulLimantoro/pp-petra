@@ -32,6 +32,11 @@ class AssistantController extends Controller
     }
 
     public function store(Request $request) {
+        if (empty($request->name) || empty($request->email)) {
+            return response()->json([
+                'message' => 'Input tidak boleh kosong'
+            ], 400);
+        }
         $postData = [
             'name' => $request->name,
             'email' => $request->email,

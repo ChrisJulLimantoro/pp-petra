@@ -144,6 +144,7 @@ function AssistantTable(props) {
                                     assistants = newAssistants;
                                     context.updateData(assistants);
                                 }}
+                                context={context}
                             />
                             <Card className="w-full z-1 md:py-0 overflow-auto">
                                 <TableHeader
@@ -328,21 +329,26 @@ const AddAssistantDialog = forwardRef((props, ref) => {
         );
         formData.append("email", `${nrp.toLowerCase()}@john.petra.ac.id`);
 
-        // console.log({
-        //     room_id: formData.get("room_id"),
-        //     email: nrp === '' ? '' : formData.get("email"),
-        //     name: formData.get("name"),
-        // });
-        // buttonRef.current?.setLoading((prev) => !prev);
-        // return;
-        const res = await axios.post(route("assistant.store"), {
-            room_id: formData.get("room_id"),
-            email: nrp === "" ? "" : formData.get("email"),
-            name: formData.get("name"),
-        });
+        let res;
+        try {
+            res = await axios.post(route("assistant.store"), {
+                room_id: formData.get("room_id"),
+                email: nrp === "" ? "" : formData.get("email"),
+                name: formData.get("name"),
+            });
+        } catch (error) {
+            buttonRef.current?.setLoading((prev) => !prev);
+            handleOpen();
+            props.alertRef.current?.show(
+                error.response.data?.message ?? "Something went wrong.",
+                "red",
+                2000
+            );
+            return;
+        }
 
         let newAssistant = {
-            id: res.data.user_id,
+            id: res.data.data.user_id,
             nama: formData.get("name"),
             nrp,
             ruangan: document.querySelector(`button[name="room"] > span`)
@@ -361,8 +367,10 @@ const AddAssistantDialog = forwardRef((props, ref) => {
             "green",
             2000
         );
-        props.assistants.push(newAssistant);
-        props.updateAssistants(props.assistants);
+            
+        let newAssistants = [...props.assistants];
+        newAssistants.push(newAssistant);
+        props.updateAssistants(newAssistants);
     };
 
     const handleEdit = async (e) => {
