@@ -100,7 +100,7 @@ class BulkInsertStudentController extends Controller
             $response = json_decode($response,true);
             
             if($response['success']){
-                return response()->json(['success' => true,'data' => $save]);
+                return response()->json(['success' => true,'data' => $response['data']]);
             }else{
                 return response()->json(['success' => false,'data' => $response['message']]);
             }
@@ -184,7 +184,7 @@ class BulkInsertStudentController extends Controller
             $response = json_decode($response,true);
             // dd($response);
             if($response['success']){
-                return response()->json(['success' => true,'data' => $save]);
+                return response()->json(['success' => true,'data' => $response['data']]);
             }else{
                 return response()->json(['success' => false,'data' => $response['message']]);
             }
