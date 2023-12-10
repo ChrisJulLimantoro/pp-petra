@@ -1,7 +1,7 @@
 import { Head } from "@inertiajs/react";
 import SidebarUser from "@/Layouts/SidebarUser";
 import SelectMatkul from "@/Components/SelectMatkul";
-import { Button, Card, Typography, Tooltip } from "@material-tailwind/react";
+import { Button, Card, Typography, Tooltip, Breadcrumbs } from "@material-tailwind/react";
 import DataTable from "@/Components/DataTable/DataTable";
 import TableHeader from "@/Components/DataTable/TableHeader";
 import TableBody from "@/Components/DataTable/TableBody";
@@ -384,75 +384,76 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable, Va
                 defaultColor="red"
                 defaultShowTime={4000}
             />
-            <div className="grid grid-cols-3">
-                <div className="col-span-1">
-                    <SidebarUser></SidebarUser>
-                </div>
-                <div className="mt-16 w-full h-72 mx-8 bg-slade">
+            {/* <div className="grid grid-cols-3"> */}
+            <SidebarUser>
+                <Breadcrumbs className="mb-5">
+                    <a href={route('mahasiswa.dashboard')} className="opacity-60">
+                        <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        >
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                        </svg>
+                    </a>
+                    <a href="#" className="opacity-60">
+                        <span>Mahasiswa</span>
+                    </a>
+                    <a href='#'>Daftar Praktikum</a>
+                </Breadcrumbs>
+                <div className="mt-2 w-full h-72 bg-slade lg:mx-44 md:mx-8 sm:mx-4">
                     {!ValidateStatus &&(
-                    <div>
-                        <form onSubmit={handleSubmit} method="POST">
-                            <div className="grid grid-cols-2 mb-8">
-                                <div className="mt-2 divLabel">
-                                    <h1 className="w-full">
-                                        Mata Kuliah Praktikum
-                                    </h1>
-                                </div>
-                                <div>
-                                    <div className="w-72">
-                                        <Select label="Pilih Mata Kuliah" size="md" variant="outlined" id= 'course' onChange={handleCourseChange}>
-                                            {dataMatkul.map((item,index) => (
-                                            <Option key={idMatkul[index]} value={idMatkul[index]}>{item}</Option>
-                                            ))}
-                                        </Select>
-                                    </div>
-                                </div>
+                    <div className="col-span-1 flex-auto lg:ml-[-11vw]">
+                    <form onSubmit={handleSubmit} method="POST" className="max-w-4xl">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+                        <div className="mb-4 md:mb-0">
+                            {/* <h1 className="w-full">Mata Kuliah Praktikum</h1> */}
+                            <div className="w-full md:w-72">
+                                <Select label="Pilih Mata Kuliah" size="md" variant="outlined" id='course' onChange={handleCourseChange}>
+                                    {dataMatkul.map((item, index) => (
+                                        <Option key={idMatkul[index]} value={idMatkul[index]}>{item}</Option>
+                                    ))}
+                                </Select>
                             </div>
-
-                            <div className="grid grid-cols-2 mb-8">
-                                <div className="mt-2 divLabel">
-                                    <h1 className="w-full">Pilihan 1</h1>
-                                </div>
-                                <div>
-                                    <div className="w-72">
-                                        <Select label="Pilihan 1" size="md" variant="outlined" id= 'class1' onChange={handle1Change}>
-                                            {class1Options.map((item,index) => (
-                                            <Option key={index} value={pracID[index]}>{item}</Option>
-                                            ))}
-                                        </Select>
-                                    </div>
-                                </div>
+                        </div>
+        
+                        <div className="mb-4 md:mb-0">
+                            {/* <h1 className="w-full">Pilihan 1</h1> */}
+                            <div className="w-full md:w-72">
+                                <Select label="Pilihan 1" size="md" variant="outlined" id='class1' onChange={handle1Change}>
+                                    {class1Options.map((item, index) => (
+                                        <Option key={index} value={pracID[index]}>{item}</Option>
+                                    ))}
+                                </Select>
                             </div>
-
-                            <div className="grid grid-cols-2 mb-8">
-                                <div className="mt-2 divLabel">
-                                    <h1 className="w-full">Pilihan 2</h1>
-                                </div>
-                                <div>
-                                    <div className="w-72">
-                                        <Select label="Pilihan 2" size="md" variant="outlined" id= 'class2' onChange={handle2Change}>
-                                            {class2Options.map((item,index) => (
-                                            <Option key={index} value={pracID[index]}>{item}</Option>
-                                            ))}
-                                        </Select>
-                                    </div>
-                                </div>
+                        </div>
+        
+                        <div className="mb-4 md:mb-0">
+                            {/* <h1 className="w-full">Pilihan 2</h1> */}
+                            <div className="w-full md:w-72">
+                                <Select label="Pilihan 2" size="md" variant="outlined" id='class2' onChange={handle2Change}>
+                                    {class2Options.map((item, index) => (
+                                        <Option key={index} value={pracID[index]}>{item}</Option>
+                                    ))}
+                                </Select>
                             </div>
-
-                            <div className="grid place-content-center divButton">
-                                <div>
-                                    <Button
-                                        variant="gradient"
-                                        color="indigo"
-                                        className="btn"
-                                        type="submit"
-                                    >
-                                        Input
-                                    </Button>
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                     </div>
+        
+                    <div className="grid place-content-center">
+                    <Button
+                        variant="gradient"
+                        color="indigo"
+                        className="btn w-full md:w-auto"
+                        type="submit"
+                    >
+                        Input
+                    </Button>
+                    </div>
+                </form>
+                
+            </div>
                     )}
                     <div
                         className="col-span-1 flex-auto lg:ml-[-11vw]"
@@ -506,7 +507,8 @@ export default function Dashboard({ auth, matkul, id, practicumID, dataTable, Va
                         </DataTable>
                     </div>
                 </div>
-            </div>
+            </SidebarUser>
+            {/* </div> */}
         </>
     );
 }

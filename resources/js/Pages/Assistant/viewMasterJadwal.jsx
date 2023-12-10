@@ -38,10 +38,6 @@ export default function viewMahasiswa({ dataTable }) {
     });
 
     const style = `
-        .btn-submit{
-            margin-left: 25rem !important;
-        }
-
         input[type="file"] {
             color: transparent;
             display: none;
@@ -56,6 +52,10 @@ export default function viewMahasiswa({ dataTable }) {
 
         .modal{
             z-index:1000 !important;
+        }
+
+        .btn-submit{
+          
         }
     `;
 
@@ -527,107 +527,91 @@ export default function viewMahasiswa({ dataTable }) {
                 defaultShowTime={4000}
             />
             <SidebarUser>
-                <form onSubmit={handleSubmit} className="mr-20">
-                    <div className="mb-4 grid grid-cols-2 gap-4">
-                        <div className="ml-44">
-                            <label className="block text-sm font-medium text-gray-600">
-                                Kode Mata Kuliah
-                            </label>
-                            <input
-                                type="text"
-                                name="kodeMataKuliah"
-                                value={formData.kodeMataKuliah}
-                                onChange={handleChange}
-                                className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-64 focus:outline-none focus:border-blue-500"
-                            />
-                        </div>
-                        <div className="relative">
-                            <label className="block text-sm font-medium text-gray-600">
-                                Nama Mata Kuliah
-                            </label>
-                            <input
-                                type="text"
-                                name="namaMataKuliah"
-                                value={formData.namaMataKuliah}
-                                onChange={handleChange}
-                                className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-64 focus:outline-none focus:border-blue-500"
-                            />
-                        </div>
+            <form onSubmit={handleSubmit} className="mx-auto md:w-2/3 lg:w-1/2 xl:w-1/2">
+                <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="mb-4 md:mb-0">
+                    <label className="block text-sm font-medium text-gray-600">Kode Mata Kuliah</label>
+                    <input
+                        type="text"
+                        name="kodeMataKuliah"
+                        value={formData.kodeMataKuliah}
+                        onChange={handleChange}
+                        className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-full focus:outline-none focus:border-blue-500"
+                    />
                     </div>
-
-                    <div className="mb-4 grid grid-cols-2 gap-4">
-                        <div className="ml-44">
-                            <label className="block text-sm font-medium text-gray-600">
-                                Kelas
-                            </label>
-                            <input
-                                type="text"
-                                name="kelas"
-                                value={formData.kelas}
-                                onChange={handleChange}
-                                className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-64 focus:outline-none focus:border-blue-500"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-600">
-                                Hari
-                            </label>
-                            <select
-                                name="hari"
-                                value={formData.hari}
-                                onChange={handleChange}
-                                className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-64 focus:outline-none focus:border-blue-500"
-                            >
-                                {[
-                                    "Senin",
-                                    "Selasa",
-                                    "Rabu",
-                                    "Kamis",
-                                    "Jumat",
-                                    "Sabtu",
-                                ].map((day, index) => (
-                                    <option key={index + 1} value={index + 1}>
-                                        {day}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                    <div>
+                    <label className="block text-sm font-medium text-gray-600">Nama Mata Kuliah</label>
+                    <input
+                        type="text"
+                        name="namaMataKuliah"
+                        value={formData.namaMataKuliah}
+                        onChange={handleChange}
+                        className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-full focus:outline-none focus:border-blue-500"
+                    />
                     </div>
+                </div>
 
-                    <div className="mb-4 grid grid-cols-2 gap-4">
-                        <div className="ml-44">
-                            <label className="block text-sm font-medium text-gray-600">
-                                Jam Mulai
-                            </label>
-                            <input
-                                type="time"
-                                name="jamMulai"
-                                value={formData.jamMulai}
-                                onChange={handleChange}
-                                className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-64 focus:outline-none focus:border-blue-500"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-600">
-                                Durasi
-                            </label>
-                            <input
-                                type="number"
-                                name="durasi"
-                                value={formData.durasi}
-                                onChange={handleChange}
-                                className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-64 focus:outline-none focus:border-blue-500"
-                            />
-                        </div>
+                <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="mb-4 md:mb-0">
+                    <label className="block text-sm font-medium text-gray-600">Kelas</label>
+                    <input
+                        type="text"
+                        name="kelas"
+                        value={formData.kelas}
+                        onChange={handleChange}
+                        className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-full focus:outline-none focus:border-blue-500"
+                    />
                     </div>
-
-                    <button
-                        type="submit"
-                        className="btn-submit bg-blue-500 text-white px-4 py-2 mx-96 rounded-md hover:bg-blue-600 block"
+                    <div>
+                    <label className="block text-sm font-medium text-gray-600">Hari</label>
+                    <select
+                        name="hari"
+                        value={formData.hari}
+                        onChange={handleChange}
+                        className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-full focus:outline-none focus:border-blue-500"
                     >
-                        Submit
-                    </button>
-                </form>
+                        {["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"].map((day, index) => (
+                        <option key={index + 1} value={index + 1}>
+                            {day}
+                        </option>
+                        ))}
+                    </select>
+                    </div>
+                </div>
+
+                <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="mb-4 md:mb-0">
+                    <label className="block text-sm font-medium text-gray-600">Jam Mulai</label>
+                    <input
+                        type="time"
+                        name="jamMulai"
+                        value={formData.jamMulai}
+                        onChange={handleChange}
+                        className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-full focus:outline-none focus:border-blue-500"
+                    />
+                    </div>
+                    <div>
+                    <label className="block text-sm font-medium text-gray-600">Durasi</label>
+                    <input
+                        type="number"
+                        name="durasi"
+                        value={formData.durasi}
+                        onChange={handleChange}
+                        className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-full focus:outline-none focus:border-blue-500"
+                    />
+                    </div>
+                </div>
+
+                <button
+                    type="submit"
+                    className="btn-submit bg-blue-500 text-white px-4 py-2 md:py-3 w-full md:w-1/2 md:h-11 rounded-xl hover:bg-blue-600 md:ml-28"
+                >
+                    Submit
+                </button>
+            </form>
+
+
+
                 <DataTable rawData={data} columns={columnssss}>
                     <DataTableContext.Consumer>
                         {(context) => (
@@ -736,107 +720,80 @@ export default function viewMahasiswa({ dataTable }) {
                     className="bg-transparent shadow-none modal"
                 >
                     <Card className="mx-auto w-full">
-                        <CardBody className="flex flex-col gap-4 p-6">
-                            <Typography variant="h4" color="blue-gray">
-                                Edit Data
-                            </Typography>
+                    <CardBody className="flex flex-col gap-4 p-6">
+  <Typography variant="h4" color="blue-gray">
+    Edit Data
+  </Typography>
 
-                            <div className="flex gap-4 mb-4">
-                                <div className="flex-1">
-                                    <Input
-                                        label="Kode Mata Kuliah"
-                                        size="lg"
-                                        value={editFormData.kodeMataKuliah}
-                                        onChange={(e) =>
-                                            handleEditChange(
-                                                e,
-                                                "kodeMataKuliah"
-                                            )
-                                        }
-                                    />
-                                </div>
+  <div className="flex flex-col gap-4 mb-4 md:flex-row md:gap-8">
+    <div className="flex-1">
+      <Input
+        label="Kode Mata Kuliah"
+        size="lg"
+        value={editFormData.kodeMataKuliah}
+        onChange={(e) => handleEditChange(e, "kodeMataKuliah")}
+      />
+    </div>
 
-                                <div className="flex-1">
-                                    <Input
-                                        label="Nama Mata Kuliah"
-                                        size="lg"
-                                        value={editFormData.namaMataKuliah}
-                                        onChange={(e) =>
-                                            handleEditChange(
-                                                e,
-                                                "namaMataKuliah"
-                                            )
-                                        }
-                                    />
-                                </div>
-                            </div>
+    <div className="flex-1">
+      <Input
+        label="Nama Mata Kuliah"
+        size="lg"
+        value={editFormData.namaMataKuliah}
+        onChange={(e) => handleEditChange(e, "namaMataKuliah")}
+      />
+    </div>
+  </div>
 
-                            <div className="flex gap-4 mb-4">
-                                <div className="flex-1">
-                                    <Input
-                                        label="Kelas"
-                                        size="lg"
-                                        value={editFormData.kelas}
-                                        onChange={(e) =>
-                                            handleEditChange(e, "kelas")
-                                        }
-                                    />
-                                </div>
+  <div className="flex flex-col gap-4 mb-4 md:flex-row md:gap-8">
+    <div className="flex-1">
+      <Input
+        label="Kelas"
+        size="lg"
+        value={editFormData.kelas}
+        onChange={(e) => handleEditChange(e, "kelas")}
+      />
+    </div>
 
-                                <div className="flex-1">
-                                    <Select
-                                        label="Hari"
-                                        name="hari"
-                                        value={editFormData.hari}
-                                        onChange={(e) =>
-                                            handleEditChange(e, "hari")
-                                        }
-                                    >
-                                        {[
-                                            "Senin",
-                                            "Selasa",
-                                            "Rabu",
-                                            "Kamis",
-                                            "Jumat",
-                                            "Sabtu",
-                                        ].map((day, index) => (
-                                            <Option
-                                                key={index + 1}
-                                                value={index + 1}
-                                            >
-                                                {day}
-                                            </Option>
-                                        ))}
-                                    </Select>
-                                </div>
-                            </div>
+    <div className="flex-1">
+      <Select
+        label="Hari"
+        name="hari"
+        value={editFormData.hari}
+        onChange={(e) => handleEditChange(e, "hari")}
+      >
+        {["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"].map((day, index) => (
+          <Option key={index + 1} value={index + 1}>
+            {day}
+          </Option>
+        ))}
+      </Select>
+    </div>
+  </div>
 
-                            <div className="flex gap-4 mb-4">
-                                <div className="flex-1">
-                                    <Input
-                                        label="Jam Mulai"
-                                        type="time"
-                                        name="jamMulai"
-                                        value={editFormData.jamMulai}
-                                        onChange={(e) =>
-                                            handleEditChange(e, "jamMulai")
-                                        }
-                                    />
-                                </div>
+  <div className="flex flex-col gap-4 mb-4 md:flex-row md:gap-8">
+    <div className="flex-1">
+      <Input
+        label="Jam Mulai"
+        type="time"
+        name="jamMulai"
+        value={editFormData.jamMulai}
+        onChange={(e) => handleEditChange(e, "jamMulai")}
+      />p
+    </div>
 
-                                <div className="flex-1">
-                                    <Input
-                                        label="Durasi"
-                                        type="number"
-                                        name="durasi"
-                                        value={editFormData.durasi}
-                                        onChange={(e) =>
-                                            handleEditChange(e, "durasi")
-                                        }
-                                    />
-                                </div>
-                            </div>
-                        </CardBody>
+    <div className="flex-1">
+      <Input
+        label="Durasi"
+        type="number"
+        name="durasi"
+        value={editFormData.durasi}
+        onChange={(e) => handleEditChange(e, "durasi")}
+      />
+    </div>
+  </div>
+</CardBody>
+
                         <CardFooter className="pt-0">
                             <Button
                                 variant="gradient"
