@@ -10,9 +10,12 @@ use Illuminate\Http\Response;
 
 class DashboardController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
+        if (!in_array('student', session('roles'))) {
+            return redirect('/asisten');
+        }
         $data = json_decode(Http::withToken(session('token'))->get(env('API_URL') . "/students-accepted/" . session('user_id')), true);
-        $data= $data['data'];
+        $data= $data['data'] ?? [];
         $return['data']=[];
         foreach ($data as $x) {
             array_push($return['data'],[
@@ -24,7 +27,8 @@ class DashboardController extends Controller
             ]);
         }
         return Inertia::render('Mahasiswa/Dashboard', [
-            'dataTable' => $return['data']
+            'dataTable' => $return['data'],
+            'routes' => $request->routes ?? [],
         ]);
     }
 }

@@ -23,20 +23,30 @@ import {
     MapPinIcon,
     UserPlusIcon,
     CalendarDaysIcon,
-    TableCellsIcon
+    TableCellsIcon,
+    UserGroupIcon,
+    UserCircleIcon,
 } from "@heroicons/react/24/solid";
 import {
     ChevronRightIcon,
     ChevronDownIcon,
     Bars3BottomLeftIcon,
     XMarkIcon,
+    ClipboardDocumentListIcon,
 } from "@heroicons/react/24/outline";
 import prodiImg from "../../../public/assets/prodi.jpeg";
 import { Link, Head } from "@inertiajs/react";
 
-export default function MultiLevelSidebar({ children, className = "" }) {
-    const [open, setOpen] = useState(0);
-    const [sidebarState, setSidebarState] = useState(window.innerWidth < 577 ? 0 : window.innerWidth < 1024 ? 1 : 2);
+export default function MultiLevelSidebar({
+    children,
+    routes,
+    className = "",
+}) {
+    const url = window.location.pathname.substring(6);
+    const [open, setOpen] = useState(-1);
+    const [sidebarState, setSidebarState] = useState(
+        window.innerWidth < 577 ? 0 : window.innerWidth < 1024 ? 1 : 2
+    );
     const [isMobile, setIsMobile] = useState(window.innerWidth < 577);
     const [open2, setOpen2] = useState(false);
     const openDrawer = () => setOpen2(true);
@@ -49,11 +59,135 @@ export default function MultiLevelSidebar({ children, className = "" }) {
         setIsMobile(window.innerWidth < 577);
     });
 
+    // console.log(typeof routes);
+    if (routes == "all") {
+        routes = {
+            Dashboard: "Dashboard",
+            Praktikum: [
+                "Praktikum.Daftar Praktikum",
+                "Praktikum.View Kelas Praktikum",
+                "Praktikum.Manage Praktikum",
+            ],
+            Mahasiswa: ["Mahasiswa.Manage Mahasiswa", "Mahasiswa.View Jadwal"],
+            Asisten: ["Asisten.Manage Asisten", "Asisten.View Jadwal Ajar"],
+            Result: "Result",
+            Ruangan: "Ruangan",
+            Event: "Event",
+            RBAC: [
+                "RBAC.Manage Role",
+                "RBAC.Add User to Role",
+                "RBAC.Add Routes to Role",
+            ],
+            LogOut: "LogOut",
+        };
+    }
+
+    const icons = {
+        Dashboard: (
+            <PresentationChartBarIcon 
+                className="h-5 w-5" 
+                fill={url === route("Dashboard", null, false) || url === route('asisten.dashboard', null, false) ? '#3b82f6' : '#455a64'} />
+        ),
+        Praktikum: (
+            <ComputerDesktopIcon 
+                className="h-5 w-5" 
+                fill={url.match('praktikum/.*') ? '#3b82f6' : '#455a64'} />
+        ),
+        "Praktikum.Daftar Praktikum": (
+            <Square2StackIcon 
+                strokeWidth={3} 
+                fill={url === route("Praktikum.Daftar Praktikum") ? '#3b82f6' : '#455a64'} 
+                className="h-3 w-5" />
+        ),
+        "Praktikum.View Kelas Praktikum": (
+            <EyeIcon 
+                strokeWidth={3} 
+                fill = {url === route("Praktikum.View Kelas Praktikum", null, false) ? '#3b82f6' : '#455a64'}
+                className="h-3 w-5" 
+            />
+        ),
+        "Praktikum.Manage Praktikum": (
+            <TableCellsIcon 
+                className="h-5 w-5" 
+                fill={url === route('Praktikum.Manage Praktikum', null, false) ? '#3b82f6' : '#455a64'} />
+        ),
+        Mahasiswa: (
+            <UserCircleIcon 
+                className="h-5 w-5" 
+                fill={url.match("mahasiswa/.*") ? '#3b82f6' : '#455a64'} />
+        ),
+        "Mahasiswa.Manage Mahasiswa": (
+            <UserGroupIcon 
+                className="h-5 w-5" 
+                fill={url === route('Mahasiswa.Manage Mahasiswa', null, false) ? '#3b82f6' : '#455a64'} />
+        ),
+        "Mahasiswa.View Jadwal": (
+            <CalendarDaysIcon 
+                className="h-5 w-5" 
+                fill={url === route('Mahasiswa.View Jadwal', null, false) ? '#3b82f6' : '#455a64'} />
+        ),
+        Asisten: (
+            <UserPlusIcon 
+                className="h-5 w-5" 
+                fill={url.match('asisten/.*') ? '#3b82f6' : '#455a64'}/>
+        ),
+        "Asisten.Manage Asisten": (
+            <UserGroupIcon 
+                className="h-5 w-5" 
+                fill={url === route('Asisten.Manage Asisten', null, false) ? '#3b82f6' : '#455a64'} />
+        ),
+        "Asisten.View Jadwal Ajar": (
+            <CalendarDaysIcon 
+                className="h-5 w-5"
+                fill={url === route('Asisten.View Jadwal Ajar', null, false) ? '#3b82f6' : '#455a64'} />
+        ),
+        Ruangan: (
+            <MapPinIcon 
+                className="h-5 w-5"
+                fill={url.match('room.*') ? '#3b82f6' : '#455a64'} />
+        ),
+        Result: (
+            <ClipboardDocumentListIcon
+                className="h-5 w-5"
+                color={url.match('result.*') ? '#3b82f6' : '#455a64'} />
+        ),
+        Event: (
+            <CalendarDaysIcon 
+                className="h-5 w-5"
+                fill={url.match('event.*') ? '#3b82f6' : '#455a64'} />
+        ),
+        RBAC: (
+            <KeyIcon 
+                className="h-5 w-5"
+                fill={url.match('rbac/.*') ? '#3b82f6' : '#455a64'} />
+        ),
+        "RBAC.Manage Role": (
+            <ChevronRightIcon 
+                strokeWidth={3}
+                stroke={url === route("RBAC.Manage Role", null, false) ? '#3b82f6' : '#455a64'} 
+                className="h-3 w-5" />
+        ),
+        "RBAC.Add User to Role": (
+            <ChevronRightIcon 
+                strokeWidth={3} 
+                stroke={url === route("RBAC.Add User to Role", null, false) ? '#3b82f6' : '#455a64'} 
+                className="h-3 w-5" />
+        ),
+        "RBAC.Add Routes to Role": (
+            <ChevronRightIcon 
+                strokeWidth={3}
+                stroke={url === route("RBAC.Add Routes to Role", null, false) ? '#3b82f6' : '#455a64'}
+                className="h-3 w-5" />
+        ),
+        LogOut: <PowerIcon className="h-5 w-5" />,
+    };
+
     const mobileOpenedStyle = "w-1/2 p-5";
     const desktopMinimizedStyle = "pl-[80px] w-screen p-3";
     const desktopFullStyle = "w-4/5 p-7";
 
     const handleOpen = (value) => {
+        // console.log(value);
         setOpen(open === value ? 0 : value);
     };
 
@@ -62,6 +196,7 @@ export default function MultiLevelSidebar({ children, className = "" }) {
         setOpen(0);
     };
 
+    // console.log(routes);
     const openedSidebar = () => {
         return (
             <Card
@@ -78,199 +213,99 @@ export default function MultiLevelSidebar({ children, className = "" }) {
                 </div>
 
                 <List className="min-w-full">
-                    {/* Dashboard */}
-                    <Link href={route("asisten.dashboard")}>
+                    <Link href={route("Dashboard")}>
                         <ListItem className="w-full">
                             <ListItemPrefix>
-                                <PresentationChartBarIcon
-                                    className="h-5 w-5"
-                                    onClick={() => setSidebarState(1)}
-                                />
+                                {icons.Dashboard}
                             </ListItemPrefix>
-                            Dashboard
+                            <span className={url === route('Dashboard', null, false) || url === route('asisten.dashboard', null, false) ? 'text-blue-500' : ''}>
+                                Dashboard
+                            </span>
                         </ListItem>
                     </Link>
 
-                    {/* Praktikum */}
-                    <Accordion
-                        open={open === 2}
-                        className="max-w-[1/5]"
-                        icon={
-                            <ChevronDownIcon
-                                strokeWidth={2.5}
-                                className={`mx-auto h-4 w-4 transition-transform ${
-                                    open === 2 ? "rotate-180" : ""
-                                }`}
-                            />
-                        }
-                    >
-                        <ListItem className="p-0" selected={open === 2}>
-                            <AccordionHeader
-                                onClick={() => handleOpen(2)}
-                                className="border-b-0 p-3"
-                            >
-                                <ListItemPrefix>
-                                    <ComputerDesktopIcon className="h-5 w-5" />
-                                </ListItemPrefix>
-                                <Typography
-                                    color="blue-gray"
-                                    className="mr-auto font-normal"
+                    {Object.keys(routes).map((rute, index) => {
+                        if (Array.isArray(routes[rute])) {
+                            return (
+                                <Accordion
+                                    open={open === index}
+                                    className="max-w-[1/5]"
+                                    icon={
+                                        <ChevronDownIcon
+                                            strokeWidth={2.5}
+                                            color={url.split('/')[1].toLowerCase() === rute.toLowerCase() && url.split('/').length > 2 ? '#3b82f6' : '#455a64'}
+                                            className={`mx-auto h-4 w-4 transition-transform ${
+                                                open === index
+                                                    ? "rotate-180"
+                                                    : ""
+                                            }`}
+                                        />
+                                    }
                                 >
-                                    Praktikum
-                                </Typography>
-                            </AccordionHeader>
-                        </ListItem>
-                        <AccordionBody className="py-1">
-                            <List className="p-0">
-                                <Link href={route("mahasiswa.daftarPraktikum")}>
-                                    <ListItem className="mx-5">
+                                    <ListItem
+                                        className="p-0"
+                                        selected={open === index}
+                                    >
+                                        <AccordionHeader
+                                            onClick={() => handleOpen(index)}
+                                            className="border-b-0 p-3"
+                                        >
+                                            <ListItemPrefix>
+                                                {icons[rute]}
+                                            </ListItemPrefix>
+                                            <Typography
+                                                color={url.split('/')[1].toLowerCase() === rute.toLowerCase() && url.split('/').length > 2 ? 'blue' : 'blue-gray'}
+                                                className={"mr-auto font-normal"}
+                                            >
+                                                {rute}
+                                            </Typography>
+                                        </AccordionHeader>
+                                    </ListItem>
+
+                                    <AccordionBody className="py-1">
+                                        <List className="p-0" key={rute}>
+                                            {routes[rute].map((r) => {
+                                                return (
+                                                    <Link href={route(r)}>
+                                                        <ListItem className="mx-5">
+                                                            <ListItemPrefix>
+                                                                {icons[r]}
+                                                            </ListItemPrefix>
+                                                            <span className={url === route(r, null, false) ? 'text-blue-500' : 'text-blue-gray-900'}>
+                                                                {r.split(".")[1]}
+                                                            </span>
+                                                        </ListItem>
+                                                    </Link>
+                                                );
+                                            })}
+                                        </List>
+                                    </AccordionBody>
+                                </Accordion>
+                            );
+                        } else if (rute != "Dashboard" && rute != "LogOut") {
+                            return (
+                                <Link href={route(rute)}>
+                                    <ListItem className="w-full">
                                         <ListItemPrefix>
-                                            <Square2StackIcon
-                                                strokeWidth={3}
-                                                className="h-3 w-5"
-                                            />
+                                            {icons[rute]}
                                         </ListItemPrefix>
-                                        Daftar Praktikum
+                                        <span className={url === route(rute, null, false) ? 'text-blue-500' : 'text-blue-gray-900'}>
+                                            {rute}
+                                        </span>
                                     </ListItem>
                                 </Link>
-
-                                <Link href={route("mahasiswa.viewKelasPraktikum")}>
-                                    <ListItem className="mx-5">
-                                        <ListItemPrefix>
-                                            <EyeIcon
-                                                strokeWidth={3}
-                                                className="h-3 w-5"
-                                            />
-                                        </ListItemPrefix>
-                                        Lihat Kelas Praktikum
-                                    </ListItem>
-                                </Link>
-
-                                <Link href={route("practicum.index")}>
-                                    <ListItem className="mx-5">
-                                        <ListItemPrefix>
-                                            <TableCellsIcon className="h-5 w-5" />
-                                        </ListItemPrefix>
-                                        Manage Praktikum
-                                    </ListItem>
-                                </Link>
-                            </List>
-                        </AccordionBody>
-                    </Accordion>
-
-                    <Link href={route("assistant.index")}>
-                        <ListItem>
-                            <ListItemPrefix>
-                                <UserPlusIcon className="h-5 w-5" />
-                            </ListItemPrefix>
-                            Asisten
-                        </ListItem>
-                    </Link>
-
-                    {/* Room */}
-                    <Link href={route("room.all")}>
-                        <ListItem>
-                            <ListItemPrefix>
-                                <MapPinIcon className="h-5 w-5" />
-                            </ListItemPrefix>
-                            Ruangan
-                        </ListItem>
-                    </Link>
-
-                    {/* Event */}
-                    <Link href={route("event.all")}>
-                        <ListItem>
-                            <ListItemPrefix>
-                                <CalendarDaysIcon className="h-5 w-5" />
-                            </ListItemPrefix>
-                            Event
-                        </ListItem>
-                    </Link>
-
-                    {/* RBAC */}
-                    <Accordion
-                        open={open === 1}
-                        icon={
-                            <ChevronDownIcon
-                                strokeWidth={2.5}
-                                className={`mx-auto h-4 w-4 transition-transform ${
-                                    open === 1 ? "rotate-180" : ""
-                                }`}
-                            />
+                            );
                         }
-                    >
-                        <ListItem className="p-0" selected={open === 1}>
-                            <AccordionHeader
-                                onClick={() => handleOpen(1)}
-                                className="border-b-0 p-3"
-                            >
-                                <ListItemPrefix>
-                                    <KeyIcon className="h-5 w-5" />
-                                </ListItemPrefix>
-                                <Typography
-                                    color="blue-gray"
-                                    className="mr-auto font-normal"
-                                >
-                                    RBAC
-                                </Typography>
-                            </AccordionHeader>
-                        </ListItem>
-                        <AccordionBody className="py-1">
-                            <List className="p-0">
-                                <Link href={route("rbac.manageRole")}>
-                                    <ListItem>
-                                        <ListItemPrefix>
-                                            <ChevronRightIcon
-                                                strokeWidth={3}
-                                                className="h-3 w-5"
-                                            />
-                                        </ListItemPrefix>
-                                        Manage Role
-                                    </ListItem>
-                                </Link>
-                                <Link href={route("rbac.assignRoleView")}>
-                                    <ListItem>
-                                        <ListItemPrefix>
-                                            <ChevronRightIcon
-                                                strokeWidth={3}
-                                                className="h-3 w-5"
-                                            />
-                                        </ListItemPrefix>
-                                        Add User to Role
-                                    </ListItem>
-                                </Link>
-                                <Link href={route("rbac.assignRoutes")}>
-                                    <ListItem>
-                                        <ListItemPrefix>
-                                            <ChevronRightIcon
-                                                strokeWidth={3}
-                                                className="h-3 w-5"
-                                            />
-                                        </ListItemPrefix>
-                                        Add Routes to Role
-                                    </ListItem>
-                                </Link>
-                            </List>
-                        </AccordionBody>
-                    </Accordion>
+                    })}
 
-                    {/* Log Out */}
-                    <Link href={route("logout")}>
-                        <ListItem>
+                    <Link href={route("LogOut")}>
+                        <ListItem className="w-full">
                             <ListItemPrefix>
-                                <PowerIcon className="h-5 w-5" />
+                                <PowerIcon className="w-5 h-5" />
                             </ListItemPrefix>
                             Log Out
                         </ListItem>
                     </Link>
-
-                    {/* Laporan */}
-                    {/* <ListItem>
-            <ListItemPrefix>
-              <BookOpenIcon className="h-5 w-5" />
-            </ListItemPrefix>
-            Laporan
-          </ListItem> */}
                 </List>
             </Card>
         );
@@ -289,142 +324,30 @@ export default function MultiLevelSidebar({ children, className = "" }) {
                 </div>
 
                 <List>
-                    <ListItem
-                        className="w-fit p-3"
-                        onClick={() => setSidebarState(2)}
-                    >
-                        <Bars3BottomLeftIcon className="w-5 h-5" />
-                    </ListItem>
-
-                    {/* Dashboard */}
-                    <Link href={route("asisten.dashboard")}>
+                    <Link href={route("Dashboard")}>
                         <ListItem className="w-fit p-3">
-                            <PresentationChartBarIcon className="h-5 w-5" />
+                            {icons['Dashboard']}
                         </ListItem>
                     </Link>
 
-                    {/* Praktikum */}
-                    <Accordion
-                        open={open === 2}
-                        className="max-w-[60px]"
-                        onClick={() => setSidebarState(2)}
-                    >
-                        <ListItem selected={open === 2} className="p-0 w-fit">
-                            <AccordionHeader
-                                onClick={() => handleOpen(2)}
-                                className="border-b-0 p-3 pr-0"
-                            >
-                                <ComputerDesktopIcon className="h-5 w-5" />
-                            </AccordionHeader>
-                        </ListItem>
-                        <AccordionBody className="py-1">
-                            <List className="p-0">
-                                <Link href={route("mahasiswa.daftarPraktikum")}>
-                                    <ListItem className="mx-5">
-                                        <Square2StackIcon
-                                            strokeWidth={3}
-                                            className="h-3 w-5"
-                                        />
-                                    </ListItem>
-                                </Link>
+                    {Object.keys(routes).map((rute) => {
+                        if (rute != "Dashboard" && rute != "LogOut") {
+                            return (
+                                <ListItem
+                                    className="w-fit p-3"
+                                    onClick={() => setSidebarState(2)}
+                                >
+                                    {icons[rute]}
+                                </ListItem>
+                            );
+                        }
+                    })}
 
-                                <Link href={route("View Kelas")}>
-                                    <ListItem className="mx-5">
-                                        <ListItemPrefix>
-                                            <EyeIcon
-                                                strokeWidth={3}
-                                                className="h-3 w-5"
-                                            />
-                                        </ListItemPrefix>
-                                    </ListItem>
-                                </Link>
-
-                                <Link href={route("practicum.index")}>
-                                    <ListItem className="mx-5">
-                                        <ListItemPrefix>
-                                            <UserPlusIcon
-                                                strokeWidth={3}
-                                                className="h-3 w-5"
-                                            />
-                                        </ListItemPrefix>
-                                    </ListItem>
-                                </Link>
-                            </List>
-                        </AccordionBody>
-                    </Accordion>
-
-                    {/* Room */}
-                    <Link href={route("room.all")}>
-                        <ListItem className="w-fit p-3">
-                            <MapPinIcon className="h-5 w-5" />
-                        </ListItem>
-                    </Link>
-
-                    {/* RBAC */}
-                    <Accordion
-                        open={open === 1}
-                        className="max-w-[5vw]"
-                        onClick={() => setSidebarState(2)}
-                    >
-                        <ListItem className="p-0 w-fit" selected={open === 1}>
-                            <AccordionHeader
-                                onClick={() => handleOpen(1)}
-                                className="border-b-0 p-3 pr-0"
-                            >
-                                <KeyIcon className="h-5 w-5" />
-                            </AccordionHeader>
-                        </ListItem>
-                        <AccordionBody className="py-1">
-                            <List className="p-0">
-                                <Link href={route("rbac.manageRole")}>
-                                    <ListItem>
-                                        <ChevronRightIcon
-                                            strokeWidth={3}
-                                            className="h-3 w-5"
-                                        />
-                                        Manage Role
-                                    </ListItem>
-                                </Link>
-                                <Link href={route("rbac.assignRoleView")}>
-                                    <ListItem>
-                                        <ListItemPrefix>
-                                            <ChevronRightIcon
-                                                strokeWidth={3}
-                                                className="h-3 w-5"
-                                            />
-                                        </ListItemPrefix>
-                                        Add User to Role
-                                    </ListItem>
-                                </Link>
-                                <Link href={route("rbac.assignRoutes")}>
-                                    <ListItem>
-                                        <ListItemPrefix>
-                                            <ChevronRightIcon
-                                                strokeWidth={3}
-                                                className="h-3 w-5"
-                                            />
-                                        </ListItemPrefix>
-                                        Add Routes to Role
-                                    </ListItem>
-                                </Link>
-                            </List>
-                        </AccordionBody>
-                    </Accordion>
-
-                    {/* Log Out */}
-                    <Link href={route("logout")}>
+                    <Link href={route("LogOut")}>
                         <ListItem className="w-fit p-3">
                             <PowerIcon className="h-5 w-5" />
                         </ListItem>
                     </Link>
-
-                    {/* Laporan */}
-                    {/* <ListItem>
-            <ListItemPrefix>
-              <BookOpenIcon className="h-5 w-5" />
-            </ListItemPrefix>
-            Laporan
-          </ListItem> */}
                 </List>
             </Card>
         );
@@ -432,7 +355,11 @@ export default function MultiLevelSidebar({ children, className = "" }) {
 
     const mobileSidebarBtn = () => {
         return (
-            <IconButton variant="text" className="mx-4 mb-3" onClick={openDrawer}>
+            <IconButton
+                variant="text"
+                className="mx-4 mb-3"
+                onClick={openDrawer}
+            >
                 <Bars3BottomLeftIcon className="w-5 h-5" />
             </IconButton>
         );
@@ -476,228 +403,160 @@ export default function MultiLevelSidebar({ children, className = "" }) {
                             ? mobileOpenedStyle
                             : sidebarState === 2
                             ? desktopFullStyle
-                            : "w-screen p-5") + " transition-all duration-300 bg-white"
+                            : "w-screen p-5") +
+                        " transition-all duration-300 bg-white"
                     }
                 >
-
                     {sidebarState === 0 ? mobileSidebarBtn() : null}
+
                     {children}
 
-                    {sidebarState === 0 && 
-                        <Drawer 
-                            open={open2} 
-                            onClose={closeDrawer} 
-                            className="p-4" 
-                            overlayProps={{ className:'fixed backdrop-blur-none' }}
-                         >
+                    {sidebarState === 0 && (
+                        <Drawer
+                            open={open2}
+                            onClose={closeDrawer}
+                            className="p-4"
+                            overlayProps={{
+                                className: "fixed backdrop-blur-none",
+                            }}
+                        >
                             <div className="px-6 flex items-center justify-between">
-                                <img src={prodiImg} alt="Logo Prodi" className="w-20" />
-                                <IconButton variant="text" color="blue-gray" onClick={closeDrawer}>
+                                <img
+                                    src={prodiImg}
+                                    alt="Logo Prodi"
+                                    className="w-20"
+                                />
+                                <IconButton
+                                    variant="text"
+                                    color="blue-gray"
+                                    onClick={closeDrawer}
+                                >
                                     <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={2}
-                                    stroke="currentColor"
-                                    className="h-5 w-5"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={2}
+                                        stroke="currentColor"
+                                        className="h-5 w-5"
                                     >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M6 18L18 6M6 6l12 12"
+                                        />
                                     </svg>
                                 </IconButton>
                             </div>
 
                             <List>
-                                {/* Dashboard */}
-                                <Link href={route("asisten.dashboard")}>
+                                <Link href={route("Dashboard")}>
                                     <ListItem className="w-full">
                                         <ListItemPrefix>
-                                            <PresentationChartBarIcon
-                                                className="h-5 w-5"
-                                                onClick={() => setSidebarState(1)}
-                                            />
+                                            {icons['Dashboard']}
                                         </ListItemPrefix>
-                                        Dashboard
+                                            <span className={url === route('Dashboard', null, false) || url === route('asisten.dashboard', null, false) ? 'text-blue-500' : ''}>
+                                                Dashboard
+                                            </span>
                                     </ListItem>
                                 </Link>
 
-                                {/* Praktikum */}
-                                <Accordion
-                                    open={open === 2}
-                                    className="max-w-[1/5]"
-                                    icon={
-                                        <ChevronDownIcon
-                                            strokeWidth={2.5}
-                                            className={`mx-auto h-4 w-4 transition-transform ${
-                                                open === 2 ? "rotate-180" : ""
-                                            }`}
-                                        />
-                                    }
-                                >
-                                    <ListItem className="p-0" selected={open === 2}>
-                                        <AccordionHeader
-                                            onClick={() => handleOpen(2)}
-                                            className="border-b-0 p-3"
-                                        >
-                                            <ListItemPrefix>
-                                                <ComputerDesktopIcon className="h-5 w-5" />
-                                            </ListItemPrefix>
-                                            <Typography
-                                                color="blue-gray"
-                                                className="mr-auto font-normal"
+                                {Object.keys(routes).map((rute, index) => {
+                                    if (Array.isArray(routes[rute])) {
+                                        return (
+                                            <Accordion
+                                                open={open === index}
+                                                className="max-w-[1/5]"
+                                                icon={
+                                                    <ChevronDownIcon
+                                                        strokeWidth={2.5}
+                                                        color={url.split('/')[1].toLowerCase() === rute.toLowerCase() && url.split('/').length > 2 ? '#3b82f6' : '#455a64'}
+                                                        className={`mx-auto h-4 w-4 transition-transform ${
+                                                            open === index
+                                                                ? "rotate-180"
+                                                                : ""
+                                                        }`}
+                                                    />
+                                                }
                                             >
-                                                Praktikum
-                                            </Typography>
-                                        </AccordionHeader>
-                                    </ListItem>
-                                    <AccordionBody className="py-1">
-                                        <List className="p-0">
-                                            <Link href={route("mahasiswa.daftarPraktikum")}>
-                                                <ListItem className="mx-5">
+                                                <ListItem
+                                                    className="p-0"
+                                                    selected={open === index}
+                                                >
+                                                    <AccordionHeader
+                                                        onClick={() =>
+                                                            handleOpen(index)
+                                                        }
+                                                        className="border-b-0 p-3"
+                                                    >
+                                                        <ListItemPrefix>
+                                                            {icons[rute]}
+                                                        </ListItemPrefix>
+                                                        <Typography
+                                                            color={url.split('/')[1].toLowerCase() === rute.toLowerCase() && url.split('/').length > 2 ? 'blue' : 'blue-gray'}
+                                                            className="mr-auto font-normal"
+                                                        >
+                                                            {rute}
+                                                        </Typography>
+                                                    </AccordionHeader>
+                                                </ListItem>
+
+                                                <AccordionBody className="py-1">
+                                                    <List
+                                                        className="p-0"
+                                                        key={rute}
+                                                    >
+                                                        {routes[rute].map(
+                                                            (r) => {
+                                                                return (
+                                                                    <Link
+                                                                        href={route(r)}
+                                                                    >
+                                                                        <ListItem className="mx-5">
+                                                                            <ListItemPrefix>
+                                                                                {icons[r]}
+                                                                            </ListItemPrefix>
+                                                                                <span className={url === route(r, null, false) ? 'text-blue-500' : 'text-blue-gray-900'}>
+                                                                                    {r.split(".")[1]}
+                                                                                </span>
+                                                                        </ListItem>
+                                                                    </Link>
+                                                                );
+                                                            }
+                                                        )}
+                                                    </List>
+                                                </AccordionBody>
+                                            </Accordion>
+                                        );
+                                    } else if (
+                                        rute != "Dashboard" &&
+                                        rute != "LogOut"
+                                    ) {
+                                        return (
+                                            <Link href={route(rute)}>
+                                                <ListItem className="w-full">
                                                     <ListItemPrefix>
-                                                        <Square2StackIcon
-                                                            strokeWidth={3}
-                                                            className="h-3 w-5"
-                                                        />
+                                                        {icons[rute]}
                                                     </ListItemPrefix>
-                                                    Daftar Praktikum
+                                                        <span className={url === route(rute, null, false) ? 'text-blue-500' : 'text-blue-gray-900'}>
+                                                            {rute}
+                                                        </span>
                                                 </ListItem>
                                             </Link>
-
-                                            <Link href={route("mahasiswa.viewKelasPraktikum")}>
-                                                <ListItem className="mx-5">
-                                                    <ListItemPrefix>
-                                                        <EyeIcon
-                                                            strokeWidth={3}
-                                                            className="h-3 w-5"
-                                                        />
-                                                    </ListItemPrefix>
-                                                    Lihat Kelas Praktikum
-                                                </ListItem>
-                                            </Link>
-
-                                            <Link href={route("practicum.index")}>
-                                                <ListItem className="mx-5">
-                                                    <ListItemPrefix>
-                                                        <UserPlusIcon className="h-5 w-5" />
-                                                    </ListItemPrefix>
-                                                    Asisten
-                                                </ListItem>
-                                            </Link>
-                                        </List>
-                                    </AccordionBody>
-                                </Accordion>
-
-                                {/* Room */}
-                                <Link href={route("room.all")}>
-                                    <ListItem>
-                                        <ListItemPrefix>
-                                            <MapPinIcon className="h-5 w-5" />
-                                        </ListItemPrefix>
-                                        Ruangan
-                                    </ListItem>
-                                </Link>
-
-                                {/* Event */}
-                                <Link href={route("event.all")}>
-                                    <ListItem>
-                                        <ListItemPrefix>
-                                            <CalendarDaysIcon className="h-5 w-5" />
-                                        </ListItemPrefix>
-                                        Event
-                                    </ListItem>
-                                </Link>
-
-                                {/* RBAC */}
-                                <Accordion
-                                    open={open === 1}
-                                    icon={
-                                        <ChevronDownIcon
-                                            strokeWidth={2.5}
-                                            className={`mx-auto h-4 w-4 transition-transform ${
-                                                open === 1 ? "rotate-180" : ""
-                                            }`}
-                                        />
+                                        );
                                     }
-                                >
-                                    <ListItem className="p-0" selected={open === 1}>
-                                        <AccordionHeader
-                                            onClick={() => handleOpen(1)}
-                                            className="border-b-0 p-3"
-                                        >
-                                            <ListItemPrefix>
-                                                <KeyIcon className="h-5 w-5" />
-                                            </ListItemPrefix>
-                                            <Typography
-                                                color="blue-gray"
-                                                className="mr-auto font-normal"
-                                            >
-                                                RBAC
-                                            </Typography>
-                                        </AccordionHeader>
-                                    </ListItem>
-                                    <AccordionBody className="py-1">
-                                        <List className="p-0">
-                                            <Link href={route("rbac.manageRole")}>
-                                                <ListItem>
-                                                    <ListItemPrefix>
-                                                        <ChevronRightIcon
-                                                            strokeWidth={3}
-                                                            className="h-3 w-5"
-                                                        />
-                                                    </ListItemPrefix>
-                                                    Manage Role
-                                                </ListItem>
-                                            </Link>
-                                            <Link href={route("rbac.assignRoleView")}>
-                                                <ListItem>
-                                                    <ListItemPrefix>
-                                                        <ChevronRightIcon
-                                                            strokeWidth={3}
-                                                            className="h-3 w-5"
-                                                        />
-                                                    </ListItemPrefix>
-                                                    Add User to Role
-                                                </ListItem>
-                                            </Link>
-                                            <Link href={route("rbac.assignRoutes")}>
-                                                <ListItem>
-                                                    <ListItemPrefix>
-                                                        <ChevronRightIcon
-                                                            strokeWidth={3}
-                                                            className="h-3 w-5"
-                                                        />
-                                                    </ListItemPrefix>
-                                                    Add Routes to Role
-                                                </ListItem>
-                                            </Link>
-                                        </List>
-                                    </AccordionBody>
-                                </Accordion>
+                                })}
 
-                                {/* Log Out */}
-                                <Link href={route("logout")}>
-                                    <ListItem>
+                                <Link href={route("LogOut")}>
+                                    <ListItem className="w-full">
                                         <ListItemPrefix>
-                                            <PowerIcon className="h-5 w-5" />
+                                            <PowerIcon className="w-5 h-5" />
                                         </ListItemPrefix>
                                         Log Out
                                     </ListItem>
                                 </Link>
-
-                                {/* Laporan */}
-                                {/* <ListItem>
-                        <ListItemPrefix>
-                        <BookOpenIcon className="h-5 w-5" />
-                        </ListItemPrefix>
-                        Laporan
-                    </ListItem> */}
                             </List>
                         </Drawer>
-                    }
+                    )}
                 </div>
             </div>
         </>

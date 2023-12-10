@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head } from "@inertiajs/react";
 import SidebarUser from "@/Layouts/SidebarUser";
 import Carousel from "@/Components/Carousel";
 import { Select, Option } from "@material-tailwind/react";
@@ -10,18 +10,17 @@ import TableFooter from "@/Components/DataTable/TableFooter";
 import TableCell from "@/Components/DataTable/TableCell";
 import { DataTableContext } from "@/Components/DataTable/DataTable";
 
-
-export default function Dashboard({ auth, dataTable }) {
+export default function Dashboard({ auth, dataTable, routes }) {
     const columns = [
-      "#",
-      "Hari",
-      "Jam",
-      "Mata Kuliah Praktikum",
-      "Kelas",
-      "Ruangan"
+        "#",
+        "Hari",
+        "Jam",
+        "Mata Kuliah Praktikum",
+        "Kelas",
+        "Ruangan",
     ];
 
-    const data= dataTable;
+    const data = dataTable;
 
     const styles = `
 
@@ -66,64 +65,65 @@ export default function Dashboard({ auth, dataTable }) {
   `;
 
     const state = {
-      rawData: [],
-      filteredData: [],
-      paginatedData: [],
-      columns: [],
-      currentPage: 1,
-      perPage: 10,
-      totalPages: 1,
-      sort: {
-          column: null,
-          direction: 'asc'
-      },
-  }
-  const search = (keyword) => {
-      // when no keyword is provided
-      console.log(keyword)
-      if (keyword.trim() == '' || keyword == null) {
-          setState({
-              paginatedData: paginateData(state.rawData),
-              filteredData: state.rawData,
-              currentPage: 1, 
-              totalPages: Math.ceil(state.rawData.length / state.perPage)
-          });
-      }
+        rawData: [],
+        filteredData: [],
+        paginatedData: [],
+        columns: [],
+        currentPage: 1,
+        perPage: 10,
+        totalPages: 1,
+        sort: {
+            column: null,
+            direction: "asc",
+        },
+    };
+    const search = (keyword) => {
+        // when no keyword is provided
+        console.log(keyword);
+        if (keyword.trim() == "" || keyword == null) {
+            setState({
+                paginatedData: paginateData(state.rawData),
+                filteredData: state.rawData,
+                currentPage: 1,
+                totalPages: Math.ceil(state.rawData.length / state.perPage),
+            });
+        } else {
+            const filtered = state.rawData.filter((data) => {
+                let found = false;
 
-      else {
-          const filtered = state.rawData.filter((data) => {
-              let found = false;
+                state.columns.map((column) => {
+                    let columnName = column.toString().toLowerCase();
+                    console.log(columnName);
+                    if (
+                        data[columnName]
+                            ?.toString()
+                            .toLowerCase()
+                            .includes(keyword.toLowerCase())
+                    ) {
+                        found = true;
+                    }
+                });
 
-             state.columns.map((column) => {
-                  let columnName = (column.toString().toLowerCase());
-                  console.log(columnName);
-                  if (data[columnName]?.toString().toLowerCase().includes(keyword.toLowerCase())) {
-                      found = true;
-                  }
-              })
+                return found;
+            });
 
-              return found;
-          });
+            let paginateData = [];
 
-          let paginateData = [];
+            if (filtered.length > 0) {
+                paginateData = paginateData();
+            } else {
+                filtered.push({ empty: "No data found" });
+                paginateData = paginateData(filtered);
+            }
 
-          if (filtered.length > 0) {
-              paginateData = paginateData();
-          }
-          else {
-              filtered.push({empty: "No data found"})
-              paginateData =paginateData(filtered);
-          }
-
-          setState({
-              filteredData: filtered,
-              paginatedData: paginateData,
-              currentPage: 1, 
-              totalPages: Math.ceil(filtered.length / state.perPage)
-          });
-      }
-  }
-
+            setState({
+                filteredData: filtered,
+                paginatedData: paginateData,
+                currentPage: 1,
+                totalPages: Math.ceil(filtered.length / state.perPage),
+            });
+        }
+    };
 
     return (
         <>
@@ -131,54 +131,59 @@ export default function Dashboard({ auth, dataTable }) {
                 <title>SAOCP-Dashboard</title>
                 <style>{styles}</style>
             </Head>
-            <SidebarUser>
-                 <div className="row grid justify-items-center">                
+            <SidebarUser routes={routes}>
+                <div className="row grid justify-items-center">
                     <div className="waviy">
-                        <span style={{ "--i": 1 }} className="mx-2">S</span>
-                        <span style={{ "--i": 2 }} className="mx-2">A</span>
-                        <span style={{ "--i": 3 }} className="mx-2">O</span>
-                        <span style={{ "--i": 4 }} className="mx-2">C</span>
-                        <span style={{ "--i": 5 }} className="mx-2">P</span>
+                        <span style={{ "--i": 1 }} className="mx-2">
+                            S
+                        </span>
+                        <span style={{ "--i": 2 }} className="mx-2">
+                            A
+                        </span>
+                        <span style={{ "--i": 3 }} className="mx-2">
+                            O
+                        </span>
+                        <span style={{ "--i": 4 }} className="mx-2">
+                            C
+                        </span>
+                        <span style={{ "--i": 5 }} className="mx-2">
+                            P
+                        </span>
                     </div>
                 </div>
                 {/* START DATA TABLE */}
                 <DataTable rawData={data} columns={columns} className="">
-                            <DataTableContext.Consumer>
-                                {(context) => (
-                                    <Card className="w-full z-[1]">
-                                        <TableHeader
-                                            title="KELAS PRAKTIKUM"
-                                            perPage={context.perPage.toString()}
-                                            changePerPage={(e) =>
-                                                context.changePerPage(e)
-                                            }
-                                            searchData= {search}
-                                            
-                                        ></TableHeader>
+                    <DataTableContext.Consumer>
+                        {(context) => (
+                            <Card className="w-full z-[1]">
+                                <TableHeader
+                                    title="KELAS PRAKTIKUM"
+                                    perPage={context.perPage.toString()}
+                                    changePerPage={(e) =>
+                                        context.changePerPage(e)
+                                    }
+                                    searchData={search}
+                                ></TableHeader>
 
-                                        <TableBody className={"relative "}>
-                                            <TableBody.Head />
-                                            <TableBody.Content />
-                                        </TableBody>
+                                <TableBody className={"relative "}>
+                                    <TableBody.Head />
+                                    <TableBody.Content />
+                                </TableBody>
 
-                                        <TableFooter
-                                            currentPage={context.currentPage}
-                                            perPage={context.perPage}
-                                            totalPages={context.totalPages}
-                                            totalData={
-                                                context.filteredData.length
-                                            }
-                                            prev={context.prevPage}
-                                            next={context.nextPage}
-                                        ></TableFooter>
-                                    </Card>
-                                )}
-                            </DataTableContext.Consumer>
+                                <TableFooter
+                                    currentPage={context.currentPage}
+                                    perPage={context.perPage}
+                                    totalPages={context.totalPages}
+                                    totalData={context.filteredData.length}
+                                    prev={context.prevPage}
+                                    next={context.nextPage}
+                                ></TableFooter>
+                            </Card>
+                        )}
+                    </DataTableContext.Consumer>
                 </DataTable>
                 {/* END DATA TABLE */}
             </SidebarUser>
-            
-           
         </>
     );
 }

@@ -3,14 +3,13 @@ import SidebarUser from "@/Layouts/SidebarUser";
 import SelectMatkul from "@/Components/SelectMatkul";
 import {
     Button,
+    Breadcrumbs,
     Typography,
     Tooltip,
     Dialog,
     Card,
-    CardHeader,
     CardBody,
     CardFooter,
-    Checkbox,
 } from "@material-tailwind/react";
 import DataTable from "@/Components/DataTable/DataTable";
 import TableHeader from "@/Components/DataTable/TableHeader";
@@ -26,7 +25,7 @@ import { useRef } from "react";
 import Swal from "sweetalert2";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 
-export default function viewMahasiswa({ dataTable }) {
+export default function viewMahasiswa({ dataTable, routes }) {
     const [fileData, setFileData] = useState([]); // File data to be sent to the server
     const [formData, setFormData] = useState({
         kodeMataKuliah: "",
@@ -58,6 +57,12 @@ export default function viewMahasiswa({ dataTable }) {
           
         }
     `;
+
+    const fileInputRef = React.createRef();
+
+    const openFileInput = () => {
+        fileInputRef.current.click()
+    };
 
     const handleChange = (e) => {
         setFormData({
@@ -147,7 +152,7 @@ export default function viewMahasiswa({ dataTable }) {
         "Action",
     ];
 
-    const data = dataTable;
+    const [data, setData] = useState(dataTable);
 
     const renderBody = (data, index, context) => {
         // if no data found
@@ -314,6 +319,7 @@ export default function viewMahasiswa({ dataTable }) {
                                 text: "Data berhasil diupload",
                                 icon: "success",
                             });
+                            setData(result.data.data);
                         } else {
                             Swal.fire({
                                 title: "Error!",
@@ -526,89 +532,103 @@ export default function viewMahasiswa({ dataTable }) {
                 defaultColor="red"
                 defaultShowTime={4000}
             />
-            <SidebarUser>
-            <form onSubmit={handleSubmit} className="mx-auto md:w-2/3 lg:w-1/2 xl:w-1/2">
-                <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="mb-4 md:mb-0">
-                    <label className="block text-sm font-medium text-gray-600">Kode Mata Kuliah</label>
-                    <input
-                        type="text"
-                        name="kodeMataKuliah"
-                        value={formData.kodeMataKuliah}
-                        onChange={handleChange}
-                        className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-full focus:outline-none focus:border-blue-500"
-                    />
+            <SidebarUser routes={routes}>
+                <Breadcrumbs className="mb-5">
+                    <a href={route("asisten.dashboard")} className="opacity-60">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                        >
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                        </svg>
+                    </a>
+                    <a>Mahasiswa</a>
+                    <a href={route("Mahasiswa.View Jadwal")}>View Jadwal</a>
+                </Breadcrumbs>
+                <form onSubmit={handleSubmit} className="mx-auto md:w-2/3 lg:w-1/2 xl:w-1/2">
+                    <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="mb-4 md:mb-0">
+                        <label className="block text-sm font-medium text-gray-600">Kode Mata Kuliah</label>
+                        <input
+                            type="text"
+                            name="kodeMataKuliah"
+                            value={formData.kodeMataKuliah}
+                            onChange={handleChange}
+                            className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-full focus:outline-none focus:border-blue-500"
+                        />
+                        </div>
+                        <div>
+                        <label className="block text-sm font-medium text-gray-600">Nama Mata Kuliah</label>
+                        <input
+                            type="text"
+                            name="namaMataKuliah"
+                            value={formData.namaMataKuliah}
+                            onChange={handleChange}
+                            className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-full focus:outline-none focus:border-blue-500"
+                        />
+                        </div>
                     </div>
-                    <div>
-                    <label className="block text-sm font-medium text-gray-600">Nama Mata Kuliah</label>
-                    <input
-                        type="text"
-                        name="namaMataKuliah"
-                        value={formData.namaMataKuliah}
-                        onChange={handleChange}
-                        className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-full focus:outline-none focus:border-blue-500"
-                    />
-                    </div>
-                </div>
 
-                <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="mb-4 md:mb-0">
-                    <label className="block text-sm font-medium text-gray-600">Kelas</label>
-                    <input
-                        type="text"
-                        name="kelas"
-                        value={formData.kelas}
-                        onChange={handleChange}
-                        className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-full focus:outline-none focus:border-blue-500"
-                    />
+                    <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="mb-4 md:mb-0">
+                        <label className="block text-sm font-medium text-gray-600">Kelas</label>
+                        <input
+                            type="text"
+                            name="kelas"
+                            value={formData.kelas}
+                            onChange={handleChange}
+                            className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-full focus:outline-none focus:border-blue-500"
+                        />
+                        </div>
+                        <div>
+                        <label className="block text-sm font-medium text-gray-600">Hari</label>
+                        <select
+                            name="hari"
+                            value={formData.hari}
+                            onChange={handleChange}
+                            className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-full focus:outline-none focus:border-blue-500"
+                        >
+                            {["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"].map((day, index) => (
+                            <option key={index + 1} value={index + 1}>
+                                {day}
+                            </option>
+                            ))}
+                        </select>
+                        </div>
                     </div>
-                    <div>
-                    <label className="block text-sm font-medium text-gray-600">Hari</label>
-                    <select
-                        name="hari"
-                        value={formData.hari}
-                        onChange={handleChange}
-                        className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-full focus:outline-none focus:border-blue-500"
+
+                    <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="mb-4 md:mb-0">
+                        <label className="block text-sm font-medium text-gray-600">Jam Mulai</label>
+                        <input
+                            type="time"
+                            name="jamMulai"
+                            value={formData.jamMulai}
+                            onChange={handleChange}
+                            className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-full focus:outline-none focus:border-blue-500"
+                        />
+                        </div>
+                        <div>
+                        <label className="block text-sm font-medium text-gray-600">Durasi</label>
+                        <input
+                            type="number"
+                            name="durasi"
+                            value={formData.durasi}
+                            onChange={handleChange}
+                            className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-full focus:outline-none focus:border-blue-500"
+                        />
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="btn-submit bg-blue-500 text-white px-4 py-2 md:py-3 w-full md:w-1/2 md:h-11 rounded-xl hover:bg-blue-600 md:ml-28"
                     >
-                        {["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"].map((day, index) => (
-                        <option key={index + 1} value={index + 1}>
-                            {day}
-                        </option>
-                        ))}
-                    </select>
-                    </div>
-                </div>
-
-                <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="mb-4 md:mb-0">
-                    <label className="block text-sm font-medium text-gray-600">Jam Mulai</label>
-                    <input
-                        type="time"
-                        name="jamMulai"
-                        value={formData.jamMulai}
-                        onChange={handleChange}
-                        className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-full focus:outline-none focus:border-blue-500"
-                    />
-                    </div>
-                    <div>
-                    <label className="block text-sm font-medium text-gray-600">Durasi</label>
-                    <input
-                        type="number"
-                        name="durasi"
-                        value={formData.durasi}
-                        onChange={handleChange}
-                        className="mt-1 p-2 text-sm border border-gray-400 rounded-md w-full focus:outline-none focus:border-blue-500"
-                    />
-                    </div>
-                </div>
-
-                <button
-                    type="submit"
-                    className="btn-submit bg-blue-500 text-white px-4 py-2 md:py-3 w-full md:w-1/2 md:h-11 rounded-xl hover:bg-blue-600 md:ml-28"
-                >
-                    Submit
-                </button>
-            </form>
+                        Submit
+                    </button>
+                </form>
 
 
 
@@ -627,6 +647,7 @@ export default function viewMahasiswa({ dataTable }) {
                                     <Button
                                         variant="gradient"
                                         className="flex items-center gap-3"
+                                        onClick={openFileInput}
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -647,6 +668,7 @@ export default function viewMahasiswa({ dataTable }) {
                                                 type="file"
                                                 accept=".csv"
                                                 onChange={handleCSV}
+                                                ref={fileInputRef}
                                             />
                                             Upload CSV
                                         </label>
@@ -666,10 +688,10 @@ export default function viewMahasiswa({ dataTable }) {
                                             <path d="M17.064,4.656l-2.05-2.035C14.936,2.544,14.831,2.5,14.721,2.5H3.854c-0.229,0-0.417,0.188-0.417,0.417v14.167c0,0.229,0.188,0.417,0.417,0.417h12.917c0.229,0,0.416-0.188,0.416-0.417V4.952C17.188,4.84,17.144,4.733,17.064,4.656M6.354,3.333h7.917V10H6.354V3.333z M16.354,16.667H4.271V3.333h1.25v7.083c0,0.229,0.188,0.417,0.417,0.417h8.75c0.229,0,0.416-0.188,0.416-0.417V3.886l1.25,1.239V16.667z M13.402,4.688v3.958c0,0.229-0.186,0.417-0.417,0.417c-0.229,0-0.417-0.188-0.417-0.417V4.688c0-0.229,0.188-0.417,0.417-0.417C13.217,4.271,13.402,4.458,13.402,4.688"></path>
                                         </svg>
                                         <a
-                                            href="/Download/listMahasisa.csv"
-                                            download="listMahasisa.csv"
+                                            href="/saocp/download-template-jadwal"
+                                            download="template_jadwal.csv"
                                         >
-                                            Download CSV
+                                            Download Template
                                         </a>
                                     </Button>
                                     <Button

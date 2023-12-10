@@ -12,7 +12,7 @@ use Illuminate\Http\Response;
 class BulkInsertStudentController extends Controller
 {
 
-    public function index(){
+    public function index(Request $request){
         $data = json_decode(Http::withToken(session('token'))->get(env('API_URL') . "/students/"), true);
         $data = $data['data'];
         // dd($data);
@@ -37,26 +37,21 @@ class BulkInsertStudentController extends Controller
         }
         // dd($return['data']);
         return Inertia::render('Assistant/viewMahasiswa',[
-            "dataTable" => $return['data']
+            "dataTable" => $return['data'],
+            'routes' => $request->routes ?? [],
         ]);
     }
     public function insert(Request $request)
     {
         $prs = $request->file('file');
-        $prs = $request->file('file');
         
-        if($prs->getClientOriginalExtension() != 'csv'){
-            return response()->json(['success' => false,'data' => 'File must be in .csv format']);
-        }
         if($prs->getClientOriginalExtension() != 'csv'){
             return response()->json(['success' => false,'data' => 'File must be in .csv format']);
         }
         $handle = fopen($prs,'r');
         if($handle !== false){
             $headers = fgetcsv($handle, 0, ';');
-            $headers = fgetcsv($handle, 0, ';');
             foreach($headers as $h){
-                $column[] = strtolower($h);
                 $column[] = strtolower($h);
             }
             $save = [];
@@ -83,10 +78,12 @@ class BulkInsertStudentController extends Controller
                             $tahunNow = intval(substr($data[array_search($h,$column)],0,4));
                             $sem = substr($data[array_search($h,$column)],5,1) == 1 ? ($tahunNow - $tahunMasuk)*2 + 1 : ($tahunNow - $tahunMasuk)*2 + 2;
                             $save[$data[$nrp_index]]['semester'] = $sem;
+                            $save[$data[$nrp_index]][$h] = $data[array_search($h,$column)];
                         }else if($h == 'ipk' || $h == 'ips'){
                             $save[$data[$nrp_index]][$h] = $data[array_search($h,$column)];
                         }
-                        $save[$data[$nrp_index]]['program'] = 'i';
+                            $save[$data[$nrp_index]]['program'] = 'i';
+                        
                     }else{
                         if($h == 'kodemk'){
                             $decode = $save[$data[$nrp_index]]['prs'];
@@ -99,11 +96,11 @@ class BulkInsertStudentController extends Controller
                 }
             }
             fclose($handle);
-            // dd($save);
             $response = Http::withHeaders(['Accept' => 'application/json'])->withToken(session('token'))->post(env('API_URL').'/students-bulk',['data'=>$save]);
             $response = json_decode($response,true);
+            
             if($response['success']){
-                return response()->json(['success' => true,'data' => $save]);
+                return response()->json(['success' => true,'data' => $response['data']]);
             }else{
                 return response()->json(['success' => false,'data' => $response['message']]);
             }
@@ -187,7 +184,7 @@ class BulkInsertStudentController extends Controller
             $response = json_decode($response,true);
             // dd($response);
             if($response['success']){
-                return response()->json(['success' => true,'data' => $save]);
+                return response()->json(['success' => true,'data' => $response['data']]);
             }else{
                 return response()->json(['success' => false,'data' => $response['message']]);
             }
@@ -203,7 +200,7 @@ class BulkInsertStudentController extends Controller
         return $response;
     }
 
-    public function viewPrs($student_id)
+    public function viewPrs($student_id,Request $request)
     {
         $prs = json_decode(Http::withHeader('Accept','application/json')
         ->withToken(session('token'))
@@ -248,6 +245,7 @@ class BulkInsertStudentController extends Controller
             'prs' => $schedule,
             'name' => $prs['name'],
             'nrp' => $prs['nrp'],
+            'routes' => $request->routes ?? [],
         ]);
     }
 }

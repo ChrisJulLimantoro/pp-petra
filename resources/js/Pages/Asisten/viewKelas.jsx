@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext } from "react";
 import { Head } from "@inertiajs/react";
 import SidebarUser from "@/Layouts/SidebarUser";
-import {Card, Typography } from "@material-tailwind/react";
+import { Breadcrumbs, Card, Typography } from "@material-tailwind/react";
 import DataTable from "@/Components/DataTable/DataTable";
 import TableHeader from "@/Components/DataTable/TableHeader";
 import TableBody from "@/Components/DataTable/TableBody";
@@ -13,7 +13,7 @@ import DialogSuccess from "@/Components/DialogSuccess";
 import DialogAsk from "@/Components/DialogAsk";
 
 export const viewKelasContext = createContext();
-export default function viewKelas({ auth, dataAjar, dataLowongan}) {
+export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
     function processData(dataLowongan, context) {
         return dataLowongan.map((item) => ({
             ...item,
@@ -49,6 +49,9 @@ export default function viewKelas({ auth, dataAjar, dataLowongan}) {
 
     const updateDataLowongan = (updatedData) => {
         const processedUpdatedData = processData(updatedData);
+        axios.post('/asisten/ngajar', [
+            'id',
+        ])
         setLowongan(processedUpdatedData);
         console.log("Updating dataLowongan:", dataLowongan);
     };
@@ -93,10 +96,11 @@ export default function viewKelas({ auth, dataAjar, dataLowongan}) {
                         <TableCell>
                             <DialogAsk
                                 title="Delete"
-                                id={index}
+                                id={item.id}
                                 dialog="MENGAJAR KELAS INI"
                                 updateDataAjar={updateDataAjar}
                                 updateDataLowongan={updateDataLowongan}
+                                user={auth}
                             />
                         </TableCell>
                     ) : (
@@ -172,12 +176,12 @@ export default function viewKelas({ auth, dataAjar, dataLowongan}) {
                                     context.perPage * (context.currentPage - 1)}
                             </Typography>
                         </TableCell>
-                    ) : kolom === "Action" ? (
+                    ) : kolom === "Action" && item.status !== "FULL" ? (
                         <TableCell>
                             <DialogSuccess
                                 title="Ajar"
                                 dialog="PENDAFTARAN"
-                                id={index}
+                                id={item.practicum_id}
                                 updateDataAjar={updateDataAjar}
                                 updateDataLowongan={updateDataLowongan}
                                 data1={ajar}
@@ -227,86 +231,92 @@ export default function viewKelas({ auth, dataAjar, dataLowongan}) {
             <Head>
                 <title>SAOCP-Daftar Ajar Praktikum</title>
             </Head>
-            <div className="grid grid-cols-3">
-                <div className="flex-none col-span-1">
-                    <SidebarUser></SidebarUser>
-                </div>
-                <div className="flex flex-wrap max-w-min">
-                    {/* Table Ajar */}
-                    <div
-                        // className="col-span-1 flex-auto lg:ml-[-11vw] mt-5"
-                        className="col-span-1 flex-auto lg:mt-5"
-                        //style={{ width: "70vw" }}
-                    >
-                        <DataTable
-                            rawData={ajar}
-                            columns={kolomAjar}
-                            title={titleAjar}
-                        >
-                            <DataTableContext.Consumer>
-                                {(context) => (
-                                    <Card className="w-full z-[1]">
-                                        <TableHeader title={titleAjar} />
+            <div>
+                <SidebarUser routes={routes}>
+                    <div className="flex flex-wrap place-content-center">
+                        <div className="w-11/12">
+                            <Breadcrumbs className="mb-5">
+                                <a href={route("asisten.dashboard")} className="opacity-60">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-4 w-4"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                                    </svg>
+                                </a>
+                                <a>Asisten</a>
+                                <a href={route("Asisten.View Jadwal Ajar")}>View Jadwal Ajar</a>
+                            </Breadcrumbs>
 
-                                        <TableBody className={"relative "}>
-                                            <TableBody.Head />
-                                            <TableBody.Content>
-                                                {context.paginatedData.map(
-                                                    (item, index) =>
-                                                        renderDataAjar(
-                                                            item,
-                                                            index,
-                                                            context
-                                                        )
-                                                )}
-                                            </TableBody.Content>
-                                        </TableBody>
+                            <DataTable
+                                className="w-full overflow-hidden"
+                                rawData={ajar}
+                                columns={kolomAjar}
+                                title={titleAjar}
+                            >
+                                <DataTableContext.Consumer>
+                                    {(context) => (
+                                        <Card className="max-w-full z-1 md:py-0 overflow-x-hidden border border-gray-200 mb-6">
+                                            <TableHeader title={titleAjar} />
 
-                                        <TableFooter />
-                                    </Card>
-                                )}
-                            </DataTableContext.Consumer>
-                        </DataTable>
+                                            <TableBody className={"relative "}>
+                                                <TableBody.Head />
+                                                <TableBody.Content>
+                                                    {context.paginatedData.map(
+                                                        (item, index) =>
+                                                            renderDataAjar(
+                                                                item,
+                                                                index,
+                                                                context
+                                                            )
+                                                    )}
+                                                </TableBody.Content>
+                                            </TableBody>
+
+                                            <TableFooter />
+                                        </Card>
+                                    )}
+                                </DataTableContext.Consumer>
+                            </DataTable>
+                        </div>
+                        <div className="pt-6 w-11/12">
+                            <DataTable
+                                className="overflow-hidden"
+                                rawData={lowongan}
+                                columns={kolomLowongan}
+                                title={titleLowongan}
+                            >
+                                <DataTableContext.Consumer>
+                                    {(context) => (
+                                        <Card className="max-w-full z-1 md:py-0 overflow-x-hidden border border-gray-200 mb-6">
+                                            <TableHeader
+                                                title={titleLowongan}
+                                            />
+
+                                            <TableBody className={"relative "}>
+                                                <TableBody.Head />
+                                                <TableBody.Content>
+                                                    {context.paginatedData.map(
+                                                        (item, index) =>
+                                                            renderDataLowongan(
+                                                                item,
+                                                                index,
+                                                                context
+                                                            )
+                                                    )}
+                                                </TableBody.Content>
+                                            </TableBody>
+
+                                            <TableFooter />
+                                        </Card>
+                                    )}
+                                </DataTableContext.Consumer>
+                            </DataTable>
+                        </div>
                     </div>
-
-                    {/* Table Lowongan */}
-                    <div
-                        // className=" col-span-1 flex-auto lg:ml-[-11vw] mt-5"
-                        className="col-span-1 flex-auto lg:mt-5"
-
-                        // style={{ width: "70vw" }}
-                    >
-                        <DataTable
-                            rawData={lowongan}
-                            columns={kolomLowongan}
-                            title={titleLowongan}
-                        >
-                            <DataTableContext.Consumer>
-                                {(context) => (
-                                    <Card className="w-full z-[1]">
-                                        <TableHeader title={titleLowongan} />
-
-                                        <TableBody className={"relative "}>
-                                            <TableBody.Head />
-                                            <TableBody.Content>
-                                                {context.paginatedData.map(
-                                                    (item, index) =>
-                                                        renderDataLowongan(
-                                                            item,
-                                                            index,
-                                                            context
-                                                        )
-                                                )}
-                                            </TableBody.Content>
-                                        </TableBody>
-
-                                        <TableFooter />
-                                    </Card>
-                                )}
-                            </DataTableContext.Consumer>
-                        </DataTable>
-                    </div>
-                </div>
+                </SidebarUser>
             </div>
         </viewKelasContext.Provider>
     );

@@ -28,10 +28,10 @@ import {
     XMarkIcon,
 } from "@heroicons/react/24/outline";
 
-export default function Index({ events }) {
+export default function Index({ events, routes }) {
     const columns = ["Name", "Start date", "End Date", "Status", "Action"];
 
-    const [event, setEvent] = useReducer(eventReducer, events);
+    const [event, dispatch] = useReducer(eventReducer, events);
 
     // for the switch
     const initialCheckedStates = events.data.map((event) => event.status === 1);
@@ -114,7 +114,8 @@ export default function Index({ events }) {
     };
 
     const changeStatus = (index, context) => {
-        eventReducer(events, {
+        console.log('masuk gan')
+        dispatch({
             type: "status",
             index: index,
             context: context,
@@ -122,6 +123,7 @@ export default function Index({ events }) {
     };
 
     function eventReducer(events, action) {
+        console.log(events)
         console.log(action.type);
         console.log(action);
         if (action.type == "add") {
@@ -143,6 +145,9 @@ export default function Index({ events }) {
                     showAlert("Something went wrong!", "red");
                 });
 
+            setTimeout(
+                () => window.location.reload()
+                , 1000) 
             return events;
         } else if (action.type == "save") {
             let selectedevent = events.data[action.index];
@@ -170,6 +175,9 @@ export default function Index({ events }) {
                     showAlert("Something went wrong!", "red");
                 });
 
+                setTimeout(
+                    () => window.location.reload()
+                    , 1000)
             return events;
         } else if (action.type == "delete") {
             axios
@@ -186,9 +194,13 @@ export default function Index({ events }) {
                     console.log(err);
                     showAlert("Something went wrong!", "red");
                 });
-            // return events;
+
+                setTimeout(
+                    () => window.location.reload()
+                    , 1000)
+            return events;
         } else if (action.type == "status") {
-            let selectedEvent = event.data.find(
+            let selectedEvent = events.data.find(
                 (h) => h.id === action.index.value
             );
 
@@ -200,14 +212,15 @@ export default function Index({ events }) {
                     if (response.data.success) {
                         // Update the event status in the local state
                         selectedEvent.status = action.index.checked ? 1 : 0;
-                        let allEvents = [...event.data].map((event) =>
+                        events = [...events.data].map((event) =>
                             event.id === action.index.value
                                 ? { ...event, access: action.index.checked }
                                 : event
                         );
-                        setEvent(allEvents);
+                        // setEvent(allEvents);
                         // context.updateData(raw, filtered);
                         showAlert("Event status updated!", "green");
+                        
                     } else {
                         showAlert("Something went wrong!", "red");
                     }
@@ -216,7 +229,11 @@ export default function Index({ events }) {
                     console.log(err);
                     showAlert("Something went wrong!", "red");
                 });
-            // return events;
+            
+            setTimeout(
+                () => window.location.reload()
+                , 1000)
+            return events;
         } else {
             throw Error("Unknown action type");
         }
@@ -411,7 +428,7 @@ export default function Index({ events }) {
     };
 
     return (
-        <SidebarUser>
+        <SidebarUser routes={routes}>
             <Head>
                 <title>Add Event</title>
             </Head>
@@ -443,13 +460,20 @@ export default function Index({ events }) {
                             <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
                         </svg>
                     </a>
-                    <a href={route("event.all")}>Manage Events</a>
+                    <a href={route("Event")}>Manage Events</a>
                 </Breadcrumbs>
 
                 <DataTable
                     className="w-full"
                     rawData={events.data}
-                    columns={['#', "Name", "Start Date", "End Date", "Status", "Action"]}
+                    columns={[
+                        "#",
+                        "Name",
+                        "Start Date",
+                        "End Date",
+                        "Status",
+                        "Action",
+                    ]}
                     // changeStatus={changeStatus}
                 >
                     <DataTableContext.Consumer>
@@ -530,7 +554,8 @@ export default function Index({ events }) {
                                                 onChange={(e) =>
                                                     setData({
                                                         ...data,
-                                                        startdate: e.target.value,
+                                                        startdate:
+                                                            e.target.value,
                                                     })
                                                 }
                                                 error={error?.startdate}
@@ -570,7 +595,9 @@ export default function Index({ events }) {
                                             <Button
                                                 variant="filled"
                                                 className="w-1/2"
-                                                onClick={() => handleAdd(context)}
+                                                onClick={() =>
+                                                    handleAdd(context)
+                                                }
                                             >
                                                 Add
                                             </Button>

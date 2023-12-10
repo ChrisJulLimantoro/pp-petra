@@ -8,7 +8,6 @@ import {
     DialogFooter,
 } from "@material-tailwind/react";
 import axios from "axios";
-import Swal from "sweetalert2";
 
 export default function ConfirmationIconButton(props) {
     const {
@@ -18,32 +17,32 @@ export default function ConfirmationIconButton(props) {
         slot_used,
         total_slot,
         practicum_id,
+        nrp,
         type,
         student_assistant_practicum_id,
     } = props;
-
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(!open);
 
     function handleSubmit(e) {
         e.preventDefault();
-        handleOpen();
         const form = e.target;
         const formData = new FormData(form);
-        console.log(formData);
+        const datas = [];
 
-        axios.post("", formData).then((res) => {
+        for (let [key, value] of formData.entries()) {
+            const data = {
+                key: key,
+                value : value
+            };
+            datas.push(data);
+        }
+
+        axios.post("", datas).then((res) => {
             console.log(res);
-            Swal.fire({
-                title: res.data.message,
-                icon: (res.data.success == false) ? "error" : "success",
-                confirmButtonText: "Ok",
-            }).then(() => {
-                if (res.data.success){
-                    window.location.reload();
-                }
-            });
         });
+
+        console.log(datas);
     }
 
     return (

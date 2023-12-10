@@ -1,7 +1,7 @@
 import { Head } from "@inertiajs/react";
 import SidebarUser from "@/Layouts/SidebarUser";
 import SelectMatkul from "@/Components/SelectMatkul";
-import { Button, Card, Typography, Tooltip } from "@material-tailwind/react";
+import { Button, Card, Typography, Breadcrumbs } from "@material-tailwind/react";
 import DataTable from "@/Components/DataTable/DataTable";
 import TableHeader from "@/Components/DataTable/TableHeader";
 import TableBody from "@/Components/DataTable/TableBody";
@@ -16,7 +16,7 @@ import { useRef } from "react";
 import Swal from "sweetalert2";
 import { TrashIcon } from "@heroicons/react/24/outline";
 
-export default function viewMahasiswa({ dataTable }) {
+export default function viewMahasiswa({ dataTable, routes }) {
     const styles = `
 
     html{
@@ -39,7 +39,13 @@ export default function viewMahasiswa({ dataTable }) {
         "Semester",
         "Action",
     ];
-    const data = dataTable;
+    const [data, setData] = useState(dataTable);
+
+    const fileInputRef = React.createRef();
+
+    const openFileInput = () => {
+        fileInputRef.current.click()
+    };
 
     const renderBody = (data, index, context) => {
         // if no data found
@@ -178,12 +184,12 @@ export default function viewMahasiswa({ dataTable }) {
 
     const [fileData, setFileData] = useState([]);
     const [separator, setSeparator] = useState("");
+
     const handleCSV = (e) => {
         const file = e.target.files[0];
         setFileData(file);
         var form_data = new FormData();
         form_data.append("file", file);
-        console.log(form_data);
 
         Swal.fire({
             title: "Are you sure to upload this file?",
@@ -203,6 +209,7 @@ export default function viewMahasiswa({ dataTable }) {
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, Upload it!",
         }).then((result) => {
+            // console.log(result)
             if (result.isConfirmed) {
                 form_data.append("separator", result.value);
                 Swal.fire({
@@ -219,12 +226,25 @@ export default function viewMahasiswa({ dataTable }) {
                     .post(route("uploadMahasiswa"), form_data)
                     .then((result) => {
                         if (result.data.success) {
-                            // Handle sukses
+                            console.log(dataTable);
+                           
+                            Swal.fire({
+                                icon: "success",
+                                title: "Success",
+                                text: "File berhasil diupload",
+                            }); 
+                            setData(result.data.data);
+                            console.log(data);
                         } else {
-                            // Handle kegagalan
+                            Swal.fire({
+                                icon: "error",
+                                title: "Oops...",
+                                text: result.data.error_msg,
+                            });
                         }
                     })
                     .catch((error) => {
+                        console.log(error);
                         // Handle error
                     });
             }
@@ -248,7 +268,22 @@ export default function viewMahasiswa({ dataTable }) {
                 defaultColor="red"
                 defaultShowTime={4000}
             />
-            <SidebarUser>
+            <SidebarUser routes={routes}>
+                <Breadcrumbs className="mb-5">
+                    <a href={route("asisten.dashboard")} className="opacity-60">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                        >
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                        </svg>
+                    </a>
+                    <a>Mahasiswa</a>
+                    <a href={route("Mahasiswa.Manage Mahasiswa")}>Manage Mahasiswa</a>
+                </Breadcrumbs>
+
                 <DataTable rawData={data} columns={columnssss}>
                     <DataTableContext.Consumer>
                         {(context) => (
@@ -264,6 +299,7 @@ export default function viewMahasiswa({ dataTable }) {
                                     <Button
                                         variant="gradient"
                                         className="flex items-center gap-3"
+                                        onClick={openFileInput}
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -284,6 +320,7 @@ export default function viewMahasiswa({ dataTable }) {
                                                 type="file"
                                                 accept=".csv"
                                                 onChange={handleCSV}
+                                                ref={fileInputRef}
                                             />
                                             Upload CSV
                                         </label>
@@ -303,10 +340,10 @@ export default function viewMahasiswa({ dataTable }) {
                                             <path d="M17.064,4.656l-2.05-2.035C14.936,2.544,14.831,2.5,14.721,2.5H3.854c-0.229,0-0.417,0.188-0.417,0.417v14.167c0,0.229,0.188,0.417,0.417,0.417h12.917c0.229,0,0.416-0.188,0.416-0.417V4.952C17.188,4.84,17.144,4.733,17.064,4.656M6.354,3.333h7.917V10H6.354V3.333z M16.354,16.667H4.271V3.333h1.25v7.083c0,0.229,0.188,0.417,0.417,0.417h8.75c0.229,0,0.416-0.188,0.416-0.417V3.886l1.25,1.239V16.667z M13.402,4.688v3.958c0,0.229-0.186,0.417-0.417,0.417c-0.229,0-0.417-0.188-0.417-0.417V4.688c0-0.229,0.188-0.417,0.417-0.417C13.217,4.271,13.402,4.458,13.402,4.688"></path>
                                         </svg>
                                         <a
-                                            href="/Download/listMahasisa.csv"
-                                            download="listMahasisa.csv"
+                                            href="/saocp/download-template-prs"
+                                            download="template_prs.csv"
                                         >
-                                            Download CSV
+                                            Download template
                                         </a>
                                     </Button>
                                     <Button
