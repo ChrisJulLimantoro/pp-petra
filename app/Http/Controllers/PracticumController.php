@@ -101,7 +101,16 @@ class PracticumController extends Controller
                 'time' => $request->time,
                 'subject_id' => $subject_id,
             ]);
-        return response()->json($res->json(), $res->status());
+            
+        $responseData = $res->json();
+        $status = $res->status();
+
+        $responseData = (isset($responseData['error_message'])) ? ['errors' => [
+            'day' => [$responseData['error_message']],
+            'time' => [$responseData['error_message']],
+        ]] : $responseData;
+
+        return response()->json($responseData, $status);
     }
 
     public function update(Request $request, $id)
@@ -127,8 +136,16 @@ class PracticumController extends Controller
                 'time' => $request->time,
                 'subject_id' => $request->subject_id,
             ]);
+        
+        $responseData = $res->json();
+        $status = $res->status();
 
-        return response()->json($res->json(), $res->status());
+        $responseData = (isset($responseData['error_message'])) ? ['errors' => [
+            'day' => [$responseData['error_message']],
+            'time' => [$responseData['error_message']],
+        ]] : $responseData;
+
+        return response()->json($responseData, $status);
     }
 
     public function destroy($id)
@@ -215,11 +232,35 @@ class PracticumController extends Controller
     public function viewPracticum(Request $request)
     {
         $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        $dataPracticum = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/practicum-karen'), true);
+        $dataPracticum = json_decode(
+            Http::withToken(session('token'))->post(env('API_URL') . '/practicum-karen/'. session('user_id')),
+            true
+        )['data'];
+
         // dd($dataPracticum);
+
         $data = [];
 
-        foreach ($dataPracticum['data'] as $dp) {
+        foreach ($dataPracticum['ajar'] as $dp) {
+            $parts = explode("-", $dp['time']);
+
+            $startHour = substr_replace($parts[0], '.', -2, 0);
+            $endHour = substr_replace($parts[1], '.', -2, 0);
+
+            $time = $startHour . " - " . $endHour;
+
+            $data['ajar'][] = [
+                "hari" => $days[$dp['day'] - 1],
+                "jam" => $time,
+                "mata_kuliah_praktikum" => $dp['name'],
+                "kelas" => $dp['code'],
+                "jumlah_asisten" => $dp['assistants'],
+                "kuota" => $dp['quota'],
+                'id' => $dp['assistant_practicum_id'],
+            ];
+        }
+
+        foreach ($dataPracticum['lowongan'] as $dp) {
 
             $parts = explode("-", $dp['time']);
 
@@ -228,24 +269,23 @@ class PracticumController extends Controller
 
             $time = $startHour . " - " . $endHour;
 
-            $data[] = [
+            $data['lowongan'][] = [
                 "hari" => $days[$dp['day'] - 1],
                 "jam" => $time,
                 "mata_kuliah_praktikum" => $dp['name'],
                 "kelas" => $dp['code'],
                 "jumlah_asisten" => $dp['assistants'],
                 "kuota" => $dp['quota'],
+                'practicum_id' => $dp['practicum_id'],
             ];
         }
 
-        $dataA = array_slice($data, 0, 1);
-        $dataL = array_slice($data, 1);
-
         // dd($dataA);
         return Inertia::render('Asisten/viewKelas', [
-            'dataLowongan' => $dataL,
-            'dataAjar' => $dataA,
-            'routes' => $request->routes ?? []
+            'dataLowongan' => $data['lowongan'] ?? [],
+            'dataAjar' => $data['ajar'] ?? [],
+            'routes' => $request->routes ?? [],
+            'auth' => session('user_id'),
         ]);
     }
 
@@ -502,5 +542,30 @@ class PracticumController extends Controller
         }
 
         return response()->json($data, 201);
+    }
+
+    public function ajarPracticum(Request $request) {
+
+
+        $res = json_decode(
+            Http::withHeader('Accept', 'application/json')
+                ->withToken(session('token'))
+                ->post(config('app')['API_URL'] . '/assistant-practicums', [
+                    'assistant_id' => session('user_id'),
+                    'practicum_id' => $request->practicum_id,
+                ])
+        );
+
+        return $res;
+    }
+
+    public function batalAjarPracticum(string $id) {
+        $res = json_decode(
+            Http::withHeader('Accept', 'application/json')
+                ->withToken(session('token'))
+                ->delete(config('app')['API_URL'] . '/assistant-practicums/' . $id)
+        );
+
+        return $res;
     }
 }

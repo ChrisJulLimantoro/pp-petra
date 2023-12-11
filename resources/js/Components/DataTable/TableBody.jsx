@@ -26,7 +26,7 @@ export const Content = ({children, className = ''}) => {
 
 export const TableBody = ({ children, className = '', containerProps = null })  => {
     return (
-        <CardBody className={"flex overflow-y-auto px-0 py-0 mt-6 tableBody max-h-[50vh] md:max-h-80 " + containerProps?.className}>
+        <CardBody className={"flex overflow-y-auto px-0 py-0 mt-6 tableBody max-h-[50vh] md:max-h-88 " + containerProps?.className}>
             <table className={"w-full min-w-max table-auto text-left " + className}>
                 {children}
             </table>

@@ -13,6 +13,7 @@ import {
 import axios from "axios";
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import ButtonWithLoadingSpinner from "../ButtonWithLoadingSpinner";
+import Swal from "sweetalert2";
 
 function PracticumFormDialog(props, ref) {
     const [open, setOpen] = useState(false);

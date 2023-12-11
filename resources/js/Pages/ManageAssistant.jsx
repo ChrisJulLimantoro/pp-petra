@@ -3,6 +3,7 @@ import SidebarUser from "@/Layouts/SidebarUser";
 import DataTable, { DataTableContext } from "@/Components/DataTable/DataTable";
 import {
     Button,
+    Breadcrumbs,
     Card,
     Dialog,
     DialogBody,
@@ -127,6 +128,22 @@ function AssistantTable(props) {
                 ref={alertRef}
                 className="w-[20rem] fixed top-6 right-10 py-4"
             />
+
+            <Breadcrumbs className="mb-5">
+                <a href={route("asisten.dashboard")} className="opacity-60">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                    >
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                    </svg>
+                </a>
+                <a>Asisten</a>
+                <a href={route("Asisten.Manage Asisten")}>Manage Asisten</a>
+            </Breadcrumbs>
+
             <DataTable
                 className="w-full"
                 rawData={assistants}
@@ -144,6 +161,7 @@ function AssistantTable(props) {
                                     assistants = newAssistants;
                                     context.updateData(assistants);
                                 }}
+                                context={context}
                             />
                             <Card className="w-full z-1 md:py-0 overflow-auto">
                                 <TableHeader
@@ -328,21 +346,26 @@ const AddAssistantDialog = forwardRef((props, ref) => {
         );
         formData.append("email", `${nrp.toLowerCase()}@john.petra.ac.id`);
 
-        // console.log({
-        //     room_id: formData.get("room_id"),
-        //     email: nrp === '' ? '' : formData.get("email"),
-        //     name: formData.get("name"),
-        // });
-        // buttonRef.current?.setLoading((prev) => !prev);
-        // return;
-        const res = await axios.post(route("assistant.store"), {
-            room_id: formData.get("room_id"),
-            email: nrp === "" ? "" : formData.get("email"),
-            name: formData.get("name"),
-        });
+        let res;
+        try {
+            res = await axios.post(route("assistant.store"), {
+                room_id: formData.get("room_id"),
+                email: nrp === "" ? "" : formData.get("email"),
+                name: formData.get("name"),
+            });
+        } catch (error) {
+            buttonRef.current?.setLoading((prev) => !prev);
+            handleOpen();
+            props.alertRef.current?.show(
+                error.response.data?.message ?? "Something went wrong.",
+                "red",
+                2000
+            );
+            return;
+        }
 
         let newAssistant = {
-            id: res.data.user_id,
+            id: res.data.data.user_id,
             nama: formData.get("name"),
             nrp,
             ruangan: document.querySelector(`button[name="room"] > span`)
@@ -361,8 +384,10 @@ const AddAssistantDialog = forwardRef((props, ref) => {
             "green",
             2000
         );
-        props.assistants.push(newAssistant);
-        props.updateAssistants(props.assistants);
+            
+        let newAssistants = [...props.assistants];
+        newAssistants.push(newAssistant);
+        props.updateAssistants(newAssistants);
     };
 
     const handleEdit = async (e) => {

@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext } from "react";
 import { Head } from "@inertiajs/react";
 import SidebarUser from "@/Layouts/SidebarUser";
-import { Card, Typography } from "@material-tailwind/react";
+import { Breadcrumbs, Card, Typography } from "@material-tailwind/react";
 import DataTable from "@/Components/DataTable/DataTable";
 import TableHeader from "@/Components/DataTable/TableHeader";
 import TableBody from "@/Components/DataTable/TableBody";
@@ -49,6 +49,9 @@ export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
 
     const updateDataLowongan = (updatedData) => {
         const processedUpdatedData = processData(updatedData);
+        axios.post('/asisten/ngajar', [
+            'id',
+        ])
         setLowongan(processedUpdatedData);
         console.log("Updating dataLowongan:", dataLowongan);
     };
@@ -93,10 +96,11 @@ export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
                         <TableCell>
                             <DialogAsk
                                 title="Delete"
-                                id={index}
+                                id={item.id}
                                 dialog="MENGAJAR KELAS INI"
                                 updateDataAjar={updateDataAjar}
                                 updateDataLowongan={updateDataLowongan}
+                                user={auth}
                             />
                         </TableCell>
                     ) : (
@@ -172,12 +176,12 @@ export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
                                     context.perPage * (context.currentPage - 1)}
                             </Typography>
                         </TableCell>
-                    ) : kolom === "Action" ? (
+                    ) : kolom === "Action" && item.status !== "FULL" ? (
                         <TableCell>
                             <DialogSuccess
                                 title="Ajar"
                                 dialog="PENDAFTARAN"
-                                id={index}
+                                id={item.practicum_id}
                                 updateDataAjar={updateDataAjar}
                                 updateDataLowongan={updateDataLowongan}
                                 data1={ajar}
@@ -231,6 +235,21 @@ export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
                 <SidebarUser routes={routes}>
                     <div className="flex flex-wrap place-content-center">
                         <div className="w-11/12">
+                            <Breadcrumbs className="mb-5">
+                                <a href={route("asisten.dashboard")} className="opacity-60">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-4 w-4"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                                    </svg>
+                                </a>
+                                <a>Asisten</a>
+                                <a href={route("Asisten.View Jadwal Ajar")}>View Jadwal Ajar</a>
+                            </Breadcrumbs>
+
                             <DataTable
                                 className="w-full overflow-hidden"
                                 rawData={ajar}

@@ -1,7 +1,7 @@
 import { Head } from "@inertiajs/react";
 import SidebarUser from "@/Layouts/SidebarUser";
 import SelectMatkul from "@/Components/SelectMatkul";
-import { Button, Card, Typography, Tooltip } from "@material-tailwind/react";
+import { Button, Card, Typography, Breadcrumbs } from "@material-tailwind/react";
 import DataTable from "@/Components/DataTable/DataTable";
 import TableHeader from "@/Components/DataTable/TableHeader";
 import TableBody from "@/Components/DataTable/TableBody";
@@ -39,7 +39,13 @@ export default function viewMahasiswa({ dataTable, routes }) {
         "Semester",
         "Action",
     ];
-    const data = dataTable;
+    const [data, setData] = useState(dataTable);
+
+    const fileInputRef = React.createRef();
+
+    const openFileInput = () => {
+        fileInputRef.current.click()
+    };
 
     const renderBody = (data, index, context) => {
         // if no data found
@@ -178,12 +184,12 @@ export default function viewMahasiswa({ dataTable, routes }) {
 
     const [fileData, setFileData] = useState([]);
     const [separator, setSeparator] = useState("");
+
     const handleCSV = (e) => {
         const file = e.target.files[0];
         setFileData(file);
         var form_data = new FormData();
         form_data.append("file", file);
-        console.log(form_data);
 
         Swal.fire({
             title: "Are you sure to upload this file?",
@@ -203,6 +209,7 @@ export default function viewMahasiswa({ dataTable, routes }) {
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, Upload it!",
         }).then((result) => {
+            // console.log(result)
             if (result.isConfirmed) {
                 form_data.append("separator", result.value);
                 Swal.fire({
@@ -219,11 +226,15 @@ export default function viewMahasiswa({ dataTable, routes }) {
                     .post(route("uploadMahasiswa"), form_data)
                     .then((result) => {
                         if (result.data.success) {
+                            console.log(dataTable);
+                           
                             Swal.fire({
                                 icon: "success",
                                 title: "Success",
                                 text: "File berhasil diupload",
-                            });
+                            }); 
+                            setData(result.data.data);
+                            console.log(data);
                         } else {
                             Swal.fire({
                                 icon: "error",
@@ -258,6 +269,21 @@ export default function viewMahasiswa({ dataTable, routes }) {
                 defaultShowTime={4000}
             />
             <SidebarUser routes={routes}>
+                <Breadcrumbs className="mb-5">
+                    <a href={route("asisten.dashboard")} className="opacity-60">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                        >
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                        </svg>
+                    </a>
+                    <a>Mahasiswa</a>
+                    <a href={route("Mahasiswa.Manage Mahasiswa")}>Manage Mahasiswa</a>
+                </Breadcrumbs>
+
                 <DataTable rawData={data} columns={columnssss}>
                     <DataTableContext.Consumer>
                         {(context) => (
@@ -273,6 +299,7 @@ export default function viewMahasiswa({ dataTable, routes }) {
                                     <Button
                                         variant="gradient"
                                         className="flex items-center gap-3"
+                                        onClick={openFileInput}
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -293,6 +320,7 @@ export default function viewMahasiswa({ dataTable, routes }) {
                                                 type="file"
                                                 accept=".csv"
                                                 onChange={handleCSV}
+                                                ref={fileInputRef}
                                             />
                                             Upload CSV
                                         </label>

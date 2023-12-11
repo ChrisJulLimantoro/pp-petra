@@ -71,7 +71,7 @@ export default class DataTable extends Component {
                 let found = false;
 
                 this.state.columns.map((column) => {
-                    let columnName = column.toString().toLowerCase();
+                    let columnName = column.toString().toLowerCase().replaceAll(" ", "_");
                     if (
                         data[columnName]
                             ?.toString()
@@ -105,10 +105,10 @@ export default class DataTable extends Component {
 
     sortData(column, direction) {
         let sortedData = this.state.filteredData.sort((a, b) => {
-            if (a[column] < b[column]) {
+            if (a[column.replaceAll(' ', '_').toLowerCase()] < b[column.replaceAll(' ', '_').toLowerCase()]) {
                 return direction === "asc" ? -1 : 1;
             }
-            if (a[column] > b[column]) {
+            if (a[column.replaceAll(' ', '_').toLowerCase()] > b[column.replaceAll(' ', '_').toLowerCase()]) {
                 return direction === "asc" ? 1 : -1;
             }
             return 0;

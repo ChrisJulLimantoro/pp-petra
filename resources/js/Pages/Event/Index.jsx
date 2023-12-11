@@ -31,7 +31,7 @@ import {
 export default function Index({ events, routes }) {
     const columns = ["Name", "Start date", "End Date", "Status", "Action"];
 
-    const [event, setEvent] = useReducer(eventReducer, events);
+    const [event, dispatch] = useReducer(eventReducer, events);
 
     // for the switch
     const initialCheckedStates = events.data.map((event) => event.status === 1);
@@ -114,7 +114,8 @@ export default function Index({ events, routes }) {
     };
 
     const changeStatus = (index, context) => {
-        eventReducer(events, {
+        console.log('masuk gan')
+        dispatch({
             type: "status",
             index: index,
             context: context,
@@ -122,6 +123,7 @@ export default function Index({ events, routes }) {
     };
 
     function eventReducer(events, action) {
+        console.log(events)
         console.log(action.type);
         console.log(action);
         if (action.type == "add") {
@@ -143,6 +145,9 @@ export default function Index({ events, routes }) {
                     showAlert("Something went wrong!", "red");
                 });
 
+            setTimeout(
+                () => window.location.reload()
+                , 1000) 
             return events;
         } else if (action.type == "save") {
             let selectedevent = events.data[action.index];
@@ -170,6 +175,9 @@ export default function Index({ events, routes }) {
                     showAlert("Something went wrong!", "red");
                 });
 
+                setTimeout(
+                    () => window.location.reload()
+                    , 1000)
             return events;
         } else if (action.type == "delete") {
             axios
@@ -186,9 +194,13 @@ export default function Index({ events, routes }) {
                     console.log(err);
                     showAlert("Something went wrong!", "red");
                 });
-            // return events;
+
+                setTimeout(
+                    () => window.location.reload()
+                    , 1000)
+            return events;
         } else if (action.type == "status") {
-            let selectedEvent = event.data.find(
+            let selectedEvent = events.data.find(
                 (h) => h.id === action.index.value
             );
 
@@ -200,14 +212,15 @@ export default function Index({ events, routes }) {
                     if (response.data.success) {
                         // Update the event status in the local state
                         selectedEvent.status = action.index.checked ? 1 : 0;
-                        let allEvents = [...event.data].map((event) =>
+                        events = [...events.data].map((event) =>
                             event.id === action.index.value
                                 ? { ...event, access: action.index.checked }
                                 : event
                         );
-                        setEvent(allEvents);
+                        // setEvent(allEvents);
                         // context.updateData(raw, filtered);
                         showAlert("Event status updated!", "green");
+                        
                     } else {
                         showAlert("Something went wrong!", "red");
                     }
@@ -216,7 +229,11 @@ export default function Index({ events, routes }) {
                     console.log(err);
                     showAlert("Something went wrong!", "red");
                 });
-            // return events;
+            
+            setTimeout(
+                () => window.location.reload()
+                , 1000)
+            return events;
         } else {
             throw Error("Unknown action type");
         }
