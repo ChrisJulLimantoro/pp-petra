@@ -400,7 +400,7 @@ class PracticumController extends Controller
         # check apakah slot sudah full
         $slot_used = $valid["student_practicum"];
         $slot_used = count($slot_used);
-        if ($slot_used >= $valid["quota"]) {
+        if ($slot_used + count($students) > $valid["quota"]) {
             return response()->json([
                 'success' => false,
                 'message' => 'Kuota sudah penuh!',
