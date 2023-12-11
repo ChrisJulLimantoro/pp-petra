@@ -56,6 +56,10 @@ export default function Move(props) {
                 formatTime(item.time) +
                 " - " +
                 formatTime(item.time + item.subject.duration * 100),
+            student_quota: item.quota,
+            assistant_quota: Math.floor(item.quota/8),
+            student_count : item.student_practicum.length,
+            assistant_count : item.assistant_practicum.length,
         });
     });
 
@@ -102,6 +106,7 @@ export default function Move(props) {
                             current_practicum_id={id}
                             target_practicum_id={target_practicum_id}
                             setTargetPracticumId={setTargetPracticumId}
+                            type={type}
                         />
                     </form>
 

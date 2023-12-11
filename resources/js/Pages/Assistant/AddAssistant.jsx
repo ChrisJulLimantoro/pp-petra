@@ -5,9 +5,9 @@ import LabelTableAdd from "@/Components/Assistant/Labels/LabelTableAdd";
 import TableWithAddButton from "@/Components/Assistant/Table/TableWithAddButton";
 import LabelAdd from "@/Components/Assistant/Labels/LabelAdd";
 import TableNoButton from "@/Components/Assistant/Table/TableNoButton";
+import DataTableAddAssistant from "@/Components/Assistant/Table/DataTableAddAssistant";
 
 export default function AddAssistant(props) {
-    
     const { id, data, data2, routes } = props;
 
     const hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
@@ -80,8 +80,6 @@ export default function AddAssistant(props) {
         }
     });
 
-    console.log(data2);
-
     const head_asisten_avail = ["Nama", "NRP", "Action"];
 
     return (
@@ -117,11 +115,22 @@ export default function AddAssistant(props) {
                         />
                     </div>
                     <div className="tabel-add mt-10">
-                        <LabelTableAdd type="Asisten" total_available={data_asisten_avail.length} />
-                        <TableWithAddButton
+                        {/* <LabelTableAdd
+                            type="Asisten"
+                            total_available={data_asisten_avail.length}
+                        /> */}
+                        {/* <TableWithAddButton
                             TABLE_HEAD={head_asisten_avail}
                             TABLE_ROWS={data_asisten_avail}
-                            practicum_id = {id}
+                            practicum_id={id}
+                            slot_used={data.assistant_practicum.length}
+                            total_slot={Math.floor(data.quota / 8)}
+                        /> */}
+                        <DataTableAddAssistant
+                            total_available={data_asisten_avail.length}
+                            TABLE_HEAD={head_asisten_avail}
+                            TABLE_ROWS={data_asisten_avail}
+                            practicum_id={id}
                             slot_used={data.assistant_practicum.length}
                             total_slot={Math.floor(data.quota / 8)}
                         />

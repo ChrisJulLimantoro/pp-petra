@@ -3,10 +3,11 @@ import SidebarUser from "@/Layouts/SidebarUser";
 import LabelTable from "@/Components/Assistant/Labels/LabelTable";
 import DetailsTitle from "@/Components/Assistant/Title/DetailsTitle";
 import TableWithEditDeleteButton from "@/Components/Assistant/Table/TableWithEditDeleteButton";
+import DataTableViewStudent from "@/Components/Assistant/Table/DataTableViewStudent";
 
 export default function DetailKelas(props) {
     const { data, routes } = props;
-    console.log(data);
+
     const hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
     function formatTime(time) {
@@ -83,6 +84,8 @@ export default function DetailKelas(props) {
         students_data.push(student);
     });
 
+    console.log(students_data);
+
     return (
         <>
             <Head>
@@ -120,7 +123,7 @@ export default function DetailKelas(props) {
                     </div>
 
                     <div className="tabel_mahasiswa mt-10">
-                        <LabelTable
+                        {/* <LabelTable
                             type="Mahasiswa"
                             slot_used={data.student_practicum.length}
                             total_slot={data.quota}
@@ -129,6 +132,14 @@ export default function DetailKelas(props) {
                         <TableWithEditDeleteButton
                             TABLE_HEAD={head_student}
                             TABLE_ROWS={students_data}
+                            type="Mahasiswa"
+                        /> */}
+                        <DataTableViewStudent
+                            TABLE_HEAD={head_student}
+                            TABLE_ROWS={students_data}
+                            slot_used={data.student_practicum.length}
+                            total_slot={data.quota}
+                            addHref={route("practicum.addStudent", data.id)}
                             type="Mahasiswa"
                         />
                     </div>

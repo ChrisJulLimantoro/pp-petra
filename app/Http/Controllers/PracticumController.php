@@ -357,6 +357,16 @@ class PracticumController extends Controller
             }
         }
 
+        # check apakah slot sudah full
+        $slot_used = $valid["student_practicum"];
+        $slot_used = count($slot_used);
+        if ($slot_used >= $valid["quota"]) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kuota sudah penuh!',
+            ], 201);
+        }
+
         # insert mahasiswa ke kelas praktikum
         foreach ($students as $student) {
             $res = Http::withHeader('Accept', 'application/json')
@@ -411,13 +421,12 @@ class PracticumController extends Controller
             # check apakah slot sudah full
             $slot_used = $valid["assistant_practicum"];
             $slot_used = count($slot_used);
-            if ($slot_used >= floor($valid["quota"]/ 8)) {
+            if ($slot_used >= floor($valid["quota"] / 8)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Kuota sudah penuh!',
                 ], 201);
             }
-
 
             #delete asisten dari kelas praktikum
             $res = Http::withHeader('Accept', 'application/json')
@@ -452,6 +461,16 @@ class PracticumController extends Controller
                         'message' => 'Mahasiswa sudah terdaftar pada kelas praktikum tersebut!',
                     ], 201);
                 }
+            }
+
+            # check apakah slot sudah full
+            $slot_used = $valid["student_practicum"];
+            $slot_used = count($slot_used);
+            if ($slot_used >= $valid["quota"]) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Kuota sudah penuh!',
+                ], 201);
             }
 
             #delete mahasiswa dari kelas praktikum
