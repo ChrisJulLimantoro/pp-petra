@@ -59,12 +59,16 @@ class DaftarPraktikumController extends Controller
                 } elseif ($x['practicum']['day'] == "6") {
                     $day = 'Sabtu';
                 };
+
+                if ($x['choice'] == 0) {
+                    continue;
+                }
                 if ($x['choice'] == 1) {
                     $choice = "Pilihan 1";
-                } else {
+                } else if ($x['choice'] == 2){
                     $choice = "Pilihan 2";
                 }
-
+                
                 if ($x['accepted'] == 0) {
                     $status = "Pending..";
                 } elseif($x['accepted'] == 1) {
