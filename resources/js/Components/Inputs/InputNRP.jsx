@@ -40,8 +40,8 @@ export default function InputNRP(props) {
 
                     setError("");
                 } else {
-                    setNewStud({"nama": "-", "nrp": "-", "jurusan": "-"});
                     setError("Data Mahasiswa tidak ditemukan!");
+                    setNewStud({"nama": "-", "nrp": "-", "jurusan": "-"});
                 }
             });
         }
@@ -51,6 +51,11 @@ export default function InputNRP(props) {
         if (nrp.length !== 9) {
             setNewStud({"nama": "-", "nrp": "-", "jurusan": "-"});
             setError("NRP must be 9 characters long");
+            return;
+        }
+
+        if (newStud.nama == "-") {
+            setError("Data Mahasiswa tidak ditemukan!");
             return;
         }
         
@@ -81,7 +86,7 @@ export default function InputNRP(props) {
             </Typography>
 
             <div className="flex gap-8">
-                <div className="relative flex w-full max-w-[24rem]">
+                <form className="relative flex w-full max-w-[24rem]" onSubmit={(e)=>{e.preventDefault(); handleClick();}}>
                     <Input
                         type="nrp"
                         name="nrp"
@@ -94,7 +99,6 @@ export default function InputNRP(props) {
                             className: "min-w-0",
                         }}
                         autoFocus
-                        
                     />
                     <Button
                         size="sm"
@@ -105,7 +109,7 @@ export default function InputNRP(props) {
                     >
                         Add
                     </Button>
-                </div>
+                </form>
             </div>
             {error && (
                 <Typography variant="small" color="red" className="mt-2">

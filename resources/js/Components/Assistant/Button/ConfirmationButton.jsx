@@ -34,7 +34,6 @@ export default function ConfirmationButton(props) {
         const formData = new FormData(form);
 
         axios.post("", formData).then((res) => {
-            console.log(res);
             Swal.fire({
                 title: res.data.message,
                 icon: res.data.success == false ? "error" : "success",
