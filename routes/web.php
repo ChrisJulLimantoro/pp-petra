@@ -91,6 +91,7 @@ Route::middleware('cekRole')-> group(function() {
         Route::prefix('praktikum')->group(function () {
             Route::post('/', [PracticumController::class, 'store'])->name('practicum.store');
             Route::delete('/{id}', [PracticumController::class, 'destroy'])->name('practicum.destroy');
+            Route::post('deleteAllPracticum', [PracticumController::class, 'destroyAll'])->name('practicum.destroyAll');
             Route::patch('/{id}', [PracticumController::class, 'update'])->name('practicum.update');
             Route::get('/{id}', [PracticumController::class, 'getClassDetails'])->name('practicum.detail');
             Route::post('/{id}', [PracticumController::class, 'deleteMhsAsistenPraktikum'])->name('studentAssistantPracticum.delete');

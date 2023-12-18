@@ -71,10 +71,9 @@ class PracticumController extends Controller
 
         $props['subjects'] = $subjects->toArray();
         $props['rooms'] = $rooms;
-        $props['practicums'] = $practicums;
+        $props['practicumsTable'] = $practicums;
         $props['routes'] = $request->routes ?? [];
 
-        // dd($props);
         return Inertia::render('Assistant/Practicum', $props);
     }
 
@@ -155,6 +154,17 @@ class PracticumController extends Controller
             'Content-Type' => 'application/json'
         ])->withToken(session('token'))
             ->delete(env('API_URL') . '/practicums/' . $id);
+
+        return redirect()->back()->with('message', $res->json());
+    }
+
+    public function destroyAll() 
+    {
+        $res = Http::withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json'
+        ])->withToken(session('token'))
+            ->get(env('API_URL') . '/practicums-delete-all');
 
         return redirect()->back()->with('message', $res->json());
     }

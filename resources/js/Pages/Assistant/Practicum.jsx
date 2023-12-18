@@ -21,6 +21,7 @@ export default function Practicum(props) {
                     <hr style={{ borderTopWidth: "3px" }} className="mb-8" />
                     <div className="pb-16 relative">
                         <PracticumTable
+                            practicumsTable={props.practicumsTable}
                             practicums={props.practicums}
                             rooms={props.rooms}
                             subjects={props.subjects}

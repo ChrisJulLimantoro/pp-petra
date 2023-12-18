@@ -3,10 +3,12 @@ import PracticumFormDialog from "./PracticumFormDialog";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Button } from "@material-tailwind/react";
 import { PopoverActionButton } from "./PopoverActionButton";
+import Swal from "sweetalert2";
 
 export function PracticumTable(props) {
     const dialogRef = useRef(null);
     const [formData, setFormData] = useState({});
+    const formDeleteAll = useRef(null);
     const openEditFormFactory = (practicum) => {
         return () => {
             const newFormData = {...practicum};
@@ -16,6 +18,19 @@ export function PracticumTable(props) {
             dialogRef.current?.handleOpen();
             dialogRef.current?.handleRoomChange(practicum.room_id);
         }
+    }
+
+    const deleteAllPracticum = async () => {
+        const res = await Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        });
+        if (res.isConfirmed) formDeleteAll.current.submit();
     }
 
     const getPracticums = (rooms) => {
@@ -74,7 +89,21 @@ export function PracticumTable(props) {
 
     return (
         <>
-            <div className="px-3 mb-5">
+            <form
+                action={route("practicum.destroyAll")}
+                ref={formDeleteAll}
+                method="post"
+            >
+                <input
+                    type="hidden"
+                    name="_token"
+                    value={
+                        document.head.querySelector('meta[name="csrf-token"]')
+                            .content
+                    }
+                />
+            </form>
+            <div className="flex justify-between px-3 mb-5">
                 <Button
                     onClick={() => {
                         setFormData({});
@@ -84,11 +113,14 @@ export function PracticumTable(props) {
                 >
                     Tambah Kelas
                 </Button>
+                <Button className="bg-red-600 text-[#FFDD83] ms-6" onClick={deleteAllPracticum}>
+                    Hapus Semua Kelas
+                </Button>
             </div>
             <div className="overflow-x-auto pb-2">
                 <table >
                     <tbody>
-                        {Object.entries(props.practicums).map(([day, times]) => {
+                        {Object.entries(props.practicumsTable).map(([day, times]) => {
                             return (
                                 <Fragment key={day}>
                                     <tr key={day}>
@@ -113,5 +145,3 @@ export function PracticumTable(props) {
         </>
     );
 }
-
-
