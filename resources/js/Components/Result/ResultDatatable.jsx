@@ -15,8 +15,11 @@ export function ResultDatatable(props) {
         ACCEPTED: "Accepted",
     };
 
+    const [occupancies, setOccupancies] = useOccupancies(props.subjectPracticums);
 
-    const studentResults = props.data !== undefined ? Object.entries(props.data).map(
+    const [filter, setFilter] = useState(FILTER.NO_FILTER);
+
+    const [studentResults, setStudentResults] = useState(props.data !== undefined ? Object.entries(props.data).map(
         ([_, studentResult]) => {
             const r = {
                 user_id: studentResult.student.user.id,
@@ -31,9 +34,10 @@ export function ResultDatatable(props) {
 
             return r;
         }
-    ) : [];
+    ) : []);
 
-    const assignStudent = async (e, practicumId, student_id) => {
+    const assignStudent = async (e, practicumId, student_id, context) => {
+        console.log(e.target.dataset.oldValue);
         try {
             var response = await axios.post(
                 route('result.assign-student', 
@@ -45,6 +49,24 @@ export function ResultDatatable(props) {
                     "green",
                     2000 
                 )
+                const newStudentResults = [...studentResults].map(studentResult => {
+                    if (studentResult.user_id == student_id) {
+                        studentResult.class_id = practicumId;
+                        studentResult.class = props.selectedSubject?.practicums.filter((practicum) => practicum.id == practicumId)[0].code;
+                        studentResult.accepted = true;
+                    }
+                    return studentResult;
+                });
+                context.updateData(newStudentResults);
+                setStudentResults(newStudentResults);
+                setOccupancies(() => {
+                    const newOccupancies = {...occupancies};
+                    newOccupancies[practicumId]++;
+                    if (e.target.dataset.oldValue != '-') {
+                        newOccupancies[e.target.dataset.oldValue]--;
+                    }
+                    return newOccupancies;
+                });
             }
         }
         catch (error) {
@@ -59,7 +81,7 @@ export function ResultDatatable(props) {
     }
 
     // custom render function
-    const renderCustom = (studentResult, index) => {
+    const renderCustom = (studentResult, index, context) => {
         // if no data found
         if (studentResult.empty) {
             return (
@@ -128,12 +150,12 @@ export function ResultDatatable(props) {
                                     );
                                 }) }
                             </Select> */}
-                            <select defaultValue={studentResult.accepted ? studentResult.class_id : '-'} style={(!studentResult.accepted) ? {color: 'red'} : {}} className="ms-3 me-6" data-old-value={(studentPracticum !== undefined) ? studentPracticum.id : ''} onChange={(e) => {assignStudent(e, e.target.value, studentResult.user_id)}}>
+                            <select defaultValue={studentResult.accepted ? studentResult.class_id : '-'} style={(!studentResult.accepted) ? {color: 'red'} : {}} className="ms-3 me-6" data-old-value={studentResult.accepted ? studentResult.class_id : '-'} onChange={(e) => {assignStudent(e, e.target.value, studentResult.user_id, context)}}>
                                 <option value="-" disabled>Rejected</option>
                                 {practicums.map((p) => {
                                     return (
                                         <option key={p.id} value={p.id}>
-                                            {p.code}
+                                            {p.code} ({occupancies[p.id]}/{p.quota})
                                         </option>
                                     );
                                 }) }
@@ -164,7 +186,7 @@ export function ResultDatatable(props) {
             <DataTable
                 className="w-full"
                 rawData={studentResults}
-                columns={["#", "NRP", "Name", "Class"]}
+                columns={["#", "NRP", "Name", "Class (Capacity)"]}
             >
                 <DataTableContext.Consumer>
                     {(context) => (
@@ -179,10 +201,10 @@ export function ResultDatatable(props) {
                                     <Select
                                         variant="outlined"
                                         label="Select Filter"
-                                        value={props.filter}
+                                        value={filter}
                                         onChange={(e) => {
                                             handleChange(e, context);
-                                            props.setFilter(e);
+                                            setFilter(e);
                                         }}
                                         className="relative z-10 select-button"
                                     >
@@ -204,7 +226,7 @@ export function ResultDatatable(props) {
                                 <TableBody.Content>
                                     {context.paginatedData.map(
                                         (studentResult, index) =>
-                                            renderCustom(studentResult, index)
+                                            renderCustom(studentResult, index, context)
                                     )}
                                 </TableBody.Content>
                             </TableBody>
@@ -216,4 +238,18 @@ export function ResultDatatable(props) {
             </DataTable>
         </div>
     );
+}
+
+function useOccupancies(subjectPracticums) {
+    const occupancies = {};
+    subjectPracticums.forEach((practicum) => {
+        occupancies[practicum.id] = 0;
+        practicum.student_practicum.forEach((sp) => {
+            if (sp.accepted % 2 == 1) {
+                occupancies[practicum.id]++;
+            }
+        })
+    });
+
+    return useState(occupancies);
 }
