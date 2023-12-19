@@ -15,6 +15,8 @@ class ResultController extends Controller
             ->get(env('API_URL') . '/events')->json('data');
         $props['subjects'] = Http::withToken(session('token'))
             ->get(env('API_URL') . '/subjects')->json('data');
+        $props['practicums'] = Http::withToken(session('token'))
+            ->get(env('API_URL') . '/practicums')->json('data');
         return Inertia::render('Result', $props);
     }
 

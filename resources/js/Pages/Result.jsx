@@ -34,7 +34,14 @@ export default function Result(props) {
     const [selectedSubject, setSelectedSubject] = useState(null);
     const emptyTabRef = useRef(null);
     const alertRef = useRef();
-    const [filter, setFilter] = useState('No Filter');
+
+    const subjectPracticums = {};
+    props.practicums.forEach((practicum) => {
+        if (subjectPracticums[practicum.subject_id] === undefined) {
+            subjectPracticums[practicum.subject_id] = [];
+        }
+        subjectPracticums[practicum.subject_id].push(practicum);
+    });
 
     const generateResult = async () => {
         if (eventId === null) {
@@ -70,26 +77,31 @@ export default function Result(props) {
         });
 
         const responses = await Promise.all(generateResultRequests);
+        swalLoading.close();
+
+        if (responses.some((res) => res.data.code != 200)) {
+            Swal.fire("Error!", "Something went wrong. Please try again!", "error");
+            return;
+        }
+
         const eventStatusResponse = await axios.post(
             route("result.update-event-generated-status", eventId)
         );
-        swalLoading.close();
 
-        if (
-            responses.some((res) => res.data.code != 200) ||
-            eventStatusResponse.data.code != 200
-        ) {
-            Swal.fire("Error!", "Something went wrong.", "error");
+        if (eventStatusResponse.data.code != 200) {
+            Swal.fire("Error!", "Something went wrong. Please try again!", "error");
             return;
         }
+        
         Swal.fire("Success!", "Result generated successfully.", "success").then(
             () => {
-                setEventId(tempEventId);
-                setEventsGeneratedStatus((prev) => {
-                    const temp = { ...prev };
-                    temp[tempEventId] = 1;
-                    return temp;
-                });
+                // setEventId(tempEventId);
+                // setEventsGeneratedStatus((prev) => {
+                //     const temp = { ...prev };
+                //     temp[tempEventId] = 1;
+                //     return temp;
+                // });
+                window.location.reload();
             }
         );
     };
@@ -105,17 +117,19 @@ export default function Result(props) {
                     const subject = result.practicum.subject_id;
                     result.accepted = result.accepted % 2 !== 0;
 
-                    if (data[subject] === undefined) {
+                    if (result.event_id !== null && data[subject] === undefined) {
                         data[subject] = {};
                     }
                     if (!result.generated) return;
 
+                    if (!Object.hasOwn(data, subject)) return;
                     if (Object.hasOwn(data[subject], result.student_id)) {
                         if (data[subject][result.student_id].accepted) return;
                         if (result.accepted) {
                             data[subject][result.student_id] = result;
                         }
                     } else {
+                        if (result.event_id === null) return;
                         data[subject][result.student_id] = result;
                     }
                 });
@@ -198,24 +212,10 @@ export default function Result(props) {
                                                         key={key}
                                                         value={key}
                                                         className="max-w-[200px]"
-                                                        onClick={() => {
-                                                            setSelectedSubject(
-                                                                allSubjects[key]
-                                                            );
-                                                            setFilter('No Filter');
-                                                            document.querySelector('.table-header input[fdprocessedid]').value = '';
-                                                        }}
                                                     >
                                                         {allSubjects[key].name}
                                                     </Tab>
                                                 ))}
-                                                <Tab
-                                                    key="blank"
-                                                    value="blank"
-                                                    className="max-w-[0px] w-0 absolute"
-                                                    style={{ right: "-50px" }}
-                                                    ref={emptyTabRef}
-                                                ></Tab>
                                             </>
                                         ) : (
                                             <Tab value="empty">Empty</Tab>
@@ -228,20 +228,23 @@ export default function Result(props) {
                                 </TabsHeader>
                                 <TabsBody>
                                     <div className="bg-gray-50 px-6 py-4 min-h-[140px] rounded-lg">
-                                        {selectedSubject !== null &&
-                                            !tabLoading &&
+                                        {!tabLoading &&
                                             eventId !== null && (
-                                                <ResultDatatable
-                                                    selectedSubject={
-                                                        selectedSubject
-                                                    }
-                                                    filter={filter}
-                                                    setFilter={setFilter}
-                                                    data={
-                                                        data[selectedSubject.id]
-                                                    }
-                                                    alertRef={alertRef}
-                                                />
+                                                tabs.map(([key, value]) => (
+                                                    <TabPanel key={key} value={key}>
+                                                        <ResultDatatable
+                                                            selectedSubject={
+                                                                allSubjects[key]
+                                                            }
+                                                            subjectPracticums={subjectPracticums[key]}
+                                                            data={
+                                                                data[key]
+                                                            }
+                                                            alertRef={alertRef}
+                                                        />
+                                                    </TabPanel>
+
+                                                ))
                                             )}
                                     </div>
                                 </TabsBody>

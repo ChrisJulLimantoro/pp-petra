@@ -71,6 +71,9 @@ function PracticumFormDialog(props, ref) {
     };
 
     const handleSubmit = async (e) => {
+        feedbackRefs.quota.current.classList.add('hidden');
+        feedbackRefs.quota.current.classList.remove('text-orange-400');
+
         submitButtonRef.current?.setLoading(true);
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -248,9 +251,19 @@ function PracticumFormDialog(props, ref) {
                                         }}
                                         name="quota"
                                         defaultValue={props.formData.quota}
-                                        pattern="[0-9]{2}"
+                                        pattern="[0-9]{1,2}"
                                         autoComplete="off"
                                         error={inputsError.quota}
+                                        onChange={(e) => {
+                                            feedbackRefs.quota.current.classList.add('hidden');
+                                            feedbackRefs.quota.current.classList.remove('text-orange-400');
+                                            const newQuota = e.target.value;
+                                            if (newQuota < props.formData.quota) {
+                                                feedbackRefs.quota.current.classList.remove('hidden');
+                                                feedbackRefs.quota.current.classList.add('text-orange-400');
+                                                feedbackRefs.quota.current.innerHTML = "Bila kuota dikurangi, hasil praktikum mata kuliah ini akan digenerate ulang";
+                                            }
+                                        }}
                                     />
                                     <div className="rounded-l-none flex border-1 w-1/2 rounded-[7px] border border-blue-gray-200 bg-blue-gray-600/10 text-blue-gray-500 h-[40px]">
                                         <div className="m-auto">
