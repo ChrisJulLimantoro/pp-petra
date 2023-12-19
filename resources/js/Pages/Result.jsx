@@ -77,26 +77,31 @@ export default function Result(props) {
         });
 
         const responses = await Promise.all(generateResultRequests);
+        swalLoading.close();
+
+        if (responses.some((res) => res.data.code != 200)) {
+            Swal.fire("Error!", "Something went wrong. Please try again!", "error");
+            return;
+        }
+
         const eventStatusResponse = await axios.post(
             route("result.update-event-generated-status", eventId)
         );
-        swalLoading.close();
 
-        if (
-            responses.some((res) => res.data.code != 200) ||
-            eventStatusResponse.data.code != 200
-        ) {
-            Swal.fire("Error!", "Something went wrong.", "error");
+        if (eventStatusResponse.data.code != 200) {
+            Swal.fire("Error!", "Something went wrong. Please try again!", "error");
             return;
         }
+        
         Swal.fire("Success!", "Result generated successfully.", "success").then(
             () => {
-                setEventId(tempEventId);
-                setEventsGeneratedStatus((prev) => {
-                    const temp = { ...prev };
-                    temp[tempEventId] = 1;
-                    return temp;
-                });
+                // setEventId(tempEventId);
+                // setEventsGeneratedStatus((prev) => {
+                //     const temp = { ...prev };
+                //     temp[tempEventId] = 1;
+                //     return temp;
+                // });
+                window.location.reload();
             }
         );
     };

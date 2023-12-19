@@ -251,7 +251,7 @@ function PracticumFormDialog(props, ref) {
                                         }}
                                         name="quota"
                                         defaultValue={props.formData.quota}
-                                        pattern="[0-9]{2}"
+                                        pattern="[0-9]{1,2}"
                                         autoComplete="off"
                                         error={inputsError.quota}
                                         onChange={(e) => {
