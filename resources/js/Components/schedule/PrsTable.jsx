@@ -1,5 +1,7 @@
 import { Head } from "@inertiajs/react";
 import { Fragment, useEffect, useRef, useState } from "react";
+import PrsFormDialog from "./PrsFormDialog";
+import { PopoverPrsButton } from "./PopoverPrsButton";
 import { Button, Typography } from "@material-tailwind/react";
 
 export function PrsTable(props) {
@@ -19,9 +21,16 @@ export function PrsTable(props) {
                         rowSpan={index.duration}
                         key={index.code}
                     >
-                        <Typography>
-                            {index.name} - {index.class}
-                        </Typography>
+                        <PopoverPrsButton
+                            PrsId={`${index.code}-${index.class}`}
+                            studentId={props.studentId}
+                        >
+                            <div className="w-full h-full px-2 absolute inset-0 flex">
+                                <div className="my-auto text-sm">
+                                    {`${index.name} - ${index.class}`}
+                                </div>
+                            </div>
+                        </PopoverPrsButton>
                     </td>
                 );
             }
@@ -64,6 +73,17 @@ export function PrsTable(props) {
 
     return (
         <>
+            <div className="flex mb-8">
+                <Button
+                    onClick={() => {
+                        setFormData({});
+                        dialogRef.current?.handleOpen();
+                    }}
+                    className="bg-[#19304B] text-[#FFBC00]"
+                >
+                    Tambah Kelas
+                </Button>
+            </div>
             <div className="overflow-x-auto pb-2">
                 <table>
                     <thead>
@@ -82,6 +102,12 @@ export function PrsTable(props) {
                     <tbody>{getRows(props.prs)}</tbody>
                 </table>
             </div>
+            <PrsFormDialog
+                ref={dialogRef}
+                formData={formData}
+                schedules={props.schedules}
+                studentId={props.studentId}
+            />
         </>
     );
 }

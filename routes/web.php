@@ -48,6 +48,8 @@ Route::middleware('cekRole')-> group(function() {
     Route::get('/rbac/assignRoutes', [RBACController::class, 'assignRoutesView'])->name('RBAC.Add Routes to Role');
 
     Route::get("/viewPRS/{student_id}", [BulkInsertStudentController::class, 'viewPrs'])->name('viewPRS');
+    Route::post("/addPRS", [BulkInsertStudentController::class, 'addPrs'])->name('addPRS');
+    Route::delete("/deletePRS/{student}/student/{idPRS}", [BulkInsertStudentController::class, 'deletePrs'])->name('deletePRS');
     Route::post("/uploadMahasiswa", [BulkInsertStudentController::class, 'insert'])->name('uploadMahasiswa');
     Route::post('/uploadSchedule',[BulkInsertStudentController::class, 'insertSchedule'])->name('uploadSchedule');
     Route::delete("/deleteMahasiswa/{idStudent}", [BulkInsertStudentController::class, 'delete'])->name('deleteMahasiswa');

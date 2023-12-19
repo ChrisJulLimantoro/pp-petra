@@ -204,8 +204,28 @@ class BulkInsertStudentController extends Controller
     {
         $prs = json_decode(Http::withHeader('Accept','application/json')
         ->withToken(session('token'))
-        ->get(env('API_URL') . "/students/$student_id/prs"),true)['data'];
-        // dd($prs);
+        ->get(config('app')['API_URL'] . "/students/$student_id/prs"),true)['data'];
+
+        $master = json_decode(Http::withHeader('Accept','application/json')
+        ->withToken(session('token'))
+        ->get(config('app')['API_URL']."/master-schedules-get-format"),true)['data'];
+        // dd($master);
+        $schedules = [];
+        foreach($master as $m){
+            if(!key_exists($m['kode'],$schedules)){
+                $schedules[$m['kode']] = [
+                    'code' => $m['kode'],
+                    'name' => $m['mata_kuliah'],
+                    'schedules' => []
+                ];
+            }
+            $schedules[$m['kode']]['schedules'][] = [
+                'day' => $m['hari'],
+                'time' => $m['jam'],
+                'class' => $m['kelas']
+            ];
+        }
+        $schedules = array_values($schedules);
 
         $days = ['SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU'];
         $times = [730, 830, 930, 1030, 1130, 1230, 1330, 1430, 1530, 1630, 1730, 1830, 1930, 2030];
@@ -240,12 +260,43 @@ class BulkInsertStudentController extends Controller
                 $schedule[$pr['time'] + 100*$i][$day] = 'merged';
             }
         }
-        // dd($schedule);
+        // dd($schedules);
         return Inertia::render('Assistant/viewPrs', [
             'prs' => $schedule,
+            'studentId' => $student_id,
             'name' => $prs['name'],
             'nrp' => $prs['nrp'],
             'routes' => $request->routes ?? [],
+            'schedules' => $schedules
         ]);
+    }
+
+    public function addPrs(Request $request){
+        $res = Http::withHeaders(['Accept' => 'application/json'])
+        ->withToken(session('token'))
+        ->post(env('API_URL')."/students-insert-prs",$request->only(['student_id','code','class']));
+        $res = json_decode($res,true);
+        // dd($res);
+        if(isset($res['success']) && $res['success']){
+            return response()->json(['success' => true,'data' => $res['data']]);
+        }else{
+            return response()->json(['success' => false,'data' => $res['error_message']]);
+        }
+    }
+
+    public function deletePrs($student,$idPRS)
+    {
+        $code = explode('-',$idPRS)[0];
+        $class = explode('-',$idPRS)[1];
+        // dd($code,$class);
+        $res = Http::withHeaders(['Accept' => 'application/json'])->withToken(session('token'))->post(env('API_URL')."/students-delete-prs",[
+            'student_id' => $student,
+            'code' => $code,
+            'class' => $class
+        ]);
+
+        // $res = json_decode($res,true);
+        // dd($res);
+        return redirect()->back()->with('message','Berhasil menghapus PRS!');
     }
 }

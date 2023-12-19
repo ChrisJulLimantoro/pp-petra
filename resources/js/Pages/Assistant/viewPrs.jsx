@@ -2,6 +2,7 @@ import { Head } from "@inertiajs/react";
 import SidebarUser from "@/Layouts/SidebarUser";
 import { PrsTable } from "@/Components/schedule/PrsTable";
 import React from "react";
+import PrsFormDialog from "@/Components/schedule/PrsFormDialog";
 
 export default function viewPrs(props) {
     return (
@@ -25,7 +26,11 @@ export default function viewPrs(props) {
                     </h2>
                     <hr style={{ borderTopWidth: "3px" }} className="mb-8" />
                     <div className="pb-16 relative">
-                        <PrsTable prs={props.prs} />
+                        <PrsTable
+                            prs={props.prs}
+                            schedules={props.schedules}
+                            studentId={props.studentId}
+                        />
                     </div>
                 </div>
             </SidebarUser>
