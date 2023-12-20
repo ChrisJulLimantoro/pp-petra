@@ -157,12 +157,20 @@ class DaftarPraktikumController extends Controller
                             $day = 'Sabtu';
                         }
 
+                        $endHour = strval($y['time'] + $y['duration']*100);
+                        
                         if (strlen($y['time']) == "3") {
                             $time = substr($y['time'], 0, 1) . ":" . substr($y['time'], 1, 2);
                         } else if (strlen($y['time']) == "4") {
                             $time = substr($y['time'], 0, 2) . ":" . substr($y['time'], 2, 3);
                         }
-                        $get[] = $y['code'] . " --> " . $day . "(" . $time . ")";
+                        if (strlen($endHour) == "3") {
+                            $time2 = substr($endHour, 0, 1) . ":" . substr($endHour, 1, 2);
+                        } else if (strlen($endHour) == "4") {
+                            $time2 = substr($endHour, 0, 2) . ":" . substr($endHour, 2, 3);
+                        }
+
+                        $get[] = $y['code'] . " --> " . $day . "(" . $time . " - ". $time2 .")";
                     }
                 }
             }
