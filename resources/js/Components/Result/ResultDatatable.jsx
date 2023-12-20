@@ -100,7 +100,6 @@ export function ResultDatatable(props) {
         }
         const studentPracticum = props.selectedSubject?.practicums.filter((practicum) => practicum.code === studentResult.class)[0];
         const practicums = props.selectedSubject?.practicums;
-
         return (
             <tr key={index}>
                 <TableCell>
@@ -155,7 +154,7 @@ export function ResultDatatable(props) {
                                 {practicums.map((p) => {
                                     return (
                                         <option key={p.id} value={p.id}>
-                                            {p.code} ({occupancies[p.id]}/{p.quota})
+                                            {p.code} ({occupancies[p.id]}/{p.quota}; {practicumTime(p.time, props.selectedSubject.duration)})
                                         </option>
                                     );
                                 }) }
@@ -186,7 +185,7 @@ export function ResultDatatable(props) {
             <DataTable
                 className="w-full"
                 rawData={studentResults}
-                columns={["#", "NRP", "Name", "Class (Capacity)"]}
+                columns={["#", "NRP", "Name", "Class (Capacity; Time)"]}
             >
                 <DataTableContext.Consumer>
                     {(context) => (
@@ -252,4 +251,15 @@ function useOccupancies(subjectPracticums) {
     });
 
     return useState(occupancies);
+}
+
+function practicumTime(start, duration) {
+    const end = start + duration * 100;
+    return `${formatTime(start)}-${formatTime(end)}`;
+}
+
+function formatTime(time) {
+    const hour = time.toString().substring(0, 2);
+    const minute = time.toString().substring(2, 4);
+    return `${hour}:${minute}`;
 }
