@@ -17,11 +17,8 @@ export default function DialogSuccess(props) {
     };
 
     const handleOpen2 = () => {
-        setOpen(!open);
-        console.log(props.id)
+        setOpen(!open); 
         const taken = pageData.lowongan.find((item) => item.practicum_id === props.id);
-
-        console.log(taken)
 
         axios.post(route('asisten.ajarPracticum'), {
             'practicum_id' : taken.practicum_id,

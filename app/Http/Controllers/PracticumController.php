@@ -555,10 +555,8 @@ class PracticumController extends Controller
     }
 
     public function ajarPracticum(Request $request) {
-
-
         $res = json_decode(
-            Http::withHeader('Accept', 'application/json')
+            Http::withHeaders(['Accept'=> 'application/json'])
                 ->withToken(session('token'))
                 ->post(config('app')['API_URL'] . '/assistant-practicums', [
                     'assistant_id' => session('user_id'),
@@ -571,7 +569,7 @@ class PracticumController extends Controller
 
     public function batalAjarPracticum(string $id) {
         $res = json_decode(
-            Http::withHeader('Accept', 'application/json')
+            Http::withHeaders(['Accept'=> 'application/json'])
                 ->withToken(session('token'))
                 ->delete(config('app')['API_URL'] . '/assistant-practicums/' . $id)
         );
