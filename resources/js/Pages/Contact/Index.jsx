@@ -46,6 +46,7 @@ export default function Index({ contacts, routes }) {
     const [data2, setData2] = useState({ phone: "", type: 0 });
     const [error, setError] = useState();
     const [edit, setEdit] = useState();
+    const [isEditing, setIsEditing] = useState(false);
 
     const handleOpen = () => setOpen(!open);
 
@@ -83,15 +84,15 @@ export default function Index({ contacts, routes }) {
     };
 
     const toggleEdit = (index) => {
-        if (edit === index) {
-            setEdit(-1);
-        } else {
+        setTimeout(() => {
+            setIsEditing(true);
             setEdit(index);
             setData2({
                 phone: contact.current[index].phone,
                 type: contact.current[index].type,
             });
-        }
+        }, 100);
+        handleOpen();
     };
 
     function contactHandler(contact, action) {
@@ -164,7 +165,7 @@ export default function Index({ contacts, routes }) {
         if (contact.empty) {
             return (
                 <tr key={"notFound"}>
-                    <TableCell colSpan={4}>
+                    <TableCell colSpan={4} className="z-50">
                         <Typography
                             variant="small"
                             color="blue-gray"
@@ -195,180 +196,67 @@ export default function Index({ contacts, routes }) {
                     column !== "Action" ? (
                         column === "type" ? (
                             <TableCell key={column + index}>
-                                {edit ===
-                                index +
-                                    context.perPage *
-                                        (context.currentPage - 1) ? (
-                                    <Select
-                                        label="Select Type"
-                                        onChange={(e) => {
-                                            setData2({
-                                                ...data2,
-                                                type: e,
-                                            });
-                                        }}
-                                        error={error?.type}
-                                        success={error?.type}
-                                    >
-                                        <Option key="1" value="1">
-                                            WhatsApp
-                                        </Option>
-                                        <Option key="2" value="2">
-                                            Line
-                                        </Option>
-                                        <Option key="3" value="3">
-                                            Instagram
-                                        </Option>
-                                    </Select>
-                                ) : (
-                                    <Typography
-                                        variant="small"
-                                        color="blue-gray"
-                                        className="font-normal"
-                                    >
-                                        {contact.type == 1
-                                            ? "WhatsApp"
-                                            : contact.type == 2
-                                            ? "Line"
-                                            : "Instagram"}
-                                    </Typography>
-                                )}
+                                <Typography
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal"
+                                >
+                                    {contact.type == 1
+                                        ? "WhatsApp"
+                                        : contact.type == 2
+                                        ? "Line"
+                                        : "Instagram"}
+                                </Typography>
                             </TableCell>
                         ) : (
                             <TableCell key={column + index}>
-                                {/* {console.log(column.toLowerCase().replaceAll(' ','_'),data2[column.toLowerCase().replaceAll(' ','_')])} */}
-                                {edit ===
-                                index +
-                                    context.perPage *
-                                        (context.currentPage - 1) ? (
-                                    <Input
-                                        label=""
-                                        size="md"
-                                        name={column
-                                            .toLowerCase()
-                                            .replaceAll(" ", "_")}
-                                        variant="standard"
-                                        className="text-blue-gray-900"
-                                        autoFocus
-                                        value={
-                                            data2[
-                                                column
-                                                    .toLowerCase()
-                                                    .replaceAll(" ", "_")
-                                            ] ??
-                                            contact[
-                                                column
-                                                    .toLowerCase()
-                                                    .replaceAll(" ", "_")
-                                            ]
-                                        }
-                                        onChange={(e) => {
-                                            // console.log(e.target.value);
-                                            setData2({
-                                                ...data2,
-                                                [column
-                                                    .toLowerCase()
-                                                    .replaceAll(" ", "_")]:
-                                                    e.target.value,
-                                            });
-                                        }}
-                                    />
-                                ) : (
-                                    <Typography
-                                        variant="small"
-                                        color="blue-gray"
-                                        className="font-normal"
-                                    >
-                                        {
-                                            contact[
-                                                column
-                                                    .toLowerCase()
-                                                    .replaceAll(" ", "_")
-                                            ]
-                                        }
-                                    </Typography>
-                                )}
+                                <Typography
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal"
+                                >
+                                    {
+                                        contact[
+                                            column
+                                                .toLowerCase()
+                                                .replaceAll(" ", "_")
+                                        ]
+                                    }
+                                </Typography>
                             </TableCell>
                         )
                     ) : (
                         <TableCell>
                             <div className="flex gap-5">
-                                {edit ===
-                                    index +
-                                        context.perPage *
-                                            (context.currentPage - 1) && (
-                                    <>
-                                        <Tooltip content="Save" placement="top">
-                                            <CheckIcon
-                                                width={20}
-                                                cursor="pointer"
-                                                stroke="green"
-                                                onClick={() =>
-                                                    handleSave(
-                                                        index +
-                                                            context.perPage *
-                                                                (context.currentPage -
-                                                                    1),
-                                                        context
-                                                    )
-                                                }
-                                            />
-                                        </Tooltip>
-                                        <Tooltip
-                                            content="Cancel"
-                                            placement="top"
-                                        >
-                                            <XMarkIcon
-                                                width={20}
-                                                cursor="pointer"
-                                                stroke="red"
-                                                onClick={() => toggleEdit(-1)}
-                                            />
-                                        </Tooltip>
-                                    </>
-                                )}
-
-                                {edit !==
-                                    index +
-                                        context.perPage *
-                                            (context.currentPage - 1) && (
-                                    <>
-                                        <Tooltip content="Edit" placement="top">
-                                            <PencilSquareIcon
-                                                width={20}
-                                                cursor={"pointer"}
-                                                stroke="orange"
-                                                onClick={() =>
-                                                    toggleEdit(
-                                                        index +
-                                                            context.perPage *
-                                                                (context.currentPage -
-                                                                    1)
-                                                    )
-                                                }
-                                            />
-                                        </Tooltip>
-                                        <Tooltip
-                                            content="Delete"
-                                            placement="top"
-                                        >
-                                            <TrashIcon
-                                                width={20}
-                                                cursor={"pointer"}
-                                                stroke="red"
-                                                onClick={() =>
-                                                    handleDelete(
-                                                        index +
-                                                            context.perPage *
-                                                                (context.currentPage -
-                                                                    1),
-                                                        context
-                                                    )
-                                                }
-                                            />
-                                        </Tooltip>
-                                    </>
-                                )}
+                                <>
+                                    <Tooltip content="Edit" placement="top">
+                                        <PencilSquareIcon
+                                            width={20}
+                                            cursor={"pointer"}
+                                            stroke="orange"
+                                            onClick={() => toggleEdit(index)}
+                                        />
+                                    </Tooltip>
+                                    <Tooltip
+                                        content="Delete"
+                                        placement="top"
+                                    >
+                                        <TrashIcon
+                                            width={20}
+                                            cursor={"pointer"}
+                                            stroke="red"
+                                            onClick={() =>
+                                                handleDelete(
+                                                    index +
+                                                        context.perPage *
+                                                            (context.currentPage -
+                                                                1),
+                                                    context
+                                                )
+                                            }
+                                        />
+                                    </Tooltip>
+                                </>
                             </div>
                         </TableCell>
                     )
@@ -378,7 +266,7 @@ export default function Index({ contacts, routes }) {
     };
 
     return (
-        <SidebarUser className="p-6" routes={routes}>
+        <SidebarUser routes={routes}>
             <Head>
                 <title>Add contact</title>
             </Head>
@@ -458,7 +346,7 @@ export default function Index({ contacts, routes }) {
                                                 variant="h4"
                                                 color="blue-gray"
                                             >
-                                                Add New contact
+                                                {isEditing ? "Edit Contact" : "Add New Contact"}
                                             </Typography>
 
                                             <Typography variant="h6">
@@ -468,8 +356,13 @@ export default function Index({ contacts, routes }) {
                                                 label="Phone"
                                                 name="phone"
                                                 size="lg"
-                                                value={data.phone}
+                                                value={isEditing ? data2.phone : data.phone}
                                                 onChange={(e) =>
+                                                    isEditing ?
+                                                    setData2({
+                                                        ...data2,
+                                                        phone: e.target.value,
+                                                    }) :
                                                     setData({
                                                         ...data,
                                                         phone: e.target.value,
@@ -490,11 +383,17 @@ export default function Index({ contacts, routes }) {
                                             <Select
                                                 label="Select Type"
                                                 onChange={(e) => {
+                                                    isEditing ?
+                                                    setData2({
+                                                        ...data2,
+                                                        type: e,
+                                                    }) :
                                                     setData({
                                                         ...data,
                                                         type: e,
                                                     });
                                                 }}
+                                                value={isEditing ? data2.type.toString() : data.type.toString()}
                                                 error={error?.type}
                                                 success={error?.type}
                                             >
@@ -514,6 +413,8 @@ export default function Index({ contacts, routes }) {
                                                 variant="filled"
                                                 className="w-1/2"
                                                 onClick={() =>
+                                                    isEditing ? 
+                                                    handleSave(edit, context) :
                                                     handleAdd(context)
                                                 }
                                             >
@@ -522,7 +423,7 @@ export default function Index({ contacts, routes }) {
                                             <Button
                                                 variant="text"
                                                 className="w-1/2"
-                                                onClick={() => setOpen(false)}
+                                                onClick={() => {setOpen(false); setIsEditing(false)}}
                                             >
                                                 Cancel
                                             </Button>

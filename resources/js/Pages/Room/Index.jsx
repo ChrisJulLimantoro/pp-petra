@@ -290,7 +290,7 @@ export default function Index({ rooms, routes }) {
     };
 
     return (
-        <SidebarUser className="p-6" routes={routes}>
+        <SidebarUser routes={routes}>
             <Head>
                 <title>Add room</title>
             </Head>
