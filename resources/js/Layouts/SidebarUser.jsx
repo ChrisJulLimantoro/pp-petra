@@ -278,7 +278,7 @@ export default function MultiLevelSidebar({
         return (
             <Card
                 className={
-                    "w-1/5 h-screen px-4 shadow-xl shadow-slate-950 rounded-none transition-all duration-300 fixed top-0 left-0 " +
+                    "w-1/5 h-screen px-4 shadow-xl shadow-slate-950 rounded-none transition-all duration-300 fixed top-0 left-0 overflow-y-auto " +
                     className
                 }
             >
@@ -537,7 +537,7 @@ export default function MultiLevelSidebar({
                         <Drawer
                             open={open2}
                             onClose={closeDrawer}
-                            className="p-4"
+                            className="p-4 overflow-y-auto"
                             overlayProps={{
                                 className: "fixed backdrop-blur-none",
                             }}
