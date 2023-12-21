@@ -30,16 +30,16 @@ export default function ConfirmationIconButton(props) {
         handleOpen();
         const form = e.target;
         const formData = new FormData(form);
-        console.log(formData);
+        // console.log(formData.get("type"));
 
         axios.post("", formData).then((res) => {
             console.log(res);
             Swal.fire({
                 title: res.data.message,
-                icon: (res.data.success == false) ? "error" : "success",
+                icon: res.data.success == false ? "error" : "success",
                 confirmButtonText: "Ok",
             }).then(() => {
-                if (res.data.success){
+                if (res.data.success) {
                     window.location.reload();
                 }
             });
@@ -60,11 +60,25 @@ export default function ConfirmationIconButton(props) {
                         name="student_assistant_practicum_id"
                         value={student_assistant_practicum_id}
                     />
-                    <input type="hidden" name="practicum_id" value={practicum_id}/>
-                    <input type="hidden"name="assistant_id" value={assistant_id} />
+                    <input
+                        type="hidden"
+                        name="practicum_id"
+                        value={practicum_id}
+                    />
+                    <input
+                        type="hidden"
+                        name="assistant_id"
+                        value={assistant_id}
+                    />
                     <input type="hidden" name="slot_used" value={slot_used} />
                     <input type="hidden" name="total_slot" value={total_slot} />
-                    <input type="hidden" name="_token" value={document.querySelector('meta[name="csrf-token"]').getAttribute('content')}/>
+                    <input
+                        type="hidden"
+                        name="_token"
+                        value={document
+                            .querySelector('meta[name="csrf-token"]')
+                            .getAttribute("content")}
+                    />
                     <DialogHeader className="ms-3">Are you sure?</DialogHeader>
                     <DialogBody className="ms-3">
                         You cannot revert this action
