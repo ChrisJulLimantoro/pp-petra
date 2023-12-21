@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BulkInsertStudentController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\ResultController;
+use App\Http\Controllers\ContactController;
 use Inertia\Inertia;
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +47,7 @@ Route::middleware('cekRole')-> group(function() {
     Route::get('/rbac/manageRole', [RBACController::class, 'manageRole'])->name('RBAC.Manage Role');
     Route::get('/rbac/assignRole', [RBACController::class, 'assignRoleView'])->name('RBAC.Add User to Role');
     Route::get('/rbac/assignRoutes', [RBACController::class, 'assignRoutesView'])->name('RBAC.Add Routes to Role');
+    Route::get('/my-prs',[BulkInsertStudentController::class, 'myPrs'])->name('MyPRS');
 
     Route::get("/viewPRS/{student_id}", [BulkInsertStudentController::class, 'viewPrs'])->name('viewPRS');
     Route::post("/addPRS", [BulkInsertStudentController::class, 'addPrs'])->name('addPRS');
@@ -57,6 +59,14 @@ Route::middleware('cekRole')-> group(function() {
     Route::post("/addMasterJadwal", [JadwalController::class, 'insert'])->name('addMasterJadwal');
     Route::delete("/deleteMasterJadwal/{deleteID}", [JadwalController::class, 'delete'])->name('deleteMasterJadwal');
     Route::patch("/update/{id}", [JadwalController::class, 'update'])->name('updateMasterJadwal');
+
+    Route::prefix('contact')->group(function (){
+        Route::get('/', [ContactController::class, 'index'])->name('Contact');
+        Route::post('/', [ContactController::class, 'store'])->name('contact.store');
+        Route::delete('/{id}', [ContactController::class, 'destroy'])->name('contact.destroy');
+        Route::post('/{id}', [ContactController::class, 'update'])->name('contact.update');
+    });
+
 
     Route::prefix('rbac')->group(function () {
         Route::post('manageRole', [RBACController::class, 'addRole'])->name('rbac.addRole');
