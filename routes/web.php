@@ -121,6 +121,7 @@ Route::middleware('cekRole')-> group(function() {
     Route::prefix('result')->group(function () {
         Route::get('/event/{event_id}', [ResultController::class, 'resultByEvent'])->name('result.result-by-event');
         Route::post('generate/event/{event_id}/subject/{subject_id}', [ResultController::class, 'generateResult'])->name('result.generate-result');
+        Route::post('email/{event_id}', [ResultController::class, 'emailResult'])->name('result.email-result');
         Route::post('/updateEventGeneratedStatus/{event_id}', [ResultController::class, 'updateEventGeneratedStatus'])->name('result.update-event-generated-status');
         Route::post('/assignStudent', [ResultController::class, 'assignStudent'])->name('result.assign-student');
     });
