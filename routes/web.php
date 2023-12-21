@@ -47,6 +47,7 @@ Route::middleware('cekRole')-> group(function() {
     Route::get('/rbac/manageRole', [RBACController::class, 'manageRole'])->name('RBAC.Manage Role');
     Route::get('/rbac/assignRole', [RBACController::class, 'assignRoleView'])->name('RBAC.Add User to Role');
     Route::get('/rbac/assignRoutes', [RBACController::class, 'assignRoutesView'])->name('RBAC.Add Routes to Role');
+    Route::get('/my-prs',[BulkInsertStudentController::class, 'myPrs'])->name('MyPRS');
 
     Route::get("/viewPRS/{student_id}", [BulkInsertStudentController::class, 'viewPrs'])->name('viewPRS');
     Route::post("/addPRS", [BulkInsertStudentController::class, 'addPrs'])->name('addPRS');
