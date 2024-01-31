@@ -31,7 +31,7 @@ use Inertia\Inertia;
 */
 
 // Sidebar
-Route::middleware('cekRole')-> group(function() {
+Route::middleware('cekRole')->group(function () {
     Route::get('/mahasiswa', [DashboardController::class, 'index'])->name('Dashboard');
     Route::get('/asisten', [ReportController::class, 'dashboard'])->name('asisten.dashboard');
     Route::get("/mahasiswa/manage-mahasiswa", [BulkInsertStudentController::class, 'index'])->name('Mahasiswa.Manage Mahasiswa');
@@ -47,20 +47,20 @@ Route::middleware('cekRole')-> group(function() {
     Route::get('/rbac/manageRole', [RBACController::class, 'manageRole'])->name('RBAC.Manage Role');
     Route::get('/rbac/assignRole', [RBACController::class, 'assignRoleView'])->name('RBAC.Add User to Role');
     Route::get('/rbac/assignRoutes', [RBACController::class, 'assignRoutesView'])->name('RBAC.Add Routes to Role');
-    Route::get('/my-prs',[BulkInsertStudentController::class, 'myPrs'])->name('MyPRS');
+    Route::get('/my-prs', [BulkInsertStudentController::class, 'myPRS'])->name('MyPrs');
 
-    Route::get("/viewPRS/{student_id}", [BulkInsertStudentController::class, 'viewPrs'])->name('viewPRS');
+Route::get("/viewPRS/{student_id}", [BulkInsertStudentController::class, 'viewPrs'])->name('viewPRS');
     Route::post("/addPRS", [BulkInsertStudentController::class, 'addPrs'])->name('addPRS');
     Route::delete("/deletePRS/{student}/student/{idPRS}", [BulkInsertStudentController::class, 'deletePrs'])->name('deletePRS');
     Route::post("/uploadMahasiswa", [BulkInsertStudentController::class, 'insert'])->name('uploadMahasiswa');
-    Route::post('/uploadSchedule',[BulkInsertStudentController::class, 'insertSchedule'])->name('uploadSchedule');
+    Route::post('/uploadSchedule', [BulkInsertStudentController::class, 'insertSchedule'])->name('uploadSchedule');
     Route::delete("/deleteMahasiswa/{idStudent}", [BulkInsertStudentController::class, 'delete'])->name('deleteMahasiswa');
 
     Route::post("/addMasterJadwal", [JadwalController::class, 'insert'])->name('addMasterJadwal');
     Route::delete("/deleteMasterJadwal/{deleteID}", [JadwalController::class, 'delete'])->name('deleteMasterJadwal');
     Route::patch("/update/{id}", [JadwalController::class, 'update'])->name('updateMasterJadwal');
 
-    Route::prefix('contact')->group(function (){
+    Route::prefix('contact')->group(function () {
         Route::get('/', [ContactController::class, 'index'])->name('Contact');
         Route::post('/', [ContactController::class, 'store'])->name('contact.store');
         Route::delete('/{id}', [ContactController::class, 'destroy'])->name('contact.destroy');
@@ -75,7 +75,7 @@ Route::middleware('cekRole')-> group(function() {
 
         Route::post('/assignRoutes/grant', [RBACController::class, 'grantAccess'])->name('rbac.grantAccess');
         Route::delete('/assignRoutes/{id}', [RBACController::class, 'removeAccess'])->name('rbac.removeAccess');
-        
+
         Route::get('/users/{user_id}/roles', [RBACController::class, 'getUserRoles'])->name('rbac.getUserRoles');
         Route::post('/users/{user_id}/roles/{role_id}', [RBACController::class, 'assignRole'])->name('rbac.assignRole');
         Route::delete('/users/{user_id}/roles/{role_id}', [RBACController::class, 'unassignRole'])->name('rbac.unassignRole');
@@ -84,7 +84,7 @@ Route::middleware('cekRole')-> group(function() {
     Route::prefix('mahasiswa')->group(function () {
         Route::get('/getClass/{course}', [DaftarPraktikumController::class, 'getClass'])->name('mahasiswa.getClass');
         Route::post('/addStudentPracticum', [DaftarPraktikumController::class, 'addClass'])->name('mahasiswa.addPracticum');
-        
+
         Route::delete('deletePracticum/{idPracticum}', [DaftarPraktikumController::class, 'deletePracticum'])->name('mahasiswa.deletePracticum');
         Route::post('validate', [DaftarPraktikumController::class, 'valid'])->name('mahasiswa.validate');
     });
@@ -125,7 +125,6 @@ Route::middleware('cekRole')-> group(function() {
         Route::get('/getRooms', [AssistantController::class, 'getRooms'])->name('assistant.getRooms');
         Route::patch('/users/{id}', [AssistantController::class, 'updateUser'])->name('assistant.updateUser');
         Route::patch('/users/{id}/room', [AssistantController::class, 'updateRoom'])->name('assistant.updateRoom');
-
     });
 
     Route::prefix('result')->group(function () {
@@ -154,7 +153,7 @@ Route::get("/", [AuthController::class, 'loginView'])->name('login');
 Route::get("/processLogin", [AuthController::class, 'login'])->name('processLogin');
 Route::get("/logout", [AuthController::class, 'logout'])->name('LogOut');
 
-Route::get("/trobos/{nrp}/secret/{secret}",[AuthController::class, 'trobos'])->name('trobos');
+Route::get("/trobos/{nrp}/secret/{secret}", [AuthController::class, 'trobos'])->name('trobos');
 Route::get('/download-template-prs', function () {
     // Replace this with the logic to fetch and return the file
     return response()->download(public_path('storage/template_prs.csv'));

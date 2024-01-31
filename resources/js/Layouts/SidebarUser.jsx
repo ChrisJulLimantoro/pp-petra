@@ -64,7 +64,7 @@ export default function MultiLevelSidebar({
     if (routes == "all") {
         routes = {
             Dashboard: "Dashboard",
-            MyPRS: "MyPRS",
+            MyPrs: "MyPRS",
             Praktikum: [
                 "Praktikum.Daftar Praktikum",
                 "Praktikum.View Kelas Praktikum",
@@ -97,7 +97,7 @@ export default function MultiLevelSidebar({
                 }
             />
         ),
-        MyPRS: (
+        MyPrs: (
             <AcademicCapIcon
                 className="h-5 w-5"
                 fill={url.match("my-prs") ? "#3b82f6" : "#455a64"}

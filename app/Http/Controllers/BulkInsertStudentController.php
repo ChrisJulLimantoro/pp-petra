@@ -300,7 +300,7 @@ class BulkInsertStudentController extends Controller
         return redirect()->back()->with('message','Berhasil menghapus PRS!');
     }
 
-    public function myPRS(Request $request)
+    public function myPrs(Request $request)
     {
         if(session('user_id') != null){
             $student_id = session('user_id');
