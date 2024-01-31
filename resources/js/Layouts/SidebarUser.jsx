@@ -35,7 +35,6 @@ import {
     XMarkIcon,
     ClipboardDocumentListIcon,
 } from "@heroicons/react/24/outline";
-import prodiImg from "../../../public/assets/prodi.jpeg";
 import { Link, Head } from "@inertiajs/react";
 
 export default function MultiLevelSidebar({
@@ -43,6 +42,7 @@ export default function MultiLevelSidebar({
     routes,
     className = "",
 }) {
+    const prodiImg = '/saocp/assets/prodi.jpeg';
     const url = window.location.pathname.substring(6);
     const [open, setOpen] = useState(-1);
     const [sidebarState, setSidebarState] = useState(
