@@ -84,15 +84,6 @@ export default function Result(props) {
             return;
         }
 
-        const eventStatusResponse = await axios.post(
-            route("result.update-event-generated-status", eventId)
-        );
-
-        if (eventStatusResponse.data.code != 200) {
-            Swal.fire("Error!", "Something went wrong. Please try again!", "error");
-            return;
-        }
-        
         Swal.fire("Success!", "Result generated successfully.", "success").then(
             () => {
                 // setEventId(tempEventId);
@@ -173,7 +164,7 @@ export default function Result(props) {
                     <a href={route("Result")}>Result</a>
                 </Breadcrumbs>
                 <main className="pr-7">
-                    <div className="mb-5 flex gap-x-8">
+                    <div className="mb-5 flex gap-x-10">
                         <Select
                             label="Select Event"
                             containerProps={{ className: "max-w-[250px]" }}
@@ -193,9 +184,14 @@ export default function Result(props) {
                         </Select>
                         {eventId !== null &&
                             eventsGeneratedStatus[eventId] == 0 && (
-                                <Button onClick={generateResult}>
-                                    Generate Result
-                                </Button>
+                                <>
+                                    <Button onClick={generateResult}>
+                                        Generate Result
+                                    </Button>
+                                    <Button onClick={() => emailResult(eventId, setEventsGeneratedStatus)} className="bg-amber-900">
+                                        Email Result
+                                    </Button>
+                                </>
                             )}
                     </div>
                     <Card className="max-w-full z-1 md:py-0 overflow-auto border border-gray-200 min-h-[200px]">
@@ -263,4 +259,50 @@ function build_subjects(data) {
         subjects[item.id] = item;
     });
     return subjects;
+}
+
+async function emailResult(eventId, setEventsGeneratedStatus) {
+    const swalResult = await Swal.fire({
+        title: "Are you sure?",
+        text: "Pastikan semua praktikum sudah berhasil digenerate sebelum mengirimkan email ke semua mahasiswa.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, send it!",
+        cancelButtonText: "No, cancel!",
+        reverseButtons: true,
+    });
+    
+    const swalLoading = Swal.fire({
+        title: "Emailing all students",
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        },
+    });
+
+    if (!swalResult.isConfirmed) return;
+
+    
+    const sendEmailResponse = await axios.post(route('result.email-result', eventId));
+    if (sendEmailResponse.data.code != 200) {
+        swalLoading.close();
+        Swal.fire("Error!", "Something went wrong. Please try again!", "error");
+        return;
+    }
+    
+    const updateGeneratedStatusResponse = await axios.post(route('result.update-event-generated-status', eventId));
+    if (updateGeneratedStatusResponse.data.code != 200) {
+        swalLoading.close();
+        Swal.fire("Warning!", "Email sudah berhasil terkirim. Namun gagal mengubah status!", "warning");
+        return;
+    }
+
+    setEventsGeneratedStatus((prev) => {
+        return {...prev, [eventId]: 1}
+    });
+    
+    swalLoading.close();
+    Swal.fire("Success!", "Email berhasil terkirim", "success");
 }

@@ -63,4 +63,12 @@ class ResultController extends Controller
         $data = $res->json('code');
         return response()->json(['code' => $data]);
     }
+
+    function emailResult($event_id) {
+        $res = Http::withToken(session('token'))
+            ->post(env('API_URL') . '/mails-result/' . $event_id);
+
+        $data = $res->json();
+        return response()->json($data);
+    }
 }
