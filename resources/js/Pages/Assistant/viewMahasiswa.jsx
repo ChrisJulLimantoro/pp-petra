@@ -220,7 +220,6 @@ export default function viewMahasiswa({ dataTable, routes }) {
                     .post(route("uploadMahasiswa"), form_data)
                     .then((result) => {
                         if (result.data.success) {
-                            console.log(dataTable);
                            
                             Swal.fire({
                                 icon: "success",
@@ -228,7 +227,6 @@ export default function viewMahasiswa({ dataTable, routes }) {
                                 text: "File berhasil diupload",
                             }); 
                             setData(result.data.data);
-                            console.log(data);
                         } else {
                             Swal.fire({
                                 icon: "error",

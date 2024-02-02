@@ -32,7 +32,6 @@ export default function ManageRole({ roles, routes }) {
 
     const role = useRef(roles.data.filter((r) => r.name !== "Super Admin"));
 
-    console.log(role)
 
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
@@ -51,7 +50,6 @@ export default function ManageRole({ roles, routes }) {
 
     const handleOpen = () => setOpen(!open);
     const handleOpen2 = (index) => {
-        console.log(index);
         setOpen2(!open2);
         setDel(index);
     };
@@ -199,7 +197,6 @@ export default function ManageRole({ roles, routes }) {
                             autoFocus
                             value={data2.name ?? role.name}
                             onChange={(e) => {
-                                console.log(e.target.value);
                                 setData2({ ...data2, name: e.target.value });
                             }}
                         />

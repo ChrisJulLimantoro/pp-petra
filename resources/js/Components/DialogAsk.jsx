@@ -27,8 +27,6 @@ export default function DialogAsk(props) {
         setAskDialogOpen(false);
         const taken = pageData.ajar.find((item) => item.id === props.id);
 
-        console.log(taken)
-
         axios.delete(route('asisten.batalAjarPracticum', taken.id))
         .then((response) => {
             if (response.data.success) {

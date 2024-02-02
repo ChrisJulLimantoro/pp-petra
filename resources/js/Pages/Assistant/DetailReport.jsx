@@ -76,7 +76,6 @@ export default function DetailReport({
 
     const renderApplied = (data, index, context) => {
         if (data.empty || applied.current.length === 0) {
-            console.log(applied.current.length === 0);
             return (
                 <tr key={"notFound_1"}>
                     <TableCell colSpan={columns1.length}>

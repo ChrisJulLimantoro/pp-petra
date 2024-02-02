@@ -165,7 +165,6 @@ export default class DataTable extends Component {
     }
 
     renderBody(value, index) {
-        console.log(value['name'])
         // if data is empty
         if (value.empty) {
             return (

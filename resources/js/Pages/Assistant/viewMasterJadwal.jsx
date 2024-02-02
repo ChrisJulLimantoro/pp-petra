@@ -306,7 +306,6 @@ export default function viewMahasiswa({ dataTable, routes }) {
                 axios
                     .post(route("uploadSchedule"), form_data)
                     .then((result) => {
-                        console.log(result);
                         if (result.data.success) {
                             Swal.fire({
                                 title: "Success!",
@@ -440,7 +439,6 @@ export default function viewMahasiswa({ dataTable, routes }) {
             );
             return;
         }
-        console.log(editFormData.hari);
         const data = {
             kodeMatkul: editFormData.kodeMataKuliah,
             namaMatkul: editFormData.namaMataKuliah,
@@ -449,7 +447,6 @@ export default function viewMahasiswa({ dataTable, routes }) {
             jamMulai: parseInt(editFormData.jamMulai.replace(":", ""), 10),
             durasi: parseInt(editFormData.durasi),
         };
-        console.log(data);
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -466,7 +463,6 @@ export default function viewMahasiswa({ dataTable, routes }) {
                 axios
                     .patch(route("updateMasterJadwal", editID), data)
                     .then((response) => {
-                        console.log(response);
                         if (response.data.success) {
                             alertRef.current?.show(
                                 "Berhasil Update",

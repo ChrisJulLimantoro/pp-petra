@@ -79,7 +79,6 @@ export default function Dashboard({ auth, dataTable, routes }) {
     };
     const search = (keyword) => {
         // when no keyword is provided
-        console.log(keyword);
         if (keyword.trim() == "" || keyword == null) {
             setState({
                 paginatedData: paginateData(state.rawData),
@@ -93,7 +92,6 @@ export default function Dashboard({ auth, dataTable, routes }) {
 
                 state.columns.map((column) => {
                     let columnName = column.toString().toLowerCase();
-                    console.log(columnName);
                     if (
                         data[columnName]
                             ?.toString()

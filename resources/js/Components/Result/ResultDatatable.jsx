@@ -37,7 +37,6 @@ export function ResultDatatable(props) {
     ) : []);
 
     const assignStudent = async (e, practicumId, student_id, context) => {
-        console.log(e.target.dataset.oldValue);
         try {
             var response = await axios.post(
                 route('result.assign-student', 
@@ -70,7 +69,6 @@ export function ResultDatatable(props) {
             }
         }
         catch (error) {
-            console.log(error);
             e.target.value = e.target.dataset.oldValue;
             props.alertRef.current?.show(
                 "Gagal assign praktikum",

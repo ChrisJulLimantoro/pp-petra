@@ -53,13 +53,11 @@ export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
             'id',
         ])
         setLowongan(processedUpdatedData);
-        console.log("Updating dataLowongan:", dataLowongan);
     };
 
     const updateDataAjar = (updatedData) => {
         const processedUpdatedData = processData(updatedData);
         setAjar(processedUpdatedData);
-        console.log("Updating dataAjar:", dataAjar);
     };
 
     const titleAjar = "Daftar Ajar Praktikum";

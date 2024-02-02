@@ -84,8 +84,6 @@ export default function DetailKelas(props) {
         students_data.push(student);
     });
 
-    console.log(students_data);
-
     return (
         <>
             <Head>

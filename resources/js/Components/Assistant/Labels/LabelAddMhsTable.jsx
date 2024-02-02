@@ -4,7 +4,6 @@ import ConfirmationButton from "../Button/ConfirmationButton";
 
 export default function LabelAddMhsTable (props) {
     const {total, data, practicum_id} = props;
-    console.log(data);
 
     return(
         <div className="mb-4 flex items-center justify-between gap-8">

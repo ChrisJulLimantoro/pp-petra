@@ -73,7 +73,6 @@ function PrsFormDialog(props, ref) {
             );
         });
         formData.append("student_id", props.studentId);
-        console.log(Object.fromEntries(formData));
         let res;
         try {
             if (Object.keys(props.formData).length > 0) {
@@ -143,7 +142,6 @@ function PrsFormDialog(props, ref) {
                                                     schedule.schedules,
                                                 ]);
                                         });
-                                        console.log(classes);
                                     }}
                                 >
                                     {props?.schedules?.map((schedule) => {

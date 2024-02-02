@@ -114,7 +114,6 @@ export default function Index({ events, routes }) {
     };
 
     const changeStatus = (index, context) => {
-        console.log('masuk gan')
         dispatch({
             type: "status",
             index: index,
@@ -123,9 +122,6 @@ export default function Index({ events, routes }) {
     };
 
     function eventReducer(events, action) {
-        console.log(events)
-        console.log(action.type);
-        console.log(action);
         if (action.type == "add") {
             axios
                 .post(route("event.add"), data)
@@ -240,7 +236,6 @@ export default function Index({ events, routes }) {
     }
 
     const renderBody = (event, index, context) => {
-        console.log(context.perPage);
         // if no data found
         if (event.empty) {
             return (
@@ -303,7 +298,6 @@ export default function Index({ events, routes }) {
                                             ]
                                         }
                                         onChange={(e) => {
-                                            console.log(e.target.value);
                                             setData2({
                                                 ...data2,
                                                 [column
