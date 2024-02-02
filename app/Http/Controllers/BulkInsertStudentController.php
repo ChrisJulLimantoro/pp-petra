@@ -127,6 +127,7 @@ class BulkInsertStudentController extends Controller
                 return response()->json(['success' => false,'data' => 'File is not in the correct format']);
             }
             foreach($headers as $h){
+                $h = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $h);
                 $column[] = strtolower($h);
             }
             $save = [];
