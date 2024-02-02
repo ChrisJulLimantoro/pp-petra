@@ -81,7 +81,7 @@ class BulkInsertStudentController extends Controller
                             $save[$data[$nrp_index]]['semester'] = $sem;
                             $save[$data[$nrp_index]][$h] = $data[array_search($h,$column)];
                         }else if($h == 'ipk' || $h == 'ips'){
-                            $save[$data[$nrp_index]][$h] = $data[array_search($h,$column)];
+                            $save[$data[$nrp_index]][$h] = str_replace(",",".",$data[array_search($h,$column)]);
                         }
                             $save[$data[$nrp_index]]['program'] = 'i';
                         
@@ -97,6 +97,7 @@ class BulkInsertStudentController extends Controller
                 }
             }
             fclose($handle);
+            // dd($save);
             $response = Http::withHeaders(['Accept' => 'application/json'])->withToken(session('token'))->post(env('API_URL').'/students-bulk',['data'=>$save]);
             $response = json_decode($response,true);
             // dd($response);
