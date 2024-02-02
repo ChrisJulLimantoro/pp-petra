@@ -35,7 +35,6 @@ import {
     XMarkIcon,
     ClipboardDocumentListIcon,
 } from "@heroicons/react/24/outline";
-import prodiImg from "../../../public/assets/prodi.jpeg";
 import { Link, Head } from "@inertiajs/react";
 
 export default function MultiLevelSidebar({
@@ -43,6 +42,7 @@ export default function MultiLevelSidebar({
     routes,
     className = "",
 }) {
+    const prodiImg = '/saocp/assets/prodi.jpeg';
     const url = window.location.pathname.substring(6);
     const [open, setOpen] = useState(-1);
     const [sidebarState, setSidebarState] = useState(
@@ -64,7 +64,7 @@ export default function MultiLevelSidebar({
     if (routes == "all") {
         routes = {
             Dashboard: "Dashboard",
-            MyPRS: "MyPRS",
+            MyPrs: "MyPRS",
             Praktikum: [
                 "Praktikum.Daftar Praktikum",
                 "Praktikum.View Kelas Praktikum",
@@ -97,7 +97,7 @@ export default function MultiLevelSidebar({
                 }
             />
         ),
-        MyPRS: (
+        MyPrs: (
             <AcademicCapIcon
                 className="h-5 w-5"
                 fill={url.match("my-prs") ? "#3b82f6" : "#455a64"}

@@ -10,15 +10,18 @@ use Illuminate\Http\Response;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         if (!in_array('student', session('roles'))) {
             return redirect('/asisten');
         }
         $data = json_decode(Http::withToken(session('token'))->get(env('API_URL') . "/students-accepted/" . session('user_id')), true);
-        $data= $data['data'] ?? [];
-        $return['data']=[];
+        $data = $data['data'] ?? [];
+        $return['data'] = [];
+
+        // dd($request->routes);
         foreach ($data as $x) {
-            array_push($return['data'],[
+            array_push($return['data'], [
                 'hari' => $x['day'],
                 'jam' => $x['time'],
                 'mata_kuliah_praktikum' => $x['subject'],
