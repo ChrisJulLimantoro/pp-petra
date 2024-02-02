@@ -13,7 +13,7 @@ class BulkInsertStudentController extends Controller
 {
 
     public function index(Request $request){
-        $data = json_decode(Http::withToken(session('token'))->get(env('API_URL') . "/students/"), true);
+        $data = json_decode(Http::withToken(session('token'))->get(env('API_URL') . "/students"), true);
         $data = $data['data'];
         // dd($data);
         $return['data'] = [];
