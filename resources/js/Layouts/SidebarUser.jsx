@@ -113,7 +113,7 @@ export default function MultiLevelSidebar({
             <Square2StackIcon
                 strokeWidth={3}
                 fill={
-                    url === route("Praktikum.Daftar Praktikum")
+                    url === route("Praktikum.Daftar Praktikum", null, false)
                         ? "#3b82f6"
                         : "#455a64"
                 }
