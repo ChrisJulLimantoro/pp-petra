@@ -46,7 +46,7 @@ export function PracticumTable(props) {
                 return (
                     <td
                         className="p-0 text-center border-2 relative w-[200px] min-w-[150px] break-words"
-                        rowSpan={practicum.duration}
+                        rowSpan={practicum.duration * 2}
                         key={index}
                     >
                         <PopoverActionButton practicumId={practicum.id} openEditForm={openEditFormFactory(practicum)} >
@@ -72,6 +72,9 @@ export function PracticumTable(props) {
     };
     const getRows = (day, times) => {
         return Object.entries(times).map(([time, rooms]) => {
+            const start = `${time.padStart(4, '0').substring(0,2)}.${time.padStart(4, '0').substring(2,4)}`;
+            const endTime = (time % 100 == 0) ? parseInt(time) + 30 : parseInt(time) + 70;
+            const end = `${endTime.toString().padStart(4, '0').substring(0,2)}.${endTime.toString().padStart(4, '0').substring(2,4)}`
             return (
                 <tr key={`${day},${time}`}>
                     <td
@@ -79,7 +82,7 @@ export function PracticumTable(props) {
                         style={{ fontFamily: "ui-monospace", fontSize: "1.1rem" }}
                         key={time}
                     >
-                        {time.padStart(4, '0').substring(0,2)}.{time.padStart(4, '0').substring(2,4)} - {(parseInt(time) + 100).toString().padStart(4, '0').substring(0,2)}.{(parseInt(time) + 100).toString().padStart(4, '0').substring(2,4)}
+                        {start} - {end}
                     </td>
                     {getPracticums(rooms)}
                 </tr>
