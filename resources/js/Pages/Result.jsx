@@ -146,108 +146,111 @@ export default function Result(props) {
             <SidebarUser routes={props.routes}>
                 <NotificationAlert
                     ref={alertRef}
-                    className="w-[20rem] fixed top-6 right-10 py-4"
+                    className="w-[20rem] fixed top-6 right-10 py-4 z-[999]"
                     defaultColor="red" // optional default green
                     defaultShowTime={4000} // optional default 1000 ms
                 />
-                <Breadcrumbs className="mb-5">
-                    <a href={route("asisten.dashboard")} className="opacity-60">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                        >
-                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                        </svg>
-                    </a>
-                    <a href={route("Result")}>Result</a>
-                </Breadcrumbs>
-                <main className="pr-7">
-                    <div className="mb-5 flex gap-x-10">
-                        <Select
-                            label="Select Event"
-                            containerProps={{ className: "max-w-[250px]" }}
-                            onChange={(e) => {
-                                emptyTabRef.current?.click();
-                                setEventId(e);
-                                setSelectedSubject(null);
-                            }}
-                        >
-                            {props.events.map((event) => {
-                                return (
-                                    <Option key={event.id} value={event.id}>
-                                        {event.name}
-                                    </Option>
-                                );
-                            })}
-                        </Select>
-                        {eventId !== null &&
-                            eventsGeneratedStatus[eventId] == 0 && (
-                                <>
-                                    <Button onClick={generateResult}>
-                                        Generate Result
-                                    </Button>
-                                    <Button onClick={() => emailResult(eventId, setEventsGeneratedStatus)} className="bg-amber-900">
-                                        Email Result
-                                    </Button>
-                                </>
-                            )}
-                    </div>
-                    <Card className="max-w-full z-1 md:py-0 overflow-auto border border-gray-200 min-h-[200px]">
-                        <div className="p-2">
-                            <Tabs value="false">
-                                <TabsHeader className="grid-cols-6 flex-wrap justify-around gap-y-1.5">
-                                    {tabLoading ? (
-                                        <Spinner className="h-6 w-6" />
-                                    ) : eventId !== null ? (
-                                        tabs.length > 0 ? (
-                                            <>
-                                                {tabs.map(([key, value]) => (
-                                                    <Tab
-                                                        key={key}
-                                                        value={key}
-                                                        className="max-w-[200px]"
-                                                    >
-                                                        {allSubjects[key].name}
-                                                    </Tab>
-                                                ))}
-                                            </>
-                                        ) : (
-                                            <Tab value="empty">Empty</Tab>
-                                        )
-                                    ) : (
-                                        <Tab value="no-event">
-                                            Please Select an Event
-                                        </Tab>
-                                    )}
-                                </TabsHeader>
-                                <TabsBody>
-                                    <div className="bg-gray-50 px-6 py-4 min-h-[140px] rounded-lg">
-                                        {!tabLoading &&
-                                            eventId !== null && (
-                                                tabs.map(([key, value]) => (
-                                                    <TabPanel key={key} value={key}>
-                                                        <ResultDatatable
-                                                            selectedSubject={
-                                                                allSubjects[key]
-                                                            }
-                                                            subjectPracticums={subjectPracticums[key]}
-                                                            data={
-                                                                data[key]
-                                                            }
-                                                            alertRef={alertRef}
-                                                        />
-                                                    </TabPanel>
+                <div className="mt-10 md:mt-0">
+                    <Breadcrumbs className="mb-5">
+                        <a href={route("asisten.dashboard")} className="opacity-60">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                            >
+                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                            </svg>
+                        </a>
+                        <a href={route("Result")}>Result</a>
+                    </Breadcrumbs>
 
-                                                ))
-                                            )}
-                                    </div>
-                                </TabsBody>
-                            </Tabs>
+                    <main className="md:pr-7">
+                        <div className="mb-5 flex gap-x-10">
+                            <Select
+                                label="Select Event"
+                                containerProps={{ className: "max-w-[250px]" }}
+                                onChange={(e) => {
+                                    emptyTabRef.current?.click();
+                                    setEventId(e);
+                                    setSelectedSubject(null);
+                                }}
+                            >
+                                {props.events.map((event) => {
+                                    return (
+                                        <Option key={event.id} value={event.id}>
+                                            {event.name}
+                                        </Option>
+                                    );
+                                })}
+                            </Select>
+                            {eventId !== null &&
+                                eventsGeneratedStatus[eventId] == 0 && (
+                                    <>
+                                        <Button onClick={generateResult}>
+                                            Generate Result
+                                        </Button>
+                                        <Button onClick={() => emailResult(eventId, setEventsGeneratedStatus)} className="bg-amber-900">
+                                            Email Result
+                                        </Button>
+                                    </>
+                                )}
                         </div>
-                    </Card>
-                </main>
+                        <Card className="max-w-full z-1 md:py-0 overflow-auto border border-gray-200 min-h-[200px]">
+                            <div className="p-2">
+                                <Tabs value="false">
+                                    <TabsHeader className="grid-cols-6 flex-wrap justify-around gap-y-1.5">
+                                        {tabLoading ? (
+                                            <Spinner className="h-6 w-6" />
+                                        ) : eventId !== null ? (
+                                            tabs.length > 0 ? (
+                                                <>
+                                                    {tabs.map(([key, value]) => (
+                                                        <Tab
+                                                            key={key}
+                                                            value={key}
+                                                            className="max-w-[200px]"
+                                                        >
+                                                            {allSubjects[key].name}
+                                                        </Tab>
+                                                    ))}
+                                                </>
+                                            ) : (
+                                                <Tab value="empty">Empty</Tab>
+                                            )
+                                        ) : (
+                                            <Tab value="no-event">
+                                                Please Select an Event
+                                            </Tab>
+                                        )}
+                                    </TabsHeader>
+                                    <TabsBody>
+                                        <div className="bg-gray-50 md:px-6 py-4 min-h-[140px] rounded-lg">
+                                            {!tabLoading &&
+                                                eventId !== null && (
+                                                    tabs.map(([key, value]) => (
+                                                        <TabPanel key={key} value={key}>
+                                                            <ResultDatatable
+                                                                selectedSubject={
+                                                                    allSubjects[key]
+                                                                }
+                                                                subjectPracticums={subjectPracticums[key]}
+                                                                data={
+                                                                    data[key]
+                                                                }
+                                                                alertRef={alertRef}
+                                                            />
+                                                        </TabPanel>
+
+                                                    ))
+                                                )}
+                                        </div>
+                                    </TabsBody>
+                                </Tabs>
+                            </div>
+                        </Card>
+                    </main>
+                </div>
             </SidebarUser>
         </>
     );

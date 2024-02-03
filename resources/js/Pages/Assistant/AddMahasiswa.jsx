@@ -52,7 +52,7 @@ export default function AddMahasiswa(props) {
             </Head>
 
             <SidebarUser routes={routes}>
-                <div className="mt-10 px-5 w-full md:w-5/6">
+                <div className="mt-10 lg:mt-0 md:px-5 w-full md:w-5/6">
                     <div className="title">
                         <div className="judul">
                             <AddTitle

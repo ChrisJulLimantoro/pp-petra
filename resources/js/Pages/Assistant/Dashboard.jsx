@@ -184,7 +184,7 @@ export default function Dashboard({ auth, routes, data, events, registrations })
     return (
         <>
             <Head>
-                <title>SAOCP-Dashboard</title>
+                <title>Dashboard</title>
                 <style>
                     {`
                         html {
@@ -197,105 +197,94 @@ export default function Dashboard({ auth, routes, data, events, registrations })
             <SidebarUser className='overflow-x-hidden' routes={routes}>
                 <Typography variant='h5' className='mb-5 pl-4' color='blue-gray'>Welcome Back, {auth}</Typography>
 
-                <Tabs value="Mahasiswa" className="justify-center">
-                    <TabsHeader className='mx-4 md:w-fit flex justify-center'>
-                        <Tab value="Mahasiswa" className='px-5'>Mahasiswa</Tab>
-                        <Tab value="Asisten" className='px-5'>Asisten</Tab>
-                    </TabsHeader>
+                {events && (    
+                    <Carousel className='col-span-3 mb-3 md:mb-5 h-50'>
+                        {events.map((event) => (
+                            <Card key={event.id} className='bg-red-200 p-10 h-full text-center'>
+                                {event.name} sedang berjalan hingga {event.end_date}
+                            </Card>
+                        ))}
+                    </Carousel>
+                )}
 
-                    <TabsBody>
-                        <TabPanel value="Mahasiswa">
-                            {events && (    
-                                <Carousel className='col-span-3 mb-3 md:mb-5'>
-                                    {events.map((event) => (
-                                        <Card key={event.id} className='bg-red-200 p-10 h-full text-center'>
-                                            {event.name} sedang berjalan hingga {event.end_date}
-                                        </Card>
-                                    ))}
-                                </Carousel>
-                            )}
+                <div className="flex flex-col pb-5 md:items-start gap-5 overflow-auto">
+                    {/* Highlights */}
+                    <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-5 justify-center items-center">
+                        <Card color='blue'>
+                            <CardBody>
+                                <div className="flex justify-between items-start">
+                                    <Typography color="white" className='mb-2 '>Sudah Validasi</Typography>
+                                    <CheckBadgeIcon className='w-5 h-5'></CheckBadgeIcon>
+                                </div>
+                                <Typography color="white" className='font-bold text-2xl'>{validated}</Typography>
+                            </CardBody>
+                        </Card>
+                        
+                        <Card color='orange'>
+                            <CardBody>
+                                <div className="flex justify-between items-start">
+                                    <Typography color="white" className='mb-2'>Belum Validasi</Typography>
+                                    <ClockIcon className='w-5 h-5'></ClockIcon>
+                                </div>
+                                <Typography color="white" className='font-bold text-2xl'>{applied}</Typography>
+                            </CardBody>
+                        </Card>
 
-                            <div className="flex flex-col pb-5 md:items-start gap-5 overflow-auto">
-                                {/* Highlights */}
-                                <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-5 justify-center items-center">
-                                    <Card color='blue'>
-                                        <CardBody>
-                                            <div className="flex justify-between items-start">
-                                                <Typography color="white" className='mb-2 '>Sudah Validasi</Typography>
-                                                <CheckBadgeIcon className='w-5 h-5'></CheckBadgeIcon>
-                                            </div>
-                                            <Typography color="white" className='font-bold text-2xl'>{validated}</Typography>
-                                        </CardBody>
-                                    </Card>
-                                    
-                                    <Card color='orange'>
-                                        <CardBody>
-                                            <div className="flex justify-between items-start">
-                                                <Typography color="white" className='mb-2'>Belum Validasi</Typography>
-                                                <ClockIcon className='w-5 h-5'></ClockIcon>
-                                            </div>
-                                            <Typography color="white" className='font-bold text-2xl'>{applied}</Typography>
-                                        </CardBody>
-                                    </Card>
+                        <Card color='red'>
+                            <CardBody>
+                                <div className="flex justify-between items-start">
+                                    <Typography color="white" className='mb-2'>Belum Daftar</Typography>
+                                    <XCircleIcon className='w-5 h-5'></XCircleIcon>
+                                </div>
+                                <Typography color="white" className='font-bold text-2xl'>{unapplied}</Typography>
+                            </CardBody>
+                        </Card>
+                    </div>
 
-                                    <Card color='red'>
-                                        <CardBody>
-                                            <div className="flex justify-between items-start">
-                                                <Typography color="white" className='mb-2'>Belum Daftar</Typography>
-                                                <XCircleIcon className='w-5 h-5'></XCircleIcon>
-                                            </div>
-                                            <Typography color="white" className='font-bold text-2xl'>{unapplied}</Typography>
-                                        </CardBody>
-                                    </Card>
+                    <div className='grid grid-cols-1 md:grid-cols-3 w-full gap-3 md:gap-5 items-start'>
+                        <div className="flex flex-col md:col-span-2 gap-5">
+                            {/* Breakdown per subject */}
+                            <Card className='p-6 max-h-[75vh] flex flex-col gap-5 border'>
+                                <div className="flex justify-between">
+                                    <Typography className='font-bold text-lg'>Overview</Typography>
+                                    <Link href={route('reports.detail')} className='text-blue-500'>Lihat Detail</Link>
                                 </div>
 
-                                <div className='grid grid-cols-1 md:grid-cols-3 w-full gap-3 md:gap-5 items-start'>
-                                    <div className="flex flex-col md:col-span-2 gap-5">
-                                        {/* Breakdown per subject */}
-                                        <Card className='p-6 max-h-[75vh] flex flex-col gap-5 border'>
-                                            <div className="flex justify-between">
-                                                <Typography className='font-bold text-lg'>Overview</Typography>
-                                                <Link href={route('reports.detail')} className='text-blue-500'>Lihat Detail</Link>
-                                            </div>
+                                <Bar data={chart} options={options} className='mb-10 md:p-5' />
+                            </Card>
 
-                                            <Bar data={chart} options={options} className='mb-10 md:p-5' />
-                                        </Card>
-
-                                        {/* Riwayat Pendaftaran */}
-                                        <Card className='flex flex-col p-6 border gap-5 overflow-auto max-h-[50vh]'>
-                                            <div className="flex justify-between">
-                                                <Typography className='font-bold text-lg'>Pendaftaran Terbaru</Typography>
-                                            </div>
-
-                                            <table className="w-full min-w-max table-auto text-fixed">
-                                                <tbody>
-                                                    {registrations.map((registration, index) => renderRegistration(registration, index))}
-                                                </tbody>
-                                            </table>
-                                        </Card>
-                                    </div>
-                                    
-                                    {/* Asdos */}
-                                    <Card className='p-6 flex flex-col w-full gap-5 border'>
-                                        <Typography className='font-bold text-lg'>Pengajar Kelas Terbanyak</Typography>
-                                        <table className="w-full min-w-max table-auto text-fixed">
-                                            <tbody>
-                                                {topFive.map((data, index) => renderTopFive(data, index))}
-                                            </tbody>
-                                        </table>
-
-                                        <Typography className='font-bold text-lg'>Pengajar Kelas Tersedikit</Typography>
-                                        <table className="w-full min-w-max table-auto text-fixed">
-                                            <tbody>
-                                                {bottomFive.map((data, index) => renderTopFive(data, index))}
-                                            </tbody>
-                                        </table>
-                                    </Card>
+                            {/* Riwayat Pendaftaran */}
+                            <Card className='flex flex-col p-6 border gap-5 overflow-auto max-h-[50vh]'>
+                                <div className="flex justify-between">
+                                    <Typography className='font-bold text-lg'>Pendaftaran Terbaru</Typography>
                                 </div>
-                            </div>
-                        </TabPanel>
-                    </TabsBody>
-                </Tabs>
+
+                                <table className="w-full min-w-max table-auto text-fixed">
+                                    <tbody>
+                                        {registrations.map((registration, index) => renderRegistration(registration, index))}
+                                    </tbody>
+                                </table>
+                            </Card>
+                        </div>
+                        
+                        {/* Asdos */}
+                        <Card className='p-6 flex flex-col w-full gap-5 border'>
+                            <Typography className='font-bold text-lg'>Pengajar Kelas Terbanyak</Typography>
+                            <table className="w-full min-w-max table-auto text-fixed">
+                                <tbody>
+                                    {topFive.map((data, index) => renderTopFive(data, index))}
+                                </tbody>
+                            </table>
+
+                            <Typography className='font-bold text-lg'>Pengajar Kelas Tersedikit</Typography>
+                            <table className="w-full min-w-max table-auto text-fixed">
+                                <tbody>
+                                    {bottomFive.map((data, index) => renderTopFive(data, index))}
+                                </tbody>
+                            </table>
+                        </Card>
+                    </div>
+                </div>
             </SidebarUser>
         </>
     );

@@ -39,7 +39,6 @@ export function PrsTable(props) {
     const getRows = (prs) => {
         return Object.entries(prs).map((time) => {
             return (
-                console.log(time),
                 (
                     <tr key={time[0]}>
                         <td
@@ -90,7 +89,6 @@ export function PrsTable(props) {
                         <tr className="bg-blue-gray-500">
                             <th className="px-2 border-2 min-w-[125px] w-[155px] break-words text-center bg-slate-400"></th>
                             {Object.entries(header).map((day) => {
-                                console.log(day[1]);
                                 return (
                                     <th className="px-2 border-2 min-w-[125px] w-[155px] break-words text-center bg-slate-400 text-white font-bold">
                                         <Typography>{day[1]}</Typography>

@@ -139,10 +139,10 @@ function PracticumFormDialog(props, ref) {
                             : "INPUT JADWAL PRAKTIKUM"}
                     </div>
                 </DialogHeader>
-                <DialogBody>
-                    <form className="px-10" onSubmit={handleSubmit}>
-                        <div className="grid grid-cols-5 mb-3">
-                            <label htmlFor="" className="col-span-2 my-2">
+                <DialogBody className="pt-0">
+                    <form className="px-3 md:px-10" onSubmit={handleSubmit}>
+                        <div className="flex flex-col md:grid md:grid-cols-5 mb-2 md:mb-3">
+                            <label htmlFor="" className="md:mb-2 md:col-span-2 md:mt-2">
                                 Mata Kuliah:
                             </label>
                             <div className="col-span-3">
@@ -176,8 +176,8 @@ function PracticumFormDialog(props, ref) {
                                 </Typography>
                             </div>
                         </div>
-                        <div className="grid grid-cols-5 mb-3">
-                            <label htmlFor="" className="col-span-2 my-2">
+                        <div className="flex flex-col md:grid md:grid-cols-5 mb-2 md:mb-3">
+                            <label htmlFor="" className="mb-2 md:col-span-2 md:mt-2">
                                 Kode:
                             </label>
                             <div className="col-span-3">
@@ -198,8 +198,8 @@ function PracticumFormDialog(props, ref) {
                                 </Typography>
                             </div>
                         </div>
-                        <div className="grid grid-cols-5 mb-3">
-                            <label htmlFor="" className="col-span-2 my-2">
+                        <div className="flex flex-col md:grid md:grid-cols-5 mb-2 md:mb-3">
+                            <label htmlFor="" className="mb-2 md:col-span-2 md:mt-2">
                                 Nama Ruangan:
                             </label>
                             <div className="col-span-3">
@@ -228,8 +228,8 @@ function PracticumFormDialog(props, ref) {
                                 </Typography>
                             </div>
                         </div>
-                        <div className="grid grid-cols-5 mb-3">
-                            <label htmlFor="" className="col-span-2 my-2">
+                        <div className="flex flex-col md:grid md:grid-cols-5 mb-2 md:mb-3">
+                            <label htmlFor="" className="mb-2 md:col-span-2 md:mt-2">
                                 Kuota:
                             </label>
                             <div className="col-span-3">
@@ -281,8 +281,8 @@ function PracticumFormDialog(props, ref) {
                                 </Typography>
                             </div>
                         </div>
-                        <div className="grid grid-cols-5 mb-3">
-                            <label htmlFor="" className="col-span-2 my-2">
+                        <div className="flex flex-col md:grid md:grid-cols-5 mb-2 md:mb-3">
+                            <label htmlFor="" className="mb-2 md:col-span-2 md:mt-2">
                                 Hari:
                             </label>
                             <div className="col-span-3">
@@ -310,8 +310,8 @@ function PracticumFormDialog(props, ref) {
                                 </Typography>
                             </div>
                         </div>
-                        <div className="grid grid-cols-5 mb-3">
-                            <label htmlFor="" className="col-span-2 my-2">
+                        <div className="flex flex-col md:grid md:grid-cols-5 mb-2 md:mb-3">
+                            <label htmlFor="" className="mb-2 md:col-span-2 md:mt-2">
                                 Jam Mulai:
                             </label>
                             <div className="col-span-3">
@@ -359,17 +359,17 @@ function PracticumFormDialog(props, ref) {
                             </div>
                         </div>
 
-                        <div className="flex justify-center gap-8 mt-8">
+                        <div className="flex md:justify-center gap-4 md:gap-8 mt-5 md:mt-8">
                             <Button
                                 color="red"
                                 onClick={() => handleOpen(null)}
-                                className="mr-1"
+                                className="w-full md:mr-1"
                             >
                                 <span>Cancel</span>
                             </Button>
                             <ButtonWithLoadingSpinner
                                 type="submit"
-                                className="bg-[#19304B] text-[#FFBC00] min-w-[100px]"
+                                className="w-full bg-[#19304B] text-[#FFBC00] min-w-[100px]"
                                 ref={submitButtonRef}
                             >
                                 <span>

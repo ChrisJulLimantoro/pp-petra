@@ -39,10 +39,8 @@ export default function ConfirmationIconButton(props) {
         }
 
         axios.post("", datas).then((res) => {
-            console.log(res);
         });
 
-        console.log(datas);
     }
 
     return (

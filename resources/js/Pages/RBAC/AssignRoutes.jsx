@@ -300,13 +300,13 @@ export default class AssignRoutes extends Component {
                                 unmount: { y: 100 },
                             }}
                             color={this.state.alert.color}
-                            className="fixed top-0 right-2 m-5 px-7 w-50 z-50"
+                            className="fixed top-0 right-2 m-5 px-7 w-50 z-[999]"
                         >
                             {this.state.alert.message}
                         </Alert>
                     )}
 
-                    <div className="px-6 h-full">
+                    <div className="mt-10 md:mt-0 md:px-6 h-full">
                         <Breadcrumbs className="mb-5">
                             <a
                                 href={route("asisten.dashboard")}

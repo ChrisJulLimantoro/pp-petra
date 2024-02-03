@@ -12,10 +12,10 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        if (!in_array('student', session('roles'))) {
+        if (!in_array('student', session('roles')) && !in_array('asdos', session('roles'))) {
             return redirect('/asisten');
         }
-        $data = json_decode(Http::withToken(session('token'))->get(env('API_URL') . "/students-accepted/" . session('user_id')), true);
+        $data = json_decode(Http::withToken(session('token'))->get(env('API_URL') . "/students-accepted" . session('user_id')), true);
         $data = $data['data'] ?? [];
         $return['data'] = [];
 

@@ -11,7 +11,7 @@ use Illuminate\Http\Response;
 class JadwalController extends Controller
 {
     public function index(Request $request){
-        $data = json_decode(Http::withToken(session('token'))->get(env('API_URL') . "/master-schedules/"), true);
+        $data = json_decode(Http::withToken(session('token'))->get(env('API_URL') . "/master-schedules"), true);
         $data = $data['data'];
         // dd($data);
         $result=[];

@@ -114,7 +114,6 @@ export default function Index({ events, routes }) {
     };
 
     const changeStatus = (index, context) => {
-        console.log('masuk gan')
         dispatch({
             type: "status",
             index: index,
@@ -123,9 +122,6 @@ export default function Index({ events, routes }) {
     };
 
     function eventReducer(events, action) {
-        console.log(events)
-        console.log(action.type);
-        console.log(action);
         if (action.type == "add") {
             axios
                 .post(route("event.add"), data)
@@ -240,7 +236,6 @@ export default function Index({ events, routes }) {
     }
 
     const renderBody = (event, index, context) => {
-        console.log(context.perPage);
         // if no data found
         if (event.empty) {
             return (
@@ -303,7 +298,6 @@ export default function Index({ events, routes }) {
                                             ]
                                         }
                                         onChange={(e) => {
-                                            console.log(e.target.value);
                                             setData2({
                                                 ...data2,
                                                 [column
@@ -430,7 +424,7 @@ export default function Index({ events, routes }) {
     return (
         <SidebarUser routes={routes}>
             <Head>
-                <title>Add Event</title>
+                <title>Manage Event</title>
             </Head>
 
             {alert.isOpen && (
@@ -442,13 +436,13 @@ export default function Index({ events, routes }) {
                         unmount: { y: 100 },
                     }}
                     color={alert.color}
-                    className="fixed top-0 right-2 m-5 px-7 w-50 z-50"
+                    className="fixed top-0 right-2 m-5 px-7 w-50 z-[999]"
                 >
                     {alert.message}
                 </Alert>
             )}
 
-            <div className="px-6">
+            <div className="mt-10 md:mt-0 md:px-6">
                 <Breadcrumbs className="mb-5">
                     <a href={route("asisten.dashboard")} className="opacity-60">
                         <svg

@@ -69,11 +69,11 @@ export default function Move(props) {
     return (
         <>
             <Head>
-                <title>{"SAOCP - Move " + type}</title>
+                <title>{"Move " + type}</title>
             </Head>
 
             <SidebarUser routes={routes}>
-                <div className="mt-10 px-5 w-full md:w-5/6">
+                <div className="mt-10 lg:mt-0 md:px-5 w-full md:w-5/6">
                     <div className="judul">
                         <MoveTitle
                             type={type}

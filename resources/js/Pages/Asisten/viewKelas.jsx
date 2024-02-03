@@ -49,17 +49,13 @@ export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
 
     const updateDataLowongan = (updatedData) => {
         const processedUpdatedData = processData(updatedData);
-        axios.post('/asisten/ngajar', [
-            'id',
-        ])
+        axios.post("/asisten/ngajar", ["id"]);
         setLowongan(processedUpdatedData);
-        console.log("Updating dataLowongan:", dataLowongan);
     };
 
     const updateDataAjar = (updatedData) => {
         const processedUpdatedData = processData(updatedData);
         setAjar(processedUpdatedData);
-        console.log("Updating dataAjar:", dataAjar);
     };
 
     const titleAjar = "Daftar Ajar Praktikum";
@@ -82,7 +78,7 @@ export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
             );
         }
         return (
-            <tr key={index + 1 + context.perPage * (context.currentPage - 1)}>
+            <tr key={item.id}>
                 {kolomAjar.map((kolom) =>
                     kolom === "#" ? (
                         <TableCell>
@@ -229,92 +225,94 @@ export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
     return (
         <viewKelasContext.Provider value={{ lowongan: lowongan, ajar: ajar }}>
             <Head>
-                <title>SAOCP-Daftar Ajar Praktikum</title>
+                <title>Atur Jadwal Ajar</title>
             </Head>
             <div>
                 <SidebarUser routes={routes}>
-                    <div className="flex flex-wrap place-content-center">
-                        <div className="w-11/12">
-                            <Breadcrumbs className="mb-5">
-                                <a href={route("asisten.dashboard")} className="opacity-60">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-4 w-4"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor"
-                                    >
-                                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                                    </svg>
-                                </a>
-                                <a>Asisten</a>
-                                <a href={route("Asisten.View Jadwal Ajar")}>View Jadwal Ajar</a>
-                            </Breadcrumbs>
-
-                            <DataTable
-                                className="w-full overflow-hidden"
-                                rawData={ajar}
-                                columns={kolomAjar}
-                                title={titleAjar}
+                    <div className="flex flex-wrap mt-10 md:mt-0">
+                        <Breadcrumbs className="mb-5">
+                            <a
+                                href={route("asisten.dashboard")}
+                                className="opacity-60"
                             >
-                                <DataTableContext.Consumer>
-                                    {(context) => (
-                                        <Card className="max-w-full z-1 md:py-0 overflow-x-hidden border border-gray-200 mb-6">
-                                            <TableHeader title={titleAjar} />
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-4 w-4"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                >
+                                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                                </svg>
+                            </a>
+                            <a>Asisten</a>
+                            <a href={route("Asisten.View Jadwal Ajar")}>
+                                View Jadwal Ajar
+                            </a>
+                        </Breadcrumbs>
 
-                                            <TableBody className={"relative "}>
-                                                <TableBody.Head />
-                                                <TableBody.Content>
-                                                    {context.paginatedData.map(
-                                                        (item, index) =>
-                                                            renderDataAjar(
-                                                                item,
-                                                                index,
-                                                                context
-                                                            )
-                                                    )}
-                                                </TableBody.Content>
-                                            </TableBody>
+                        <DataTable
+                            className="w-full overflow-hidden"
+                            rawData={ajar}
+                            columns={kolomAjar}
+                            title={titleAjar}
+                        >
+                            <DataTableContext.Consumer>
+                                {(context) => (
+                                    <Card className="max-w-full z-1 md:py-0 overflow-x-hidden border border-gray-200 mb-6">
+                                        <TableHeader title={titleAjar} />
 
-                                            <TableFooter />
-                                        </Card>
-                                    )}
-                                </DataTableContext.Consumer>
-                            </DataTable>
-                        </div>
-                        <div className="pt-6 w-11/12">
-                            <DataTable
-                                className="overflow-hidden"
-                                rawData={lowongan}
-                                columns={kolomLowongan}
-                                title={titleLowongan}
-                            >
-                                <DataTableContext.Consumer>
-                                    {(context) => (
-                                        <Card className="max-w-full z-1 md:py-0 overflow-x-hidden border border-gray-200 mb-6">
-                                            <TableHeader
-                                                title={titleLowongan}
-                                            />
+                                        <TableBody className={"relative "}>
+                                            <TableBody.Head />
+                                            <TableBody.Content>
+                                                {context.paginatedData.map(
+                                                    (item, index) =>
+                                                        renderDataAjar(
+                                                            item,
+                                                            index,
+                                                            context
+                                                        )
+                                                )}
+                                            </TableBody.Content>
+                                        </TableBody>
 
-                                            <TableBody className={"relative "}>
-                                                <TableBody.Head />
-                                                <TableBody.Content>
-                                                    {context.paginatedData.map(
-                                                        (item, index) =>
-                                                            renderDataLowongan(
-                                                                item,
-                                                                index,
-                                                                context
-                                                            )
-                                                    )}
-                                                </TableBody.Content>
-                                            </TableBody>
+                                        <TableFooter />
+                                    </Card>
+                                )}
+                            </DataTableContext.Consumer>
+                        </DataTable>
 
-                                            <TableFooter />
-                                        </Card>
-                                    )}
-                                </DataTableContext.Consumer>
-                            </DataTable>
-                        </div>
+                        <DataTable
+                            className="overflow-hidden"
+                            rawData={lowongan}
+                            columns={kolomLowongan}
+                            title={titleLowongan}
+                        >
+                            <DataTableContext.Consumer>
+                                {(context) => (
+                                    <Card className="max-w-full z-1 md:py-0 overflow-x-hidden border border-gray-200 mb-6">
+                                        <TableHeader
+                                            title={titleLowongan}
+                                        />
+
+                                        <TableBody className={"relative "}>
+                                            <TableBody.Head />
+                                            <TableBody.Content>
+                                                {context.paginatedData.map(
+                                                    (item, index) =>
+                                                        renderDataLowongan(
+                                                            item,
+                                                            index,
+                                                            context
+                                                        )
+                                                )}
+                                            </TableBody.Content>
+                                        </TableBody>
+
+                                        <TableFooter />
+                                    </Card>
+                                )}
+                            </DataTableContext.Consumer>
+                        </DataTable>
                     </div>
                 </SidebarUser>
             </div>

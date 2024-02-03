@@ -13,7 +13,7 @@ class BulkInsertStudentController extends Controller
 {
 
     public function index(Request $request){
-        $data = json_decode(Http::withToken(session('token'))->get(env('API_URL') . "/students/"), true);
+        $data = json_decode(Http::withToken(session('token'))->get(env('API_URL') . "/students"), true);
         $data = $data['data'];
         // dd($data);
         $return['data'] = [];
@@ -52,6 +52,7 @@ class BulkInsertStudentController extends Controller
         if($handle !== false){
             $headers = fgetcsv($handle, 0, ';');
             foreach($headers as $h){
+                $h = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $h);
                 $column[] = strtolower($h);
             }
             $save = [];
@@ -65,7 +66,7 @@ class BulkInsertStudentController extends Controller
                 if(!isset($save[$data[$nrp_index]])){
                     $exist = false;
                 }
-                foreach($headers as $h){
+                foreach($column as $h){
                     if(!$exist){
                         if($h == 'kodemk'){
                             $save[$data[$nrp_index]]['prs'] = [['code' => $data[array_search($h,$column)], 'class' => $data[array_search('kelasmk',$column)]]];
@@ -80,7 +81,7 @@ class BulkInsertStudentController extends Controller
                             $save[$data[$nrp_index]]['semester'] = $sem;
                             $save[$data[$nrp_index]][$h] = $data[array_search($h,$column)];
                         }else if($h == 'ipk' || $h == 'ips'){
-                            $save[$data[$nrp_index]][$h] = $data[array_search($h,$column)];
+                            $save[$data[$nrp_index]][$h] = str_replace(",",".",$data[array_search($h,$column)]);
                         }
                             $save[$data[$nrp_index]]['program'] = 'i';
                         
@@ -96,9 +97,10 @@ class BulkInsertStudentController extends Controller
                 }
             }
             fclose($handle);
+            // dd($save);
             $response = Http::withHeaders(['Accept' => 'application/json'])->withToken(session('token'))->post(env('API_URL').'/students-bulk',['data'=>$save]);
             $response = json_decode($response,true);
-            
+            // dd($response);
             if($response['success']){
                 return response()->json(['success' => true,'data' => $response['data']]);
             }else{
@@ -125,6 +127,7 @@ class BulkInsertStudentController extends Controller
                 return response()->json(['success' => false,'data' => 'File is not in the correct format']);
             }
             foreach($headers as $h){
+                $h = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $h);
                 $column[] = strtolower($h);
             }
             $save = [];

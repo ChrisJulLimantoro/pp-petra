@@ -84,15 +84,13 @@ export default function DetailKelas(props) {
         students_data.push(student);
     });
 
-    console.log(students_data);
-
     return (
         <>
             <Head>
-                <title>SAOCP-Detail Kelas</title>
+                <title>Detail Kelas</title>
             </Head>
             <SidebarUser routes={routes}>
-                <div className="mt-10 px-5 w-full md:w-5/6">
+                <div className="mt-10 md:px-5 w-full md:w-5/6">
                     
                     <div className="judul">
                         <DetailsTitle

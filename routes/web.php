@@ -49,7 +49,7 @@ Route::middleware('cekRole')->group(function () {
     Route::get('/rbac/assignRoutes', [RBACController::class, 'assignRoutesView'])->name('RBAC.Add Routes to Role');
     Route::get('/my-prs', [BulkInsertStudentController::class, 'myPRS'])->name('MyPrs');
 
-Route::get("/viewPRS/{student_id}", [BulkInsertStudentController::class, 'viewPrs'])->name('viewPRS');
+    Route::get("/viewPRS/{student_id}", [BulkInsertStudentController::class, 'viewPrs'])->name('viewPRS');
     Route::post("/addPRS", [BulkInsertStudentController::class, 'addPrs'])->name('addPRS');
     Route::delete("/deletePRS/{student}/student/{idPRS}", [BulkInsertStudentController::class, 'deletePrs'])->name('deletePRS');
     Route::post("/uploadMahasiswa", [BulkInsertStudentController::class, 'insert'])->name('uploadMahasiswa');
@@ -95,26 +95,22 @@ Route::get("/viewPRS/{student_id}", [BulkInsertStudentController::class, 'viewPr
 
         Route::post('ngajar', [PracticumController::class, 'ajarPracticum'])->name('asisten.ajarPracticum');
         Route::delete('batalNgajar/{id}', [PracticumController::class, 'batalAjarPracticum'])->name('asisten.batalAjarPracticum');
+    });
 
-        // Route::get('/viewKelas', function () {
-        //     return Inertia::render('Asisten/viewKelas');
-        // })->name('View Kelas');
-
-        Route::prefix('praktikum')->group(function () {
-            Route::post('/', [PracticumController::class, 'store'])->name('practicum.store');
-            Route::delete('/{id}', [PracticumController::class, 'destroy'])->name('practicum.destroy');
-            Route::post('deleteAllPracticum', [PracticumController::class, 'destroyAll'])->name('practicum.destroyAll');
-            Route::patch('/{id}', [PracticumController::class, 'update'])->name('practicum.update');
-            Route::get('/{id}', [PracticumController::class, 'getClassDetails'])->name('practicum.detail');
-            Route::post('/{id}', [PracticumController::class, 'deleteMhsAsistenPraktikum'])->name('studentAssistantPracticum.delete');
-            Route::get('/{id}/move/{type}/{student_assistant_practicum_id}', [PracticumController::class, 'getMovePraktikumDetails'])->name('practicum.move');
-            Route::post('/{id}/move/{type}/{student_assistant_practicum_id}', [PracticumController::class, 'moveStudentAsistantPracticum'])->name('practicum.move_student_assistant');
-            Route::get('/{id}/addassistant', [PracticumController::class, 'viewAddAssistant'])->name('practicum.addAssistant');
-            Route::post('/{id}/addassistant', [PracticumController::class, 'insertAssistantPracticum'])->name('practicum.insertAssistant');
-            Route::get('/{id}/addmahasiswa', [PracticumController::class, 'viewAddStudent'])->name('practicum.addStudent');
-            Route::post('/{id}/addmahasiswa', [PracticumController::class, 'insertStudentpracticum'])->name('practicum.insertStudent');
-            Route::get('/addmahasiswa/{nrp}', [PracticumController::class, 'ajaxDetailStudent'])->name('practicum.detailStudent');
-        });
+    Route::prefix('praktikum')->group(function () {
+        Route::post('/', [PracticumController::class, 'store'])->name('practicum.store');
+        Route::delete('/{id}', [PracticumController::class, 'destroy'])->name('practicum.destroy');
+        Route::post('deleteAllPracticum', [PracticumController::class, 'destroyAll'])->name('practicum.destroyAll');
+        Route::patch('/{id}', [PracticumController::class, 'update'])->name('practicum.update');
+        Route::get('/{id}', [PracticumController::class, 'getClassDetails'])->name('practicum.detail');
+        Route::post('/{id}', [PracticumController::class, 'deleteMhsAsistenPraktikum'])->name('studentAssistantPracticum.delete');
+        Route::get('/{id}/move/{type}/{student_assistant_practicum_id}', [PracticumController::class, 'getMovePraktikumDetails'])->name('practicum.move');
+        Route::post('/{id}/move/{type}/{student_assistant_practicum_id}', [PracticumController::class, 'moveStudentAsistantPracticum'])->name('practicum.move_student_assistant');
+        Route::get('/{id}/addassistant', [PracticumController::class, 'viewAddAssistant'])->name('practicum.addAssistant');
+        Route::post('/{id}/addassistant', [PracticumController::class, 'insertAssistantPracticum'])->name('practicum.insertAssistant');
+        Route::get('/{id}/addmahasiswa', [PracticumController::class, 'viewAddStudent'])->name('practicum.addStudent');
+        Route::post('/{id}/addmahasiswa', [PracticumController::class, 'insertStudentpracticum'])->name('practicum.insertStudent');
+        Route::get('/addmahasiswa/{nrp}', [PracticumController::class, 'ajaxDetailStudent'])->name('practicum.detailStudent');
     });
 
     Route::prefix('manage-asisten')->group(function () {
