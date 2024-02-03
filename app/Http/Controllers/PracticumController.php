@@ -20,7 +20,7 @@ class PracticumController extends Controller
         $data = $res->json('data');
 
         $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        $times = [730, 830, 930, 1030, 1130, 1230, 1330, 1430, 1530, 1630, 1730, 1830];
+        $times = [700, 730, 800, 830, 900, 930, 1000, 1030, 1100, 1130, 1200, 1230, 1300, 1330, 1400, 1430, 1500, 1530, 1600, 1630, 1700, 1730, 1800, 1830, 1900, 1930];
 
         $practicums = [];
         foreach ($days as $day) {
@@ -57,8 +57,13 @@ class PracticumController extends Controller
                     'time' => $time,
                     'day' => $practicum['day'],
                 ];
-                for ($i = 1; $i < $duration; $i++) {
-                    $time = $practicum['time'] + $i * 100;
+                for ($i = 1; $i < $duration * 2; $i++) {
+                    if ($i % 2 == 0) {
+                        $time = $practicum['time'] + $i/2 * 100;
+                    } else {
+                        $time = $practicum['time'] + (int)(($i - 1) / 2) * 100;
+                        $time = ($time % 100 == 0) ? $time + 30 : $time + 70;
+                    }
                     $practicums[$day][$time][$room['name']] = 'merged';
                 }
 
@@ -70,6 +75,7 @@ class PracticumController extends Controller
         }
 
         $props['subjects'] = $subjects->toArray();
+        // dd($practicums);
         $props['rooms'] = $rooms;
         $props['practicumsTable'] = $practicums;
         $props['routes'] = $request->routes ?? [];

@@ -322,18 +322,31 @@ function PracticumFormDialog(props, ref) {
                                     value={props.formData.time?.toString()}
                                     onChange={() => {}}
                                 >
+                                    <Option value="700">07.00</Option>
                                     <Option value="730">07.30</Option>
+                                    <Option value="800">08.00</Option>
                                     <Option value="830">08.30</Option>
+                                    <Option value="900">09.00</Option>
                                     <Option value="930">09.30</Option>
+                                    <Option value="1000">10.00</Option>
                                     <Option value="1030">10.30</Option>
+                                    <Option value="1100">11.00</Option>
                                     <Option value="1130">11.30</Option>
+                                    <Option value="1200">12.00</Option>
                                     <Option value="1230">12.30</Option>
+                                    <Option value="1300">13.00</Option>
                                     <Option value="1330">13.30</Option>
+                                    <Option value="1400">14.00</Option>
                                     <Option value="1430">14.30</Option>
+                                    <Option value="1500">15.00</Option>
                                     <Option value="1530">15.30</Option>
+                                    <Option value="1600">16.00</Option>
                                     <Option value="1630">16.30</Option>
+                                    <Option value="1700">17.00</Option>
                                     <Option value="1730">17.30</Option>
+                                    <Option value="1800">18.00</Option>
                                     <Option value="1830">18.30</Option>
+
                                 </Select>
                                 <Typography
                                     variant="small"
