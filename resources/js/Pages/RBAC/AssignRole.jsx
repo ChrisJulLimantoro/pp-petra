@@ -71,8 +71,8 @@ export default function AssignRole({
 
                 <h1 className="text-3xl font-bold mb-8">Assign Role</h1>
 
-                <div className="grid w-full 2xl:grid-cols-2 2xl:pr-28">
-                    <section className="mb-4 2xl:mb-0">
+                <div className="md:grid w-full 2xl:grid-cols-2 2xl:pr-28">
+                    <section className="mb-4 2xl:mb-0 w-full">
                         <UserSearchProvider
                             users={users}
                             setSelectedUser={setSelectedUser}
@@ -83,7 +83,7 @@ export default function AssignRole({
                             />
                         </UserSearchProvider>
                     </section>
-                    <section className="">
+                    <section className="w-full">
                         <RoleSearchProvider allRoles={allRoles}>
                             <RolesSection selectedUser={selectedUser} />
                         </RoleSearchProvider>

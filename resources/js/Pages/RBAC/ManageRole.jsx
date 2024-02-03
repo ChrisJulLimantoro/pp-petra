@@ -287,7 +287,7 @@ export default function ManageRole({ roles, routes }) {
     return (
         <SidebarUser routes={routes}>
             <Head>
-                <title>Add Role</title>
+                <title>Manage Role</title>
             </Head>
 
             {alert.isOpen && (

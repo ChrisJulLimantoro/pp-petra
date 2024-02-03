@@ -38,37 +38,42 @@ export function PopoverPrsButton(props) {
     return (
         <Popover open={openPopover} handler={setOpenPopover}>
             <PopoverHandler {...triggers}>{props.children}</PopoverHandler>
-            <PopoverContent
-                {...triggers}
-                className="z-50 max-w-[26rem] shadow-xl"
-            >
-                <ButtonGroup variant="outlined">
-                    <Button
-                        className="py-2 focus-visible:outline-none hover:bg-gray-200 focus:ring-0"
-                        onClick={() => handleDelete(formDelete)}
+            
+            {!props.viewOnly && (
+                <>
+                    <PopoverContent
+                        {...triggers}
+                        className="z-50 max-w-[26rem] shadow-xl"
                     >
-                        <TrashIcon className="w-[24px]" />
-                    </Button>
-                </ButtonGroup>
-            </PopoverContent>
-            <form
-                action={route("deletePRS", {
-                    student: props.studentId,
-                    idPRS: props.PrsId,
-                })}
-                ref={formDelete}
-                method="post"
-            >
-                <input type="hidden" name="_method" value="delete" />
-                <input
-                    type="hidden"
-                    name="_token"
-                    value={
-                        document.head.querySelector('meta[name="csrf-token"]')
-                            .content
-                    }
-                />
-            </form>
+                        <ButtonGroup variant="outlined">
+                            <Button
+                                className="py-2 focus-visible:outline-none hover:bg-gray-200 focus:ring-0"
+                                onClick={() => handleDelete(formDelete)}
+                            >
+                                <TrashIcon className="w-[24px]" />
+                            </Button>
+                        </ButtonGroup>
+                    </PopoverContent>
+                    <form
+                        action={route("deletePRS", {
+                            student: props.studentId,
+                            idPRS: props.PrsId,
+                        })}
+                        ref={formDelete}
+                        method="post"
+                    >
+                        <input type="hidden" name="_method" value="delete" />
+                        <input
+                            type="hidden"
+                            name="_token"
+                            value={
+                                document.head.querySelector('meta[name="csrf-token"]')
+                                    .content
+                            }
+                        />
+                    </form>
+                </>
+            )}
         </Popover>
     );
 }

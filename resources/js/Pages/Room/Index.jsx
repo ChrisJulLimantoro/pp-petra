@@ -292,7 +292,7 @@ export default function Index({ rooms, routes }) {
     return (
         <SidebarUser routes={routes}>
             <Head>
-                <title>Manage room</title>
+                <title>Manage Room</title>
             </Head>
 
             {alert.isOpen && (

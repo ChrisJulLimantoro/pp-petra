@@ -229,7 +229,7 @@ export default function viewKelas({ auth, dataAjar, dataLowongan, routes }) {
             </Head>
             <div>
                 <SidebarUser routes={routes}>
-                    <div className="flex flex-wrap mt-10 md:mt-0">
+                    <div className="flex flex-col flex-wrap mt-10 md:mt-0">
                         <Breadcrumbs className="mb-5">
                             <a
                                 href={route("asisten.dashboard")}

@@ -24,6 +24,7 @@ export function PrsTable(props) {
                         <PopoverPrsButton
                             PrsId={`${index.code}-${index.class}`}
                             studentId={props.studentId}
+                            viewOnly={props.viewOnly}
                         >
                             <div className="w-full h-full px-2 absolute inset-0 flex">
                                 <div className="my-auto text-sm">
@@ -73,15 +74,21 @@ export function PrsTable(props) {
     return (
         <>
             <div className="flex mb-8">
-                <Button
-                    onClick={() => {
-                        setFormData({});
-                        dialogRef.current?.handleOpen();
-                    }}
-                    className="bg-[#19304B] text-[#FFBC00]"
-                >
-                    Tambah Kelas
-                </Button>
+                {props.viewOnly ? 
+                <Typography color="red">
+                    Jika ada jadwal yang tidak cocok, silahkan hubungi admin di (LINE: @karensunaryo_)
+                </Typography>
+                 : (
+                    <Button
+                        onClick={() => {
+                            setFormData({});
+                            dialogRef.current?.handleOpen();
+                        }}
+                        className="bg-[#19304B] text-[#FFBC00]"
+                    >
+                        Tambah Kelas
+                    </Button>
+                )}
             </div>
             <div className="overflow-x-auto pb-2">
                 <table>

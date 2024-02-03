@@ -379,7 +379,8 @@ class BulkInsertStudentController extends Controller
             'name' => $prs['name'],
             'nrp' => $prs['nrp'],
             'routes' => $request->routes ?? [],
-            'schedules' => $schedules
+            'schedules' => $schedules,
+            'viewOnly' => in_array('student', session('roles')) ? true : false,
         ]);
     }
 }

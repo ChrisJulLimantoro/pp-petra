@@ -494,6 +494,7 @@ export default function MultiLevelSidebar({
     return (
         <>
             <Head>
+                <link rel="icon" type="image/x-icon" href="/saocp/assets/ukp.png" />
                 <style>
                     {`
                         body, html {

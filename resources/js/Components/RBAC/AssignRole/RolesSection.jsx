@@ -52,7 +52,7 @@ export function RolesSection({ selectedUser }) {
                     selectedUser={selectedUser}
                     setSelectedUserRoles={setSelectedUserRoles}
                 >
-                    <div className="mb-3 bg-gray-100 w-96 mx-auto rounded-xl">
+                    <div className="mb-3 bg-gray-100 w-full md:w-96 border mx-auto rounded-xl">
                         <div className="text-center py-1">owned</div>
                         <ListWithIcon
                             loading={loading}
@@ -61,7 +61,7 @@ export function RolesSection({ selectedUser }) {
                             filteredRoles={filteredRoles}
                         />
                     </div>
-                    <div className="bg-gray-100 w-96 mx-auto rounded-xl">
+                    <div className="bg-gray-100 w-full md:w-96 border mx-auto rounded-xl">
                         <div className="text-center py-1">not owned</div>
                         <ListWithIcon
                             loading={loading}
@@ -82,7 +82,7 @@ export function RolesSection({ selectedUser }) {
                         }))
                     }
                     color={alert.color}
-                    className="w-[20rem] fixed top-6 right-10 py-4"
+                    className="w-[20rem] fixed top-6 right-10 py-4 z-[999]"
                     animate={{
                         mount: { opacity: 1, y: 0 },
                         unmount: { opacity: 0, y: 0 },

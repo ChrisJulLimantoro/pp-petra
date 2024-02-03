@@ -376,7 +376,7 @@ export default function Dashboard({
     return (
         <>
             <Head>
-                <title>SAOCP-Daftar Praktikum</title>
+                <title>Daftar Praktikum</title>
                 <style>{styles}</style>
             </Head>
 

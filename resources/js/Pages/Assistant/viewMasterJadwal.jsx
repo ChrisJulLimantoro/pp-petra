@@ -511,13 +511,13 @@ export default function viewMahasiswa({ dataTable, routes }) {
             </Head>
             <NotificationAlert
                 ref={alertRef}
-                className="w-[20rem] fixed top-6 right-10 py-4 z-10"
+                className="w-[20rem] fixed top-6 right-10 py-4 z-[999]"
                 defaultColor="red"
                 defaultShowTime={4000}
             />
             <NotificationAlert
                 ref={alertGagal}
-                className="w-[20rem] fixed top-6 right-10 py-4 z-10"
+                className="w-[20rem] fixed top-6 right-10 py-4 z-[999]"
                 defaultColor="red"
                 defaultShowTime={4000}
             />

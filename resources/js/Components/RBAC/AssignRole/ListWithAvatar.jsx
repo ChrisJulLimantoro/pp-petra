@@ -15,7 +15,7 @@ export function ListWithAvatar({
     setSelectedUser,
 }) {
     return (
-        <Card className={"w-96 " + className}>
+        <Card className={className}>
             <List>
                 {users.map((user) => (
                     <ListItem

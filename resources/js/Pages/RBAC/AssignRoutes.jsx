@@ -22,6 +22,7 @@ export default class AssignRoutes extends Component {
     state = {
         role: this.props.roles.data[0],
         alert: { isOpen: false, color: "gray", message: "" },
+        routes: [],
     };
 
     TABLE_HEAD = ["#", "URI", "Name", "Method", "Access"];
@@ -48,11 +49,14 @@ export default class AssignRoutes extends Component {
             });
         }
 
-        // this.setState({role : selectedRole})
         if (!first) {
-            this.setState({ role: selectedRole });
-            context.updateData(routeToDisplay);
-        } else return routeToDisplay;
+            this.setState({ role: selectedRole, routes: routeToDisplay });
+            context.updateData(routeToDisplay)
+        } else this.setState({ routes: routeToDisplay });
+    }
+
+    componentDidMount() {
+        this.findRoutes(this.props.roles.data[0].name, null, true);
     }
 
     changeAccess(e, context) {
@@ -68,7 +72,7 @@ export default class AssignRoutes extends Component {
         let routeChanged = routes.find((route) => route.name === e.value);
 
         // update state
-        context.updateData(allRoutes, routes);
+        // context.updateData(allRoutes, routes);
 
         // grant access
         if (e.checked) {
@@ -82,7 +86,8 @@ export default class AssignRoutes extends Component {
                 .then((response) => {
                     if (response.data.success) {
                         this.state.role.role_routes.push(response.data.data);
-                        this.showAlert("Data successfully updated!", "gray");
+                        context.updateData(allRoutes, routes);
+                        this.showAlert("Route access granted!", "green");
                     } else {
                         // revert changes
                         allRoutes = [...context.rawData].map((route) =>
@@ -125,7 +130,7 @@ export default class AssignRoutes extends Component {
                     route(
                         "rbac.removeAccess",
                         this.state.role.role_routes.find(
-                            (route) => route.route === e.value
+                            (route) => route.name === e.value
                         ).id
                     )
                 )
@@ -136,7 +141,7 @@ export default class AssignRoutes extends Component {
                                 (route) => {route.name !== e.value}
                             );
                         context.updateData(allRoutes, routes);
-                        this.showAlert("Data successfully updated!", "gray");
+                        this.showAlert("Route access removed!", "green");
                     } else {
                         // revert changes
                         allRoutes = [...context.rawData].map((route) =>
@@ -192,7 +197,7 @@ export default class AssignRoutes extends Component {
                     <TableCell colSpan={this.TABLE_HEAD.length + 1}>
                         <Typography
                             variant="small"
-                            color="blue-gray"
+                            color="blue-green"
                             className="font-normal text-center"
                         >
                             No data found
@@ -331,11 +336,7 @@ export default class AssignRoutes extends Component {
 
                         <DataTable
                             className="w-full h-full overflow-hidden"
-                            rawData={this.findRoutes(
-                                this.props.roles.data[0].name,
-                                null,
-                                true
-                            )}
+                            rawData={this.state.routes}
                             columns={this.TABLE_HEAD}
                         >
                             <DataTableContext.Consumer>
@@ -350,7 +351,7 @@ export default class AssignRoutes extends Component {
                                                         this.state.role.name ??
                                                         ""
                                                     }
-                                                    onChange={(r) =>
+                                                    onChange={(r) => 
                                                         this.findRoutes(
                                                             r,
                                                             context

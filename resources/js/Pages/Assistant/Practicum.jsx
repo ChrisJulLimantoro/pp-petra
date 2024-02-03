@@ -7,7 +7,7 @@ export default function Practicum(props) {
     return (
         <>
             <Head>
-                <title>SAOCP - Input Kelas</title>
+                <title>Input Kelas</title>
                 <style>{`
                 html {
                     height: 100vh;

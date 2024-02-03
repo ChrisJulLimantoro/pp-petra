@@ -11,12 +11,13 @@ use Illuminate\Http\Response;
 
 class RBACController extends Controller
 {
-    public function getAllRoutes() {
+    public function getAllRoutes()
+    {
         $routes = Route::getRoutes()->getRoutes();
         $routes = array_map(function ($route) {
-            if(
-                !preg_match("/_/",$route->uri) && !preg_match("/telescope/",$route->uri) && !preg_match('/rbac/', $route->uri) && !preg_match('/sanctum/', $route->uri) && !preg_match('/api/', $route->uri)
-                ){
+            if (
+                !preg_match("/_/", $route->uri) && !preg_match("/telescope/", $route->uri) && !preg_match('/rbac/', $route->uri) && !preg_match('/sanctum/', $route->uri) && !preg_match('/api/', $route->uri)
+            ) {
                 return [
                     'uri' => $route->uri,
                     'method' => $route->methods[0],
@@ -32,13 +33,15 @@ class RBACController extends Controller
         return $routes;
     }
 
-    public function getAllViews(Request $request){
+    public function getAllViews(Request $request)
+    {
         return Inertia::render('RBAC/Views', [
             'routes' => $request->routes ?? [],
         ]);
     }
 
-    public function manageRole(Request $request){
+    public function manageRole(Request $request)
+    {
         $roles = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/roles'), true);
 
         return Inertia::render('RBAC/ManageRole', [
@@ -47,7 +50,8 @@ class RBACController extends Controller
         ]);
     }
 
-    public function addRole(Request $request) {
+    public function addRole(Request $request)
+    {
         $response = json_decode(
             Http::withToken(session('token'))->post(env('API_URL') . '/roles', [
                 'name' => $request->name,
@@ -58,7 +62,8 @@ class RBACController extends Controller
         return $response;
     }
 
-    public function editRole(Request $request, $id) {
+    public function editRole(Request $request, $id)
+    {
         $response = json_decode(
             Http::withToken(session('token'))->put(env('API_URL') . '/roles/' . $id, [
                 'name' => $request->name,
@@ -69,7 +74,8 @@ class RBACController extends Controller
         return $response;
     }
 
-    public function deleteRole(string $id) {
+    public function deleteRole(string $id)
+    {
         $response = json_decode(
             Http::withToken(session('token'))->delete(env('API_URL') . '/roles/' . $id)
         );
@@ -77,11 +83,12 @@ class RBACController extends Controller
         return $response;
     }
 
-    public function assignRoutesView(Request $request){
+    public function assignRoutesView(Request $request)
+    {
         $roles = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/roles'), true)['data'];
         // super admin auto all access
-        foreach($roles as $role){
-            if($role['slug'] != 'super-admin'){
+        foreach ($roles as $role) {
+            if ($role['slug'] != 'super-admin') {
                 $data['roles']['data'][] = $role;
             }
         }
@@ -91,9 +98,10 @@ class RBACController extends Controller
         return Inertia::render('RBAC/AssignRoutes', $data);
     }
 
-    public function grantAccess(Request $request) {
+    public function grantAccess(Request $request)
+    {
         $response = json_decode(
-            Http::withHeaders(['Accept'=> 'application/json'])->withToken(session('token'))->post(env('API_URL') . '/role-routes', [
+            Http::withHeaders(['Accept' => 'application/json'])->withToken(session('token'))->post(env('API_URL') . '/role-routes', [
                 'role_id' => $request->role_id,
                 'route' => $request->route,
                 'method' => $request->method,
@@ -104,7 +112,8 @@ class RBACController extends Controller
         return $response;
     }
 
-    public function removeAccess(string $id) {
+    public function removeAccess(string $id)
+    {
         $response = json_decode(
             Http::withToken(session('token'))->delete(env('API_URL') . '/role-routes/' . $id)
         );
@@ -112,7 +121,8 @@ class RBACController extends Controller
         return $response;
     }
 
-    public function assignRoleView(Request $request) {
+    public function assignRoleView(Request $request)
+    {
         $response = Http::withToken(session('token'))
             ->get(sprintf('%s/users', env('API_URL')));
         $users = $response->json();
@@ -122,19 +132,19 @@ class RBACController extends Controller
         $roles = $response->json();
 
         return Inertia::render(
-            'RBAC/AssignRole', 
-            ['users' => $users['data'], 'allRoles' => $roles['data'],'routes' => $request->routes ?? []]
+            'RBAC/AssignRole',
+            ['users' => $users['data'], 'allRoles' => $roles['data'], 'routes' => $request->routes ?? []]
         );
     }
 
-    public function getUserRoles($user_id) {
+    public function getUserRoles($user_id)
+    {
         try {
             $response = Http::withToken(session('token'))
                 ->get(sprintf('%s/users/%s', env('API_URL'), $user_id));
-        }   
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json(
-                ['message' => $e->getMessage()], 
+                ['message' => $e->getMessage()],
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
@@ -142,16 +152,24 @@ class RBACController extends Controller
         return response()->json($data['data']['roles']);
     }
 
-    public function assignRole($user_id, $role_id) {
+    public function assignRole($user_id, $role_id)
+    {
         try {
             $response = Http::withToken(session('token'))
                 ->post(sprintf('%s/user-roles/%s', env('API_URL'), $user_id), [
                     'role_id' => $role_id,
                 ]);
-        }
-        catch (\Exception $e) {
+
+            if (!json_decode($response)->success) {
+                return response()->json(
+                    ['message' => 'Role assignment failed!'],
+                    Response::HTTP_INTERNAL_SERVER_ERROR
+                );
+            }
+            // if (json_decode($response));
+        } catch (\Exception $e) {
             return response()->json(
-                ['message' => 'Role assignment failed!'], 
+                ['message' => 'Role assignment failed!'],
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
@@ -161,21 +179,28 @@ class RBACController extends Controller
         );
     }
 
-    public function unassignRole($user_id, $role_id) {
+    public function unassignRole($user_id, $role_id)
+    {
         try {
             $response = Http::withToken(session('token'))
                 ->delete(
                     sprintf(
-                        '%s/users/%s/roles/%s', 
+                        '%s/users/%s/roles/%s',
                         env('API_URL'),
                         $user_id,
                         $role_id
                     )
                 );
-        } 
-        catch (\Exception $e) {
+            
+            if (!json_decode($response)->success) {
+                return response()->json(
+                    ['message' => 'Role unassignment failed!'],
+                    Response::HTTP_INTERNAL_SERVER_ERROR
+                );
+            }
+        } catch (\Exception $e) {
             return response()->json(
-                ['message' => $e->getMessage()], 
+                ['message' => $e->getMessage()],
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }

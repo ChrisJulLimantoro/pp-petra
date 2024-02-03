@@ -48,7 +48,7 @@ export default function AddMahasiswa(props) {
     return (
         <>
             <Head>
-                <title>SAOCP-Add Mahasiswa</title>
+                <title>Add Mahasiswa</title>
             </Head>
 
             <SidebarUser routes={routes}>

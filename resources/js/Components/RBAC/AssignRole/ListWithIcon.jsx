@@ -39,7 +39,7 @@ export function ListWithIcon({
     }, [selectedUserRoles, filteredRoles])
 
     return (
-        <Card className={"w-96 h-[13rem] overflow-y-auto" + className}>
+        <Card className={"md:w-96 h-[13rem] overflow-y-auto" + className}>
             <List className="overflow-y-auto">
                 {loading ? (
                     <div className="flex justify-center gap-8">
