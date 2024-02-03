@@ -20,7 +20,7 @@ export default function viewKelas({ dataTable, routes }) {
 
     return (
         <SidebarUser routes={routes}>
-            <div className="px-6">
+            <div className="mt-10 md:mt-0 md:px-6">
                 <Breadcrumbs className="mb-5">
                     <a
                         href={route("Dashboard")}

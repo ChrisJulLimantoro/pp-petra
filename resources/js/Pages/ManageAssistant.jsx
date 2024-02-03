@@ -35,7 +35,7 @@ export default function ManageAssistant(props) {
     return (
         <>
             <Head>
-                <title>Input Kelas</title>
+                <title>Manage Asisten</title>
                 <style>{`
                 html {  
                     height: 100vh;
@@ -43,7 +43,7 @@ export default function ManageAssistant(props) {
                 `}</style>
             </Head>
             <SidebarUser routes={props.routes}>
-                <main className="">
+                <main className="mt-10 md:mt-0">
                     <h1 className="font-medium text-2xl mb-4">
                         Manage Asisten
                     </h1>
@@ -126,9 +126,8 @@ function AssistantTable(props) {
         <div className="pb-2 relative">
             <NotificationAlert
                 ref={alertRef}
-                className="w-[20rem] fixed top-6 right-10 py-4"
+                className="w-[20rem] fixed top-6 right-10 py-4 z-[999]"
             />
-
             <Breadcrumbs className="mb-5">
                 <a href={route("asisten.dashboard")} className="opacity-60">
                     <svg
@@ -479,13 +478,13 @@ const AddAssistantDialog = forwardRef((props, ref) => {
                             : "TAMBAH ASISTEN BARU"}
                     </div>
                 </DialogHeader>
-                <DialogBody>
+                <DialogBody className="pt-0">
                     <form
-                        className="px-10"
+                        className="px-3 md:px-10"
                         onSubmit={assistantToEdit ? handleEdit : handleSubmit}
                     >
-                        <div className="grid grid-cols-5 mb-3">
-                            <label htmlFor="" className="col-span-2 my-2">
+                        <div className="flex flex-col md:grid md:grid-cols-5 mb-3">
+                            <label htmlFor="" className="col-span-2 mb-2 md:mt-2">
                                 NRP:
                             </label>
                             <div className="col-span-3">
@@ -510,8 +509,8 @@ const AddAssistantDialog = forwardRef((props, ref) => {
                         ) : (
                             ""
                         )}
-                        <div className="grid grid-cols-5 mb-3">
-                            <label htmlFor="" className="col-span-2 my-2">
+                        <div className="flex flex-col md:grid md:grid-cols-5 mb-3">
+                            <label htmlFor="" className="col-span-2 mb-2 md:mt-2">
                                 Nama:
                             </label>
                             <div className="col-span-3">
@@ -526,8 +525,8 @@ const AddAssistantDialog = forwardRef((props, ref) => {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-5 mb-3">
-                            <label htmlFor="" className="col-span-2 my-2">
+                        <div className="flex flex-col md:grid md:grid-cols-5 mb-3">
+                            <label htmlFor="" className="col-span-2 mb-2 md:mt-2">
                                 Ruangan:
                             </label>
                             <div className="col-span-3">
@@ -552,17 +551,17 @@ const AddAssistantDialog = forwardRef((props, ref) => {
                             </div>
                         </div>
 
-                        <div className="flex justify-center gap-8 mt-8">
+                        <div className="flex justify-center gap-4 mt-6">
                             <Button
                                 color="red"
                                 onClick={handleOpen}
-                                className="mr-1"
+                                className="w-full"
                             >
                                 <span>Cancel</span>
                             </Button>
                             <ButtonWithLoadingSpinner
                                 type="submit"
-                                className="bg-[#19304B] text-[#FFBC00] min-w-[100px]"
+                                className="w-full bg-[#19304B] text-[#FFBC00] min-w-[100px]"
                                 ref={buttonRef}
                             >
                                 <span>

@@ -299,13 +299,13 @@ export default function ManageRole({ roles, routes }) {
                         unmount: { y: 100 },
                     }}
                     color={alert.color}
-                    className="fixed top-0 right-2 m-5 px-7 w-50 z-50"
+                    className="fixed top-0 right-2 m-5 px-7 w-50 z-[999]"
                 >
                     {alert.message}
                 </Alert>
             )}
 
-            <div className="px-6">
+            <div className="mt-10 md:mt-0 md:px-6">
                 <Breadcrumbs className="mb-5">
                     <a href={route("Dashboard")} className="opacity-60">
                         <svg

@@ -8,7 +8,7 @@ export default function TableFooter ({ children, className = '' }) {
     
     return (
         <CardFooter 
-            className={"flex flex-col md:flex-row items-center justify-between border-t border-blue-gray-50 p-4 gap-5" + className}
+            className={"flex flex-col md:flex-row items-center justify-between border-t border-blue-gray-50 p-4 gap-3" + className}
         >
             {children}
             

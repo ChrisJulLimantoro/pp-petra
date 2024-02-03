@@ -122,13 +122,13 @@ function PrsFormDialog(props, ref) {
                         INPUT JADWAL PRS
                     </div>
                 </DialogHeader>
-                <DialogBody>
-                    <form className="px-10" onSubmit={handleSubmit}>
-                        <div className="grid grid-cols-5 mb-3">
-                            <label htmlFor="" className="col-span-2 my-2">
+                <DialogBody className="pt-0">
+                    <form className="px-3 md:px-10" onSubmit={handleSubmit}>
+                        <div className="flex flex-col md:grid md:grid-cols-5 mb-2 md:mb-4 w-full">
+                            <label htmlFor="" className="md:col-span-2 mb-2 md:mt-2">
                                 Mata Kuliah:
                             </label>
-                            <div className="col-span-3">
+                            <div className="md:col-span-3">
                                 <Select
                                     label="Mata Kuliah"
                                     name="code"
@@ -166,11 +166,11 @@ function PrsFormDialog(props, ref) {
                                 </Typography>
                             </div>
                         </div>
-                        <div className="grid grid-cols-5 mb-3">
-                            <label htmlFor="" className="col-span-2 my-2">
+                        <div className="flex flex-col md:grid md:grid-cols-5 mb-2 md:mb-4">
+                            <label htmlFor="" className="md:col-span-2 mb-2 md:mt-2">
                                 Class
                             </label>
-                            <div className="col-span-3">
+                            <div className="md:col-span-3">
                                 <Select
                                     label="Class"
                                     name="class"
@@ -192,17 +192,17 @@ function PrsFormDialog(props, ref) {
                             </div>
                         </div>
 
-                        <div className="flex justify-center gap-8 mt-8">
+                        <div className="flex justify-center gap-4    mt-8">
                             <Button
                                 color="red"
                                 onClick={() => handleOpen(null)}
-                                className="mr-1"
+                                className="w-full"
                             >
                                 <span>Cancel</span>
                             </Button>
                             <ButtonWithLoadingSpinner
                                 type="submit"
-                                className="bg-[#19304B] text-[#FFBC00] min-w-[100px]"
+                                className="w-full bg-[#19304B] text-[#FFBC00] min-w-[100px]"
                                 ref={submitButtonRef}
                             >
                                 <span>

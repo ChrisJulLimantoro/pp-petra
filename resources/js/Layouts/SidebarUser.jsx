@@ -477,13 +477,17 @@ export default function MultiLevelSidebar({
 
     const mobileSidebarBtn = () => {
         return (
-            <IconButton
-                variant="text"
-                className="mx-4 mb-3"
-                onClick={openDrawer}
-            >
-                <Bars3BottomLeftIcon className="w-5 h-5" />
-            </IconButton>
+            <div className="flex fixed top-0 w-full bg-white border-b border-b-gray-300 justify-between items-center z-[100]">
+                <IconButton
+                    variant="text"
+                    className="mx-4"
+                    onClick={openDrawer}
+                >
+                    <Bars3BottomLeftIcon className="w-5 h-5" />
+                </IconButton>
+
+                <img src={prodiImg} alt="Logo Prodi" className="w-14 mx-4" />
+            </div>
         );
     };
 
@@ -492,12 +496,13 @@ export default function MultiLevelSidebar({
             <Head>
                 <style>
                     {`
-            body, html {
-                margin: 0 !important;
-                padding: 0 !important;
-                width: 100vw !important;
-            }
-        `}
+                        body, html {
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            width: 100vw !important;
+                            overflow-x: hidden;
+                        }
+                    `}
                 </style>
             </Head>
 
@@ -517,6 +522,9 @@ export default function MultiLevelSidebar({
                             : "hidden"
                     }
                 ></div>
+
+                {sidebarState === 0 ? mobileSidebarBtn() : null}
+
                 <div
                     className={
                         (sidebarState === 1
@@ -525,12 +533,10 @@ export default function MultiLevelSidebar({
                             ? mobileOpenedStyle
                             : sidebarState === 2
                             ? desktopFullStyle
-                            : "w-screen p-5") +
+                            : "w-screen p-5 mt-5") +
                         " transition-all duration-300 bg-white"
                     }
                 >
-                    {sidebarState === 0 ? mobileSidebarBtn() : null}
-
                     {children}
 
                     {sidebarState === 0 && (

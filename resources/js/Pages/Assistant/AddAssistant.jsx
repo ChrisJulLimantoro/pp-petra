@@ -85,10 +85,10 @@ export default function AddAssistant(props) {
     return (
         <>
             <Head>
-                <title>SAOCP-Tambah Asisten</title>
+                <title>Tambah Asisten</title>
             </Head>
             <SidebarUser routes={routes}>
-                <div className="mt-10 px-5 w-full md:w-5/6">
+                <div className="mt-10 lg:mt-0 md:px-5 w-full md:w-5/6">
                     <div className="judul">
                         <AddTitle
                             type="Asisten"
