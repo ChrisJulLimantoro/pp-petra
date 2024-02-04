@@ -15,6 +15,7 @@ export default function Login({ link, status, message }) {
                     body,html{
                         height:100vh;
                         width:100vw;
+                        overflow-x:hidden;
                     }
                     .button {
                         display: flex;
@@ -72,7 +73,7 @@ export default function Login({ link, status, message }) {
                         }
                     }
                     #text-logo {
-                        font-family: 'Shrikhand', cursive;
+                        font-family: 'Shrikhand', cursive, 'system-ui', sans-serif;
                         stroke-dashoffset: 100%;
                         stroke-dasharray: 100%;
                         -webkit-animation: draw 6s forwards ease-in,up 2s 6s forwards ease-in;
