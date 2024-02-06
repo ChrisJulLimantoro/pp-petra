@@ -10,6 +10,8 @@ export default function DetailKelas(props) {
 
     const hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
+    console.log(data);
+
     function formatTime(time) {
         time = String(time);
         if (
@@ -74,14 +76,16 @@ export default function DetailKelas(props) {
     });
 
     data.student_practicum.map((item) => {
-        const student = {
-            id: data.id,
-            nama: item.student.user.name,
-            nrp: extractNrp(item.student.user.email),
-            jurusan: getJurusan(item.student.program),
-            student_assistant_practicum_id: item.id,
-        };
-        students_data.push(student);
+        if (item.accepted % 2 != 0) {
+            const student = {
+                id: data.id,
+                nama: item.student.user.name,
+                nrp: extractNrp(item.student.user.email),
+                jurusan: getJurusan(item.student.program),
+                student_assistant_practicum_id: item.id,
+            };
+            students_data.push(student);
+        }
     });
 
     return (
@@ -91,7 +95,6 @@ export default function DetailKelas(props) {
             </Head>
             <SidebarUser routes={routes}>
                 <div className="mt-10 md:px-5 w-full md:w-5/6">
-                    
                     <div className="judul">
                         <DetailsTitle
                             matkul={data.name}
@@ -135,7 +138,7 @@ export default function DetailKelas(props) {
                         <DataTableViewStudent
                             TABLE_HEAD={head_student}
                             TABLE_ROWS={students_data}
-                            slot_used={data.student_practicum.length}
+                            slot_used={students_data.length}
                             total_slot={data.quota}
                             addHref={route("practicum.addStudent", data.id)}
                             type="Mahasiswa"
