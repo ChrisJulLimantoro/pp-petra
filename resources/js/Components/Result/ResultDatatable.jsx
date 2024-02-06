@@ -156,7 +156,7 @@ export function ResultDatatable(props) {
                                         </option>
                                     );
                                 }) }
-                            </select>
+                            </select> 
                             {studentResult.accepted && studentPracticum !== undefined
                                 && <Link href={route('practicum.detail', studentPracticum.id)}  >
                                     <ArrowTopRightOnSquareIcon 

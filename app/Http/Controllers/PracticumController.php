@@ -414,8 +414,16 @@ class PracticumController extends Controller
         }
 
         # check apakah slot sudah full
-        $slot_used = $valid["student_practicum"];
-        $slot_used = count($slot_used);
+        $total_slot = $valid["student_practicum"];
+        $slots = [];
+
+        foreach ($total_slot as $slot) {
+            if ($slot["accepted"] % 2 != 0) {
+                $slots[] = $slot;
+            }
+        }
+
+        $slot_used = count($slots);
         if ($slot_used + count($students) > $valid["quota"]) {
             return response()->json([
                 'success' => false,

@@ -10,8 +10,6 @@ export default function DetailKelas(props) {
 
     const hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
-    console.log(data);
-
     function formatTime(time) {
         time = String(time);
         if (
