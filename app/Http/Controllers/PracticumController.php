@@ -59,7 +59,7 @@ class PracticumController extends Controller
                 ];
                 for ($i = 1; $i < $duration * 2; $i++) {
                     if ($i % 2 == 0) {
-                        $time = $practicum['time'] + $i/2 * 100;
+                        $time = $practicum['time'] + $i / 2 * 100;
                     } else {
                         $time = $practicum['time'] + (int)(($i - 1) / 2) * 100;
                         $time = ($time % 100 == 0) ? $time + 30 : $time + 70;
@@ -106,7 +106,7 @@ class PracticumController extends Controller
                 'time' => $request->time,
                 'subject_id' => $subject_id,
             ]);
-            
+
         $responseData = $res->json();
         $status = $res->status();
 
@@ -141,7 +141,7 @@ class PracticumController extends Controller
                 'time' => $request->time,
                 'subject_id' => $request->subject_id,
             ]);
-        
+
         $responseData = $res->json();
         $status = $res->status();
 
@@ -164,7 +164,7 @@ class PracticumController extends Controller
         return redirect()->back()->with('message', $res->json());
     }
 
-    public function destroyAll() 
+    public function destroyAll()
     {
         $res = Http::withHeaders([
             'Accept' => 'application/json',
@@ -249,7 +249,7 @@ class PracticumController extends Controller
     {
         $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
         $dataPracticum = json_decode(
-            Http::withToken(session('token'))->post(env('API_URL') . '/practicum-karen/'. session('user_id')),
+            Http::withToken(session('token'))->post(env('API_URL') . '/practicum-karen/' . session('user_id')),
             true
         )['data'];
 
@@ -404,7 +404,7 @@ class PracticumController extends Controller
         # check apakah mahasiswa sudah terdaftar pada kelas praktikum
         foreach ($valid["student_practicum"] as $val) {
             foreach ($students as $student) {
-                if ($val["student_id"] == $student["id"]) {
+                if ($val["student_id"] == $student["id"] && $val["accepted"] % 2 != 0) {
                     return response()->json([
                         'success' => false,
                         'message' => $val["student"]["user"]["name"] . ' sudah terdaftar pada kelas praktikum!',
@@ -519,7 +519,8 @@ class PracticumController extends Controller
             $valid = $validation->json('data');
 
             foreach ($valid["student_practicum"] as $val) {
-                if ($val["student_id"] == $student_assistant_id) {
+                // if ($val["student_id"] == $student_assistant_id ) {
+                if ($val["student_id"] == $student_assistant_id && $val["accepted"] % 2 != 0) {
                     return response()->json([
                         'success' => false,
                         'message' => 'Mahasiswa sudah terdaftar pada kelas praktikum tersebut!',
@@ -528,8 +529,16 @@ class PracticumController extends Controller
             }
 
             # check apakah slot sudah full
-            $slot_used = $valid["student_practicum"];
-            $slot_used = count($slot_used);
+            $total_slot = $valid["student_practicum"];
+            $slots = [];
+
+            foreach ($total_slot as $slot) {
+                if ($slot["accepted"] % 2 != 0) {
+                    $slots[] = $slot;
+                }
+            }
+
+            $slot_used = count($slots);
             if ($slot_used >= $valid["quota"]) {
                 return response()->json([
                     'success' => false,
@@ -568,9 +577,10 @@ class PracticumController extends Controller
         return response()->json($data, 201);
     }
 
-    public function ajarPracticum(Request $request) {
+    public function ajarPracticum(Request $request)
+    {
         $res = json_decode(
-            Http::withHeaders(['Accept'=> 'application/json'])
+            Http::withHeaders(['Accept' => 'application/json'])
                 ->withToken(session('token'))
                 ->post(config('app')['API_URL'] . '/assistant-practicums', [
                     'assistant_id' => session('user_id'),
@@ -581,9 +591,10 @@ class PracticumController extends Controller
         return $res;
     }
 
-    public function batalAjarPracticum(string $id) {
+    public function batalAjarPracticum(string $id)
+    {
         $res = json_decode(
-            Http::withHeaders(['Accept'=> 'application/json'])
+            Http::withHeaders(['Accept' => 'application/json'])
                 ->withToken(session('token'))
                 ->delete(config('app')['API_URL'] . '/assistant-practicums/' . $id)
         );
