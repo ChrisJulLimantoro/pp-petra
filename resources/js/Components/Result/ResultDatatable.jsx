@@ -66,6 +66,7 @@ export function ResultDatatable(props) {
                     }
                     return newOccupancies;
                 });
+                setFilter(FILTER.NO_FILTER);
             }
         }
         catch (error) {
@@ -147,8 +148,7 @@ export function ResultDatatable(props) {
                                     );
                                 }) }
                             </Select> */}
-                            console.log(studentPracticum, studentResult, practicums);
-                            <select defaultValue={studentResult.accepted ? studentPracticum.id : '-'} style={(!studentResult.accepted) ? {color: 'red'} : {}} className="ms-3 me-6" data-old-value={studentResult.accepted ? studentResult.class_id : '-'} onChange={(e) => {assignStudent(e, e.target.value, studentResult.user_id, context)}}>
+                            <select defaultValue={studentResult.accepted ? studentResult.class_id : '-'} value={studentResult.accepted ? studentResult.class_id : '-'} style={(!studentResult.accepted) ? {color: 'red'} : {}} className="ms-3 me-6" data-old-value={studentResult.accepted ? studentResult.class_id : '-'} onChange={(e) => {assignStudent(e, e.target.value, studentResult.user_id, context)}}>
                                 <option value="-" disabled>Rejected</option>
                                 {practicums.map((p) => {
                                     return (
@@ -159,10 +159,10 @@ export function ResultDatatable(props) {
                                 }) }
                             </select> 
                             {studentResult.accepted && studentPracticum !== undefined
-                                && <Link href={route('practicum.detail', studentPracticum.id)}  >
+                                && <a target="_blank" rel="noopener noreferrer" href={route('practicum.detail', studentPracticum.id)}  >
                                     <ArrowTopRightOnSquareIcon 
                                         className="h-6 w-6 text-blue-400 hover:text-blue-800 cursor-pointer" />
-                                </Link>}
+                                </a>}
                         </div>
                     </div>
                 </TableCell>
@@ -219,7 +219,7 @@ export function ResultDatatable(props) {
                                 </div>
                             </TableHeader>
 
-                            <TableBody className="relative" containerProps={{ className: 'overflow-visible' }} >
+                            <TableBody className="relative">
                                 <TableBody.Head />
                                 <TableBody.Content>
                                     {context.paginatedData.map(
