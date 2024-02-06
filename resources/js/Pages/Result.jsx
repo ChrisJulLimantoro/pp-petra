@@ -106,7 +106,7 @@ export default function Result(props) {
                 const data = {};
                 res.data.forEach((result) => {
                     const subject = result.practicum.subject_id;
-                    result.accepted = result.accepted % 2 !== 0;
+                    result.accepted = result.accepted % 2 != 0;
 
                     if (result.event_id !== null && data[subject] === undefined) {
                         data[subject] = {};

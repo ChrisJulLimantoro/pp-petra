@@ -147,7 +147,8 @@ export function ResultDatatable(props) {
                                     );
                                 }) }
                             </Select> */}
-                            <select defaultValue={studentResult.accepted ? studentResult.class_id : '-'} style={(!studentResult.accepted) ? {color: 'red'} : {}} className="ms-3 me-6" data-old-value={studentResult.accepted ? studentResult.class_id : '-'} onChange={(e) => {assignStudent(e, e.target.value, studentResult.user_id, context)}}>
+                            console.log(studentPracticum, studentResult, practicums);
+                            <select defaultValue={studentResult.accepted ? studentPracticum.id : '-'} style={(!studentResult.accepted) ? {color: 'red'} : {}} className="ms-3 me-6" data-old-value={studentResult.accepted ? studentResult.class_id : '-'} onChange={(e) => {assignStudent(e, e.target.value, studentResult.user_id, context)}}>
                                 <option value="-" disabled>Rejected</option>
                                 {practicums.map((p) => {
                                     return (
