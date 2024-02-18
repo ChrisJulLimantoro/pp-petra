@@ -30,7 +30,6 @@ class cekRole
             }
             return $next($request);
         } else {
-            dd("sini");
             return redirect()->to(route('Dashboard'))->with('error', 'You are not authorized to access this page');
         }
     }
