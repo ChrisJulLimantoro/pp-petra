@@ -22,8 +22,8 @@ class cekRole
             $request->routes = 'all';
             return $next($request);
         }
-        $cek = json_decode(Http::withToken(session('token'))->post(env('API_URL').'/rbac/cek-role',['route'=>$name,'method'=>$method,'user_id'=>session('user_id')]));
-        if($cek){
+        $cek = json_decode(Http::withToken(session('token'))->post(env('API_URL') . '/rbac/cek-role', ['route' => $name, 'method' => $method, 'user_id' => session('user_id')]));
+        if ($cek->data) {
             if ($method === 'GET') {
                 $routes = json_decode(Http::withToken(session('token'))->get(env('API_URL').'/rbac/get-routes/' . session('user_id')))->data;
                 $request->routes = $routes;
