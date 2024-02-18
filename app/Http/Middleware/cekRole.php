@@ -18,19 +18,20 @@ class cekRole
     {
         $name = $request->route()->getName();
         $method = $request->getMethod();
-        if(in_array('super-admin',session('roles'))){
+        if (in_array('super-admin', session('roles'))) {
             $request->routes = 'all';
             return $next($request);
         }
         $cek = json_decode(Http::withToken(session('token'))->post(env('API_URL') . '/rbac/cek-role', ['route' => $name, 'method' => $method, 'user_id' => session('user_id')]));
         if ($cek->data) {
             if ($method === 'GET') {
-                $routes = json_decode(Http::withToken(session('token'))->get(env('API_URL').'/rbac/get-routes/' . session('user_id')))->data;
+                $routes = json_decode(Http::withToken(session('token'))->get(env('API_URL') . '/rbac/get-routes/' . session('user_id')))->data;
                 $request->routes = $routes;
             }
             return $next($request);
-        }else{
-            return redirect()->to(route('dashboard'))->with('error', 'You are not authorized to access this page');
+        } else {
+            dd("sini");
+            return redirect()->to(route('Dashboard'))->with('error', 'You are not authorized to access this page');
         }
     }
 }
