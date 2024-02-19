@@ -12,9 +12,6 @@ class DaftarPraktikumController extends Controller
 {
     public function getSubject(Request $request)
     {
-        if (session('event_id') == null) {
-            return redirect()->route('Dashboard');
-        }
         $url = env('API_URL') . "/students/" . session('user_id') . "/available-schedules/" . session('event_id');
         // dd($url);
         $subject = Http::withHeader('Accept', 'application/json')->withToken(session('token'))->get($url);

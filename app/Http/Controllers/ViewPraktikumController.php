@@ -12,9 +12,6 @@ class ViewPraktikumController extends Controller
 {
     public function index(Request $request)
     {
-        if (session('event_id') == null) {
-            return redirect()->route('Dashboard');
-        }
         $data = json_decode(Http::withToken(session('token'))->get(env('API_URL') . "/students/" . session('user_id') . "/available-schedules/" . session('event_id')), true);
         $data = $data['data'];
         $return['data'] = [];

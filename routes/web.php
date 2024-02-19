@@ -36,8 +36,8 @@ Route::middleware('cekRole')->group(function () {
     Route::get('/asisten', [ReportController::class, 'dashboard'])->name('asisten.dashboard');
     Route::get("/mahasiswa/manage-mahasiswa", [BulkInsertStudentController::class, 'index'])->name('Mahasiswa.Manage Mahasiswa');
     Route::get("/mahasiswa/viewJadwal", [JadwalController::class, 'index'])->name('Mahasiswa.View Jadwal');
-    Route::get('/praktikum/daftarPraktikum', [DaftarPraktikumController::class, 'getSubject'])->name('Praktikum.Daftar Praktikum');
-    Route::get('/praktikum/viewKelas', [ViewPraktikumController::class, 'index'])->name('Praktikum.View Kelas Praktikum');
+    Route::get('/praktikum/daftarPraktikum', [DaftarPraktikumController::class, 'getSubject'])->name('Praktikum.Daftar Praktikum')->middleware('activeEvent');
+    Route::get('/praktikum/viewKelas', [ViewPraktikumController::class, 'index'])->name('Praktikum.View Kelas Praktikum')->middleware('activeEvent');
     Route::get('/praktikum/manage-praktikum', [PracticumController::class, 'index'])->name('Praktikum.Manage Praktikum');
     Route::get('/asisten/viewAjar', [PracticumController::class, 'viewPracticum'])->name('Asisten.View Jadwal Ajar');
     Route::get('/asisten/manage-asisten', [AssistantController::class, 'index'])->name('Asisten.Manage Asisten');
@@ -83,10 +83,10 @@ Route::middleware('cekRole')->group(function () {
 
     Route::prefix('mahasiswa')->group(function () {
         Route::get('/getClass/{course}', [DaftarPraktikumController::class, 'getClass'])->name('mahasiswa.getClass');
-        Route::post('/addStudentPracticum', [DaftarPraktikumController::class, 'addClass'])->name('mahasiswa.addPracticum');
+        Route::post('/addStudentPracticum', [DaftarPraktikumController::class, 'addClass'])->name('mahasiswa.addPracticum')->middleware('activeEvent');
 
-        Route::delete('deletePracticum/{idPracticum}', [DaftarPraktikumController::class, 'deletePracticum'])->name('mahasiswa.deletePracticum');
-        Route::post('validate', [DaftarPraktikumController::class, 'valid'])->name('mahasiswa.validate');
+        Route::delete('deletePracticum/{idPracticum}', [DaftarPraktikumController::class, 'deletePracticum'])->name('mahasiswa.deletePracticum')->middleware('activeEvent');
+        Route::post('validate', [DaftarPraktikumController::class, 'valid'])->name('mahasiswa.validate')->middleware('activeEvent');
     });
 
     Route::prefix('asisten')->group(function () {
