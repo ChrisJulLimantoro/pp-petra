@@ -12,12 +12,15 @@ class DaftarPraktikumController extends Controller
 {
     public function getSubject(Request $request)
     {
+        if (session('event_id') == null) {
+            return redirect()->route('Dashboard');
+        }
         $url = env('API_URL') . "/students/" . session('user_id') . "/available-schedules/" . session('event_id');
         // dd($url);
         $subject = Http::withHeader('Accept', 'application/json')->withToken(session('token'))->get($url);
-        
+
         $subject = json_decode($subject->getBody(), true);
-    //    dd($subject)
+        //    dd($subject)
         $data['subject'] = $subject['data'];
         // dd($data['subject']);
         $matkul = [];
@@ -40,11 +43,11 @@ class DaftarPraktikumController extends Controller
         $daftar = json_decode($daftar->getBody(), true);
         $data['daftar'] = $daftar['data'];
         $dataTable = [];
-        $pracID=[];
-        $status='';
+        $pracID = [];
+        $status = '';
         foreach ($data['daftar'] as $x) {
             if ($x['student_id'] == session('user_id')) {
-                $pracID[]= $x['id'];
+                $pracID[] = $x['id'];
 
                 if ($x['practicum']['day'] == "1") {
                     $day = 'Senin';
@@ -65,40 +68,40 @@ class DaftarPraktikumController extends Controller
                 }
                 if ($x['choice'] == 1) {
                     $choice = "Pilihan 1";
-                } else if ($x['choice'] == 2){
+                } else if ($x['choice'] == 2) {
                     $choice = "Pilihan 2";
                 }
-                
+
                 if ($x['accepted'] == 0) {
                     $status = "Pending..";
-                } elseif($x['accepted'] == 1) {
+                } elseif ($x['accepted'] == 1) {
                     $status = "Terima Pilihan 1";
-                }elseif($x['accepted'] == 2) {
+                } elseif ($x['accepted'] == 2) {
                     $status = "Tolak Pilihan 1";
-                }elseif($x['accepted'] == 3) {
+                } elseif ($x['accepted'] == 3) {
                     $status = "Terima Pilihan 2";
-                }else{
+                } else {
                     $status = "Tolak Pilihan 2";
                 }
 
                 $endHour = strval($x['practicum']['time'] + 300);
                 if (strlen($endHour) == "3") {
-                    $endHour = "0".substr($endHour, 0, 1) . ":" . substr($endHour, 1, 2);
+                    $endHour = "0" . substr($endHour, 0, 1) . ":" . substr($endHour, 1, 2);
                 } else if (strlen($endHour) == "4") {
                     $endHour = substr($endHour, 0, 2) . ":" . substr($endHour, 2, 3);
                 }
                 $startHour = strval($x['practicum']['time']);
                 if (strlen($startHour) == "3") {
-                    $startHour= strval($startHour);
-                    $startHour = "0".substr($startHour, 0, 1) . ":" . substr($startHour, 1, 2);
+                    $startHour = strval($startHour);
+                    $startHour = "0" . substr($startHour, 0, 1) . ":" . substr($startHour, 1, 2);
                 } else if (strlen($startHour) == "4") {
-                    $startHour= strval($startHour);
+                    $startHour = strval($startHour);
                     $startHour = strval(substr($startHour, 0, 2) . ":" . substr($startHour, 2, 3));
                 }
 
 
                 $time = $startHour . " - " . $endHour;
-                if(session('is_validate')){
+                if (session('is_validate')) {
                     array_push($dataTable, [
                         'hari' => $day,
                         'jam' => $time,
@@ -107,7 +110,7 @@ class DaftarPraktikumController extends Controller
                         'pilihan' => $choice,
                         'status' => $status
                     ]);
-                }else{
+                } else {
                     array_push($dataTable, [
                         'hari' => $day,
                         'jam' => $time,
@@ -157,8 +160,8 @@ class DaftarPraktikumController extends Controller
                             $day = 'Sabtu';
                         }
 
-                        $endHour = strval($y['time'] + $y['duration']*100);
-                        
+                        $endHour = strval($y['time'] + $y['duration'] * 100);
+
                         if (strlen($y['time']) == "3") {
                             $time = substr($y['time'], 0, 1) . ":" . substr($y['time'], 1, 2);
                         } else if (strlen($y['time']) == "4") {
@@ -170,7 +173,7 @@ class DaftarPraktikumController extends Controller
                             $time2 = substr($endHour, 0, 2) . ":" . substr($endHour, 2, 3);
                         }
 
-                        $get[] = $y['code'] . " --> " . $day . "(" . $time . " - ". $time2 .")";
+                        $get[] = $y['code'] . " --> " . $day . "(" . $time . " - " . $time2 . ")";
                     }
                 }
             }
@@ -185,39 +188,39 @@ class DaftarPraktikumController extends Controller
 
     public function addClass(Request $request)
     {
-            if (empty($request->pilihan2)) {
-                $res = json_decode(Http::withHeader('Accept', 'application/json')->withToken(session('token'))->post(env('API_URL') . '/student-practicums', [
-                    'student_id' => session('user_id'),
-                    'practicum_id' => $request->pilihan1,
-                    'event_id' => session('event_id'),
-                    'choice' => '1'
-                ]));
-            } elseif (empty($request->pilihan1)) {
-                $res = json_decode(Http::withHeader('Accept', 'application/json')->withToken(session('token'))->post(env('API_URL') . '/student-practicums', [
-                    'student_id' => session('user_id'),
-                    'practicum_id' => $request->pilihan2,
-                    'event_id' => session('event_id'),
-                    'choice' => '2'
-                ]));
-            } else {
-                $res = json_decode(Http::withHeader('Accept', 'application/json')->withToken(session('token'))->post(
-                    env('API_URL') . '/student-practicums-bulk',
-                    ['data' => [
-                        [
-                            'student_id' => session('user_id'),
-                            'practicum_id' => $request->pilihan1,
-                            'event_id' => session('event_id'),
-                            'choice' => '1'
-                        ],
-                        [
-                            'student_id' => session('user_id'),
-                            'practicum_id' => $request->pilihan2,
-                            'event_id' => session('event_id'),
-                            'choice' => '2'
-                        ]
-                    ]]
-                )->getBody());
-            }
+        if (empty($request->pilihan2)) {
+            $res = json_decode(Http::withHeader('Accept', 'application/json')->withToken(session('token'))->post(env('API_URL') . '/student-practicums', [
+                'student_id' => session('user_id'),
+                'practicum_id' => $request->pilihan1,
+                'event_id' => session('event_id'),
+                'choice' => '1'
+            ]));
+        } elseif (empty($request->pilihan1)) {
+            $res = json_decode(Http::withHeader('Accept', 'application/json')->withToken(session('token'))->post(env('API_URL') . '/student-practicums', [
+                'student_id' => session('user_id'),
+                'practicum_id' => $request->pilihan2,
+                'event_id' => session('event_id'),
+                'choice' => '2'
+            ]));
+        } else {
+            $res = json_decode(Http::withHeader('Accept', 'application/json')->withToken(session('token'))->post(
+                env('API_URL') . '/student-practicums-bulk',
+                ['data' => [
+                    [
+                        'student_id' => session('user_id'),
+                        'practicum_id' => $request->pilihan1,
+                        'event_id' => session('event_id'),
+                        'choice' => '1'
+                    ],
+                    [
+                        'student_id' => session('user_id'),
+                        'practicum_id' => $request->pilihan2,
+                        'event_id' => session('event_id'),
+                        'choice' => '2'
+                    ]
+                ]]
+            )->getBody());
+        }
         return $res;
     }
 
@@ -230,10 +233,12 @@ class DaftarPraktikumController extends Controller
         return $response;
     }
 
-    public function valid(){
-        $response= json_decode(
-            Http::withHeader('Accept', 'application/json')->withToken(session('token'))->post(env('API_URL'). '/validate/' . session('user_id'). "/event/" . session('event_id'))->getBody());
-        if($response->success){
+    public function valid()
+    {
+        $response = json_decode(
+            Http::withHeader('Accept', 'application/json')->withToken(session('token'))->post(env('API_URL') . '/validate/' . session('user_id') . "/event/" . session('event_id'))->getBody()
+        );
+        if ($response->success) {
             session(['is_validate' => true]);
         }
         return $response;

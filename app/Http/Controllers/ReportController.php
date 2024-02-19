@@ -55,20 +55,22 @@ class ReportController extends Controller
                 ->get(env('API_URL') . '/events')
         );
         $events = collect($events->data);
-        $events = $events->filter(function ($event) {
-            return $event->status === 1;
-        })->values();
 
+        $activeEvent = $events->filter(function ($event) {
+            return $event->status == 1;
+        });
+        
         $initialReport = json_decode(
             Http::withHeaders(['Accept' => 'application/json'])
                 ->withToken(session('token'))
-                ->get(env('API_URL') . '/subjects-get-detailed-report/' . $subjects[0]->id . '/' . $events[0]->id)
+                ->get(env('API_URL') . '/subjects-get-detailed-report/' . $subjects[0]->id . '/' . ($activeEvent->isEmpty() ? $events[0]->id : $activeEvent->values()[0]->id))
         )->data;
 
         return Inertia::render('Assistant/DetailReport', [
             'title' => "Detail Pendaftaran",
             'subjects' => $subjects,
-            'events' => $events,
+            'events' => $events->values(),
+            'active_event' => !$activeEvent->isEmpty() ? $activeEvent->values()[0] : $events[0],
             'initialReport' => $initialReport,
             'routes' => $request->routes ?? []
         ]);

@@ -21,11 +21,12 @@ export default function DetailReport({
     title,
     subjects,
     events,
+    active_event,
     initialReport,
     routes,
 }) {
     const [activeSubject, setActiveSubject] = useState(subjects[0].id);
-    const [activeEvent, setActiveEvent] = useState(events[0].id);
+    const [activeEvent, setActiveEvent] = useState(active_event?.id);
     const [loading, setLoading] = useState(false);
     const applied = useRef(initialReport.applied);
     const notYetApplied = useRef(initialReport.unapplied);
